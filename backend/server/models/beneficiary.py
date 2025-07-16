@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from .base import Base
+from app import db
 from backend.server.models.charity import Charity
 
-class Beneficiary(Base):
+class Beneficiary(db.Model):
     __tablename__ = 'beneficiaries'
 
     id = Column(Integer, primary_key=True, autoincrement=True)

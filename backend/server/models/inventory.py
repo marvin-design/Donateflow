@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from backend.server.models.base import Base
+from app import db
 from backend.server.models.beneficiary import Beneficiary
 
-class InventoryItem(Base):
+class InventoryItem(db.Model):
     __tablename__ = 'inventory_items'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
