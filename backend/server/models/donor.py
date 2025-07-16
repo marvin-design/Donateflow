@@ -1,37 +1,30 @@
-from app import db, ma
-from flask_login import UserMixin
+from app import db
+from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
-class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+class Donor(db.Model):
+    __tablename__ = 'donors'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)  # Plain text password
+    password_hash = db.Column(db.String(128), nullable=False) 
     is_admin = db.Column(db.Boolean, default=False)
     is_anonymous = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=db.func.now())
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
     donations = db.relationship('Donation', backref='donor', lazy=True)
 
-    # Required for Flask-Login (UserMixin already covers these, but explicit is clearer)
-    def is_authenticated(self):
-        return True  # Assume all users are authenticated if they exist
-    
-    def is_active(self):
-        return True  # No account deactivation logic
-    
-    def get_id(self):
-        return str(self.id)  # Must return a string
 
-class UserSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = User
-        exclude = ('password',)  # Hide password in serialized output
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
 
-    id = ma.auto_field()
-    username = ma.auto_field()
-    email = ma.auto_field()
-    is_admin = ma.auto_field()
-    created_at = ma.auto_field()
+    def check_password(self, password):
+        return check_password_hash(self.password_hash(password))
+    
+    def __repr__(self):
+        return f'<Donor: {self.name}>'
+    
+
+    

@@ -1,4 +1,4 @@
-from app import db, ma
+from app import db
 
 class Donation(db.Model):
     __tablename__ = 'donations'
@@ -14,3 +14,11 @@ class Donation(db.Model):
     is_anonymous = db.Column(db.Boolean, default=False)
     donation_date = db.Column(db.DateTime, default=db.func.now())
 
+    donor = db.relationship('Donor', back_populates='donations')
+    charity = db.relationship('Charity', backref='donations')
+
+    # Serialization
+    serialize_rules = ('-donor.donations', '-charity.donations')
+
+    def __repr__(self):
+        return f'<Donation{self.amount} by Donor {self.donor_id}>'
