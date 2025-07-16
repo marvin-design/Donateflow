@@ -16,3 +16,4 @@ faker
 requests
 python-dateutil
 email-validator
+serializer 
