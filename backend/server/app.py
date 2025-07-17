@@ -26,3 +26,16 @@ scheduler.start()
 scheduler_reminder_job(app)
 
 
+def register_blueprints():
+    from controllers.donor_controller import donor_bp
+    app.register_blueprint(donor_bp)
+
+
+
+register_blueprints()
+
+
+if __name__ == '__main__':  
+    app.run(debug=True)
+    
+
