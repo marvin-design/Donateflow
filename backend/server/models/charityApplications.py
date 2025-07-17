@@ -1,10 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Metadata
-
-
-db=SQLAlchemy()
-metadata = Metadata()
-
+from app import db
 
 class CharityApplication(db.Model):
     __tablename__='charity_applications'
