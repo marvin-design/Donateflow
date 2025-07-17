@@ -14,7 +14,7 @@ class Donor(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
    
     
-    # Relationships
+    
     donations = db.relationship('Donation', backref='donor', lazy=True)
 
 

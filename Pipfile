@@ -7,8 +7,9 @@ name = "pypi"
 flask = "*"
 sqlalchemy = "*"
 flask-migrate = "*"
-flask-apscheduler = "*"
 flask-mail = "*"
+python-dotenv = "*"
+flask-apscheduler = "*"
 
 [dev-packages]
 
