@@ -1,15 +1,14 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from .base import Base
+from app import db
 from backend.server.models.charity import Charity
 
-class Beneficiary(Base):
+class Beneficiary(db.Model):
     __tablename__ = 'beneficiaries'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(100), nullable=False)
-    location = Column(String(200), nullable=False)
-    charity_id = Column(Integer, ForeignKey('charities.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    charity_id = db.Column(db.Integer, db.ForeignKey('charities.id'), nullable=False)
 
     charity = relationship("Charity", back_populates="beneficiaries")
     inventory_items = relationship("InventoryItem", back_populates="beneficiary")

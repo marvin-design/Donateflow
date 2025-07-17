@@ -16,4 +16,5 @@ faker
 requests
 python-dateutil
 email-validator
-serializer 
+flask-marshmallow==0.14.0
+marshmallow-sqlalchemy==0.28.1
