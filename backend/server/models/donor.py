@@ -9,9 +9,10 @@ class Donor(db.Model):
     name = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False) 
-    is_admin = db.Column(db.Boolean, default=False)
+    #is_admin = db.Column(db.Boolean, default=False) =>what is its essence
     is_anonymous = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+   
     
     # Relationships
     donations = db.relationship('Donation', backref='donor', lazy=True)
