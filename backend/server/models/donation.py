@@ -10,7 +10,6 @@ class Donation(db.Model):
     is_recurring = db.Column(db.Boolean, default=False)
     frequency = db.Column(db.String(20))  # 'monthly', 'weekly', etc.
     payment_method = db.Column(db.String(50))  # 'stripe', 'paypal'
-    is_anonymous = db.Column(db.Boolean, default=False)
     donation_date = db.Column(db.DateTime, default=db.func.now())
 
     donor = db.relationship('Donor', back_populates='donations')
