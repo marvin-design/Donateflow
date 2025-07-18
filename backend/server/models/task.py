@@ -1,31 +1,43 @@
 from flask_mail import Message
 from app import mail, db
-from datetime import datetime,timedelta
-
+from datetime import datetime, timedelta
 from models.donation import Donation
 
+def send_donation_reminder():
+    today = datetime.utcnow()
 
-if Donation.is_recurring == True:
-        
-    def send_donation_reminder(donor, donation):
+   
+    donations = Donation.query.filter(
+        Donation.is_recurring == True,
+        Donation.reminder_sent == False
+    ).all()
 
-        today = datetime.utcnow()
-        interval =today- timedelta(days=30)  
+    for donation in donations:
+        donor = donation.donor
+        charity = donation.charity
 
-        donations = Donation.query.filter(
-            Donation.reminder_sent == False,
-            Donation.donation_date < interval
-        ).all()
+   
+        if donation.frequency == 'weekly':
+            interval = timedelta(days=7)
+        elif donation.frequency == 'monthly':
+            interval = timedelta(days=30)
+        else:
+           
+            continue
 
-
-        for donation in donations:
-            donor= donation.donor
-            charity = donation.charity
+       
+        if donation.donation_date < (today - interval):
             if donor and donor.email:
                 msg = Message(
-                    subject=f'Donation Reminder', 
+                    subject='Donation Reminder',
                     recipients=[donor.email],
-                    body=(f'Dear {donor.name},\n\nThis is a reminder for your donation of {donation.amount} to {charity.name} .\n\n f"Click here to donate again: https://yourdomain.com/charities/{charity.id}\n\n"Thank you for your generosity!\n\nBest regards,\nDonateFlow Team'   )
+                    body=(
+                        f"Dear {donor.name},\n\n"
+                        f"This is a reminder for your donation of {donation.amount} "
+                        f"to {charity.name}.\n\n"
+                        f"Click here to donate again: https://yourdomain.com/charities/{charity.id}\n\n"#after creation of charity routes it should be updated
+                        "Thank you for your generosity!\n\nBest regards,\nDonateFlow Team"
+                    )
                 )
 
                 try:
@@ -36,14 +48,10 @@ if Donation.is_recurring == True:
                 except Exception as e:
                     print(f"Failed to send email to {donor.email}: {e}")
 
-    # Schedule the job to run daily
-    def scheduler_reminder_job(app):
-        app.apscheduler.add_job(
-            id='send_donation_reminder',
-            func=send_donation_reminder,
-            trigger='interval',
-            days=1,
-        )
-                
-
-        
+def scheduler_reminder_job(app): # This function registers the job in the flask application 
+    app.apscheduler.add_job( # =>registers the job in the APScheduler 
+        id='send_donation_reminder',
+        func=send_donation_reminder,
+        trigger='interval',
+        days=1,
+    )
