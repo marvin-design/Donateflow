@@ -1,8 +1,9 @@
 from app import db
+from sqlalchemy_serializer import SerializerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class Admin(db.Model):
+class Admin(db.Model, SerializerMixin):
     __tablename__='admins'
 
 
@@ -13,6 +14,8 @@ class Admin(db.Model):
 
 
     charityapplications = db.relationship('CharityApplication', back_populates='admin')
+   
+    serialize_rules = ('-password_hash', '-charityapplications.admin',)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

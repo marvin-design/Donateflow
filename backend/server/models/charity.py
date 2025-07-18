@@ -16,6 +16,9 @@ class Charity(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     stories = db.relationship('Story', back_populates='charity', cascade='all, delete-orphan')
+    beneficiaries = db.relationship('Beneficiary', back_populates='charity', cascade='all, delete-orphan')
+    inventory_items = db.relationship('InventoryItem', back_populates='charity', cascade='all, delete-orphan')
+
 
 
     def set_password(self, password):
