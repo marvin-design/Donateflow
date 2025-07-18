@@ -7,9 +7,8 @@ from models.donor import Donor
 from models.charity import Charity
 from models.admin import Admin
 
-auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
+auth_bp = Blueprint('auth', __name__)
 
-# ---------------- DONOR REGISTER ----------------
 @auth_bp.route('/donor/register', methods=['POST'])
 def register_donor():
     data = request.get_json()
@@ -37,7 +36,7 @@ def register_donor():
         'name': new_donor.name
     }), 201
 
-# ---------------- DONOR LOGIN ----------------
+
 @auth_bp.route('/donor/login', methods=['POST'])
 def login_donor():
     data = request.get_json()
@@ -56,7 +55,7 @@ def login_donor():
         'name': donor.name
     }), 200
 
-# ---------------- CHARITY REGISTER ----------------
+
 @auth_bp.route('/charity/register', methods=['POST'])
 def register_charity():
     data = request.get_json()
@@ -80,7 +79,7 @@ def register_charity():
 
     return jsonify({'message': 'Charity account created. Awaiting approval.'}), 201
 
-# ---------------- CHARITY LOGIN ----------------
+
 @auth_bp.route('/charity/login', methods=['POST'])
 def login_charity():
     data = request.get_json()
@@ -102,7 +101,7 @@ def login_charity():
         'name': charity.name
     }), 200
 
-# ---------------- ADMIN LOGIN ----------------
+
 @auth_bp.route('/admin/login', methods=['POST'])
 def login_admin():
     data = request.get_json()

@@ -4,7 +4,7 @@ from models import Charity, Beneficiary, InventoryItem, db
 from sqlalchemy.exc import IntegrityError
 
 
-charity_bp = Blueprint('charity', __name__, url_prefix='/api/charity')
+charity_bp = Blueprint ("charity", __name__ )
 
 
 @charity_bp.route('/apply', methods=['POST'])
