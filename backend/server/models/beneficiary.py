@@ -1,8 +1,8 @@
-from sqlalchemy.orm import relationship
+from sqlalchemy_serializer import SerializerMixin
 from app import db
-from backend.server.models.charity import Charity
 
-class Beneficiary(db.Model):
+
+class Beneficiary(db.Model, SerializerMixin):
     __tablename__ = 'beneficiaries'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -10,8 +10,10 @@ class Beneficiary(db.Model):
     location = db.Column(db.String(200), nullable=False)
     charity_id = db.Column(db.Integer, db.ForeignKey('charities.id'), nullable=False)
 
-    charity = relationship("Charity", back_populates="beneficiaries")
-    inventory_items = relationship("InventoryItem", back_populates="beneficiary")
+    charity = db.relationship("Charity", back_populates="beneficiaries")
+    inventory_items = db.relationship("InventoryItem", back_populates="beneficiary")
+
+    serialize_rules = ('-charity.beneficiaries', '-inventory_items.beneficiary',)
 
     def __repr__(self):
         return f"<Beneficiary(id={self.id}, name={self.name}, location={self.location})>"
