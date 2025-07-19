@@ -1,5 +1,6 @@
+from extensions import db 
 from sqlalchemy_serializer import SerializerMixin
-from app import db
+
 
 
 class Beneficiary(db.Model, SerializerMixin):

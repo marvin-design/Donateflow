@@ -1,6 +1,12 @@
 from flask import Blueprint, request, jsonify
-from werkzeug.exceptions import BadRequest, NotFound
-from models import Charity, Beneficiary, InventoryItem, db
+from werkzeug.exceptions import BadRequest
+from models.charity import Charity
+from models.beneficiary import Beneficiary
+from models.inventory import InventoryItem
+from models.charityApplications import CharityApplication
+from extensions import db
+from flask_jwt_extended import jwt_required,get_jwt_identity, get_jwt
+from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
 
 
@@ -9,29 +15,46 @@ charity_bp = Blueprint ("charity", __name__ )
 
 @charity_bp.route('/apply', methods=['POST'])
 def apply_charity():
-    """Apply to register as a new charity."""
+    """Public endpoint for applying to register as a new charity."""
     data = request.get_json()
+
     try:
-        new_charity = Charity(
-            name=data['name'],
-            email=data['email'],
-            description=data['description'],  
+        email = data['email'].strip().lower()
+
+        # Check for duplicate email in both tables
+        if Charity.query.filter_by(email=email).first() or CharityApplication.query.filter_by(email=email).first():
+            raise BadRequest("Email already exists")
+
+        password = data.get('password', 'temporary')  # Optional: get from form or auto-generate
+        hashed_pw = generate_password_hash(password)
+
+        application = CharityApplication(
+            charity_name=data['charity_name'],
+            email=email,
+            description=data['description'],
+            password_hash=hashed_pw,
             status='pending'
         )
-        db.session.add(new_charity)
+        db.session.add(application)
         db.session.commit()
-        return jsonify(new_charity.to_dict()), 201
+
+        return jsonify(application.to_dict()), 201
+
     except KeyError as e:
         raise BadRequest(f"Missing required field: {str(e)}")
-    except IntegrityError:
+
+    except Exception as e:
         db.session.rollback()
-        raise BadRequest("Email already exists")
+        return jsonify({"error": str(e)}), 500
+
+
 
 @charity_bp.route('/<int:charity_id>/dashboard', methods=['GET'])
+@jwt_required()
 def get_dashboard(charity_id):
-    """View charity dashboard with statistics."""
+    """Secure view of charity dashboard (no identity check)."""
     charity = Charity.query.get_or_404(charity_id)
-    
+
     return jsonify({
         "charity": charity.to_dict(),
         "total_beneficiaries": len(charity.beneficiaries),
@@ -41,6 +64,7 @@ def get_dashboard(charity_id):
             "last_inventory_added": charity.inventory_items[-1].to_dict() if charity.inventory_items else None
         }
     })
+
 
 @charity_bp.route('/<int:charity_id>/beneficiaries', methods=['POST'])
 def add_beneficiary(charity_id):
@@ -96,14 +120,26 @@ def list_inventory_items(charity_id):
     return jsonify([item.to_dict() for item in items])
 
 
-@charity_bp.route('/<int:charity_id>/description', methods=['PATCH'])
-def update_description(charity_id):
-    """Update charity description."""
+@charity_bp.route('/charity/<int:charity_id>/profile', methods=['PATCH'])
+@jwt_required()
+def update_charity_profile(charity_id):
+    claims = get_jwt()
+    if claims.get("role") != "charity" or get_jwt_identity() != charity_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
     data = request.get_json()
-    if 'description' not in data:
-        raise BadRequest("Description field required")
-    
-    charity = Charity.query.get_or_404(charity_id)
-    charity.description = data['description']
+    charity = Charity.query.get(charity_id)
+    if not charity:
+        return jsonify({"error": "Charity not found"}), 404
+
+    charity.name = data.get('name', charity.name)
+    charity.email = data.get('email', charity.email)
+    charity.description = data.get('description', charity.description)
     db.session.commit()
-    return jsonify(charity.to_dict())
+
+    return jsonify({
+        "message": "Charity profile updated",
+        "name": charity.name,
+        "email": charity.email,
+        "description": charity.description
+    }), 200

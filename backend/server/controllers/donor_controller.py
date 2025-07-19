@@ -1,12 +1,42 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
-from app import db
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from extensions import db
 from models.donation import Donation
 from models.donor import Donor
 from models.charity import Charity
 
 
 donor_bp = Blueprint('donor_controller', __name__)
+
+@donor_bp.route('/dashboard/<int:donor_id>', methods=['GET'])
+@jwt_required()
+def donor_dashboard(donor_id):
+    donor = Donor.query.get(donor_id)
+    if not donor:
+        return jsonify({"error": "Donor not found"}), 404
+
+    donations = Donation.query.filter_by(donor_id=donor_id).all()
+    total_donated = sum([float(d.amount) for d in donations])
+
+    donations_data = [
+        {
+            "donation_id": d.id,
+            "charity_id": d.charity_id,
+            "amount": float(d.amount),
+            "date": d.donation_date.strftime('%Y-%m-%d'),
+            "method": d.payment_method
+        }
+        for d in donations
+    ]
+
+    return jsonify({
+        "donor_id": donor.id,
+        "name": donor.name,
+        "email": donor.email,
+        "total_donated": total_donated,
+        "donations": donations_data
+    }), 200
+
 
 
 @donor_bp.route('/charities', methods=['GET'])
@@ -20,7 +50,7 @@ def get_charities():
         return jsonify({'error': str(e)}), 500  
     
 
-@donor_bp.route('/donors/<int:donor_id>/donations', methods=['POST'])
+@donor_bp.route('/<int:donor_id>/donations', methods=['POST'])
 @jwt_required()
 def post_donor_donations(donor_id):
     try:
@@ -57,7 +87,7 @@ def post_donor_donations(donor_id):
         return jsonify({'error': str(e)}), 500
         
 
-@donor_bp.route('/donors/<int:donor_id>/donations', methods=['GET'])
+@donor_bp.route('/<int:donor_id>/donations', methods=['GET'])
 @jwt_required()
 def get_donor_donations(donor_id):
     try:
@@ -83,3 +113,42 @@ def get_donor_donations(donor_id):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500 
+    
+@donor_bp.route('/<int:donor_id>/reminder', methods=['PATCH'])
+@jwt_required()
+def update_reminder(donor_id):
+    data = request.get_json()
+    donation_id = data.get('donation_id')
+    reminder_status = data.get('reminder_sent', True)
+
+    donation = Donation.query.filter_by(id=donation_id, donor_id=donor_id).first()
+    if not donation:
+        return jsonify({"error": "Donation not found"}), 404
+
+    donation.reminder_sent = reminder_status
+    db.session.commit()
+    return jsonify({"message": "Reminder status updated"}), 200
+
+
+@donor_bp.route('/<int:donor_id>/profile', methods=['PATCH'])
+@jwt_required()
+def update_donor_profile(donor_id):
+    claims = get_jwt()
+    if claims.get("role") != "donor" or get_jwt_identity() != donor_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    data = request.get_json()
+    donor = Donor.query.get(donor_id)
+    if not donor:
+        return jsonify({"error": "Donor not found"}), 404
+
+    donor.name = data.get('name', donor.name)
+    donor.email = data.get('email', donor.email)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Donor profile updated",
+        "name": donor.name,
+        "email": donor.email
+    }), 200
+

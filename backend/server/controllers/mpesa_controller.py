@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import datetime, requests, base64
 from requests.auth import HTTPBasicAuth
-from app import db
+from extensions import db
 from models.donation import Donation
 from models.charity import Charity
 from models.donor import Donor
@@ -27,7 +27,7 @@ def initiate_mpesa_donation():
     phone = data.get('phone')
     amount = data.get('amount')
     charity_id = data.get('charity_id')
-    donor_id = data.get('donor_id')  # Optional
+    donor_id = data.get('donor_id')
     payment_method = "mpesa"
 
     if not Charity.query.get(charity_id):
