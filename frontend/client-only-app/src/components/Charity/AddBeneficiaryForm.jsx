@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-//import './styles/AddBeneficiaryForm.css';
 
 const AddBeneficiaryForm = ({ onAdd }) => {
   const [formData, setFormData] = useState({
@@ -7,16 +6,46 @@ const AddBeneficiaryForm = ({ onAdd }) => {
     location: ''
   });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onAdd(formData);
+    setFormData({ name: '', location: '' }); // Reset form
   };
 
   return (
-    <form className="add-beneficiary-form" onSubmit={handleSubmit}>
+    <div className="form-container">
       <h3>Add New Beneficiary</h3>
-      {/* Form fields */}
-    </form>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Location</label>
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button type="submit" className="btn-primary">Add Beneficiary</button>
+      </form>
+    </div>
   );
 };
 
