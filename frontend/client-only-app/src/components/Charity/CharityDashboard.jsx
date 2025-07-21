@@ -1,6 +1,6 @@
 import React from 'react';
 import BeneficiariesList from './BeneficiariesList';
-import InventoryList from './InventoryList';
+// import InventoryList from './InventoryList';
 //import './styles/CharityDashboard.css';
 
 const CharityDashboard = ({ charityData }) => {

@@ -1,57 +1,36 @@
-// src/App.jsx
-
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./pages/Navbar";
 import Home from "./pages/Home";
-
-// Auth components
-import Register from "./auth/RegisterForm";
-import Login from "./auth/LoginForm";
-import PrivateRoute from "./auth/PrivateRoute";
-
-// Dashboards
-import DonorDashboard from "./components/Donor/DonorDashboard";
+import Navbar from "./pages/Navbar";
+import About from "./pages/About";
+import LoginForm from "./auth/LoginForm";
+import SignUpForm from "./auth/RegisterForm"
+// import DonorDashboard from "./components/Donor/DonorDashboard";
 import CharityDashboard from "./components/Charity/CharityDashboard";
-import AdminDashboard from "./components/Admin/AdminDashboard";
 
-const App = () => {
+
+function App() {
   return (
     <>
       <Navbar />
-
       <Routes>
-        {/* Public routes */}
+        {/* This should be your first/default route */}
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<div><h2>About Page</h2></div>} />
-        <Route path="/charities" element={<div><h2>Charities Page</h2></div>} />
+        
+        {/* Add other routes below */}
+        <Route path="/about" element={<About />} />
+        <Route path="/register/donor" element={<SignUpForm role="donor"/>} />
+        <Route path="/register/charity" element={<SignUpForm role="charity"/>} />
+        <Route path="/login/donor" element={<LoginForm role="donor"/>} />
+        <Route path="/login/charity" element={<LoginForm role="charity"/>} />
+        {/* ... other routes ... */}
 
-        {/* Registration */}
-        <Route path="/register/donor" element={<Register role="donor" />} />
-        <Route path="/register/charity" element={<Register role="charity" />} />
-        <Route path="/register/admin" element={<Register role="admin" />} />
 
-        {/* Login */}
-        <Route path="/login/donor" element={<Login role="donor" />} />
-        <Route path="/login/charity" element={<Login role="charity" />} />
-        <Route path="/login/admin" element={<Login role="admin" />} />
-
-        {/* Protected Donor Dashboard */}
-        <Route element={<PrivateRoute allowedRoles={["donor"]} />}>
-          <Route path="/dashboard/donor/:id" element={<DonorDashboard />} />
-        </Route>
-
-        {/* Protected Charity Dashboard */}
-        <Route element={<PrivateRoute allowedRoles={["charity"]} />}>
-          <Route path="/dashboard/charity/:id" element={<CharityDashboard />} />
-        </Route>
-
-        {/* Protected Admin Dashboard */}
-        <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-          <Route path="/dashboard/admin" element={<AdminDashboard />} />
-        </Route>
+        {/* Private Routes */}
+        {/* <Route path="/donor" element={<DonorDashboard />} /> */}
+        <Route path="/charity" element={<CharityDashboard />} />
       </Routes>
     </>
   );
-};
+}
 
 export default App;
