@@ -36,6 +36,7 @@ def donor_dashboard(donor_id):
         "total_donated": total_donated,
         "donations": donations_data
     }), 200
+# unsure if this route is necessary though i do not think it is due to the added routes 
 
 
 
