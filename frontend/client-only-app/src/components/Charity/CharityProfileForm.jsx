@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CharityProfileForm = ({ charity, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -6,6 +7,7 @@ const CharityProfileForm = ({ charity, onUpdate }) => {
     email: charity.email,
     description: charity.description
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,7 +21,16 @@ const CharityProfileForm = ({ charity, onUpdate }) => {
 
   return (
     <div className="form-container">
-      <h2>Edit Profile</h2>
+      <div className="form-header">
+        <h2>Edit Profile</h2>
+        <button 
+          className="btn-secondary"
+          onClick={() => navigate('/charity/dashboard')}
+        >
+          Back to Dashboard
+        </button>
+      </div>
+      
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Charity Name</label>

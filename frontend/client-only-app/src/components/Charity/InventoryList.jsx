@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AddInventoryItemForm from './AddInventoryItemForm';
 
 const InventoryList = ({ inventory, beneficiaries }) => {
   const [showForm, setShowForm] = useState(false);
+  const navigate = useNavigate();
 
   const handleAddItem = (newItem) => {
-    // In a real app, this would call an API
     console.log('Adding inventory item:', newItem);
     setShowForm(false);
   };
@@ -14,12 +15,20 @@ const InventoryList = ({ inventory, beneficiaries }) => {
     <div className="list-container">
       <div className="list-header">
         <h2>Inventory</h2>
-        <button 
-          className="btn-primary"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Cancel' : '+ Add Item'}
-        </button>
+        <div>
+          <button 
+            className="btn-secondary"
+            onClick={() => navigate('/charity/dashboard')}
+          >
+            Back to Dashboard
+          </button>
+          <button 
+            className="btn-primary"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancel' : '+ Add Item'}
+          </button>
+        </div>
       </div>
 
       {showForm && (

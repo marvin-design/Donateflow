@@ -14,7 +14,7 @@ const AddBeneficiaryForm = ({ onAdd }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onAdd(formData);
-    setFormData({ name: '', location: '' }); // Reset form
+    setFormData({ name: '', location: '' });
   };
 
   return (
