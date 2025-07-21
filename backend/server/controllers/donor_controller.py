@@ -50,10 +50,11 @@ def get_charities():
         return jsonify({'error': str(e)}), 500  
     
 
-@donor_bp.route('/<int:donor_id>/donations', methods=['POST'])
+@donor_bp.route('/donations', methods=['POST'])
 @jwt_required()
-def post_donor_donations(donor_id):
+def post_donor_donations():
     try:
+        donor_id = get_jwt_identity()
         data = request.get_json()
 
         amount = data.get('amount')
@@ -151,4 +152,59 @@ def update_donor_profile(donor_id):
         "name": donor.name,
         "email": donor.email
     }), 200
+@donor_bp.route('/donations/recurring', methods=['GET'])
+@jwt_required()
+def get_recurring_donations():
+    current_user_id = get_jwt_identity()
+    donations = Donation.query.filter_by(donor_id=current_user_id, is_recurring=True).all()
+    return jsonify([d.to_dict() for d in donations]), 200
+@donor_bp.route('/isrecurring', methods=['PATCH'])
+@jwt_required()
+def update_recurring():
+    data = request.get_json()
+    donation_id = data.get('donation_id')
+    is_recurring = data.get('is_recurring')
+    frequency = data.get('frequency')
 
+    if donation_id is None:
+        return jsonify({"error": "Donation ID is required"}), 400
+
+    donation = Donation.query.get(donation_id)
+
+    if not donation:
+        return jsonify({"error": "Donation not found"}), 404
+
+    current_user_id = get_jwt_identity()
+
+    if donation.donor_id != current_user_id:
+        return jsonify({"error": "Unauthorized to update this donation"}), 403
+
+    if is_recurring is not None:
+        donation.is_recurring = is_recurring
+
+    if frequency:
+        donation.frequency = frequency
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": "Donation updated successfully",
+            "donation": {
+                "id": donation.id,
+                "is_recurring": donation.is_recurring,
+                "frequency": donation.frequency
+            }
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to update donation", "details": str(e)}), 500
+
+
+@donor_bp.route('/charity', methods=['GET'])
+@jwt_required()
+def get_charity_by_name():
+    name = request.args.get('name')
+    charity = Charity.query.filter_by(name=name).first()
+    if charity:
+        return jsonify({"id": charity.id, "name": charity.name})
+    return jsonify({"error": "Charity not found"}), 404
