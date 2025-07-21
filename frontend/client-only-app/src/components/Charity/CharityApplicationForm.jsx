@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './styles/CharityApplicationForm.css';
+//import './styles/CharityApplicationForm.css';
 
 const CharityApplicationForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
