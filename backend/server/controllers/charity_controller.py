@@ -89,7 +89,7 @@ def list_beneficiaries(charity_id):
     return jsonify([b.to_dict() for b in beneficiaries])
 
 
-@charity_bp.route('/<int:charity_id>/inventory', methods=['POST'])
+@charity_bp.route('/<int:charity_id>/inventory_items', methods=['POST'])
 def add_inventory_item(charity_id):
     """Add new inventory item."""
     data = request.get_json()
@@ -113,14 +113,14 @@ def add_inventory_item(charity_id):
     except KeyError as e:
         raise BadRequest(f"Missing required field: {str(e)}")
 
-@charity_bp.route('/<int:charity_id>/inventory', methods=['GET'])
+@charity_bp.route('/<int:charity_id>/inventory_items', methods=['GET'])
 def list_inventory_items(charity_id):
     """List all inventory items for a charity."""
     items = InventoryItem.query.filter_by(charity_id=charity_id).all()
     return jsonify([item.to_dict() for item in items])
 
 
-@charity_bp.route('/charity/<int:charity_id>/profile', methods=['PATCH'])
+@charity_bp.route('/<int:charity_id>/profile', methods=['PATCH'])
 @jwt_required()
 def update_charity_profile(charity_id):
     claims = get_jwt()

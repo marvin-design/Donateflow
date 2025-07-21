@@ -30,7 +30,7 @@ class Charity(db.Model, SerializerMixin):
     
 
     # Serialization rules
-    serialize_rules = ('-stories_charity', '-donations_charity', '-beneficiaries_charity', '-inventories_charity',)
+    serialize_rules = ('-beneficiaries.charity', '-stories.charity', '-inventory_items.charity', '-donations.charity')
 
     def __repr__(self):
         return f'<Charity {self.name}>'
