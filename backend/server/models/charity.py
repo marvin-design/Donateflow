@@ -1,4 +1,4 @@
-from app import db
+from extensions import db 
 from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,7 +10,7 @@ class Charity(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String, nullable = False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(300), nullable=False)
     description = db.Column(db.Text)
     approved_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -18,6 +18,7 @@ class Charity(db.Model, SerializerMixin):
     stories = db.relationship('Story', back_populates='charity', cascade='all, delete-orphan')
     beneficiaries = db.relationship('Beneficiary', back_populates='charity', cascade='all, delete-orphan')
     inventory_items = db.relationship('InventoryItem', back_populates='charity', cascade='all, delete-orphan')
+    donations = db.relationship("Donation", back_populates="charity", cascade='all, delete' )
 
 
 
@@ -29,7 +30,7 @@ class Charity(db.Model, SerializerMixin):
     
 
     # Serialization rules
-    serialize_rules = ('-stories_charity', '-donations_charity', '-beneficiaries_charity', '-inventories_charity',)
+    serialize_rules = ('-beneficiaries.charity', '-stories.charity', '-inventory_items.charity', '-donations.charity')
 
     def __repr__(self):
         return f'<Charity {self.name}>'

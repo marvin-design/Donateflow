@@ -1,22 +1,11 @@
 from flask import Flask, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-from flask_bcrypt import Bcrypt
-from flask_mail import Mail
-from flask_apscheduler import APScheduler
+from extensions import db, migrate, jwt, bcrypt, mail, scheduler
 from config import Config
-from models.task import scheduler_reminder_job
+from tasks.task import scheduler_reminder_job
 import os
 
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
-jwt = JWTManager()
-bcrypt = Bcrypt()
-mail = Mail()
-scheduler = APScheduler()
+
 
 def create_app(config_class=Config):
     """Application factory pattern for creating the Flask app"""
@@ -56,7 +45,7 @@ def create_app(config_class=Config):
     # Import models (needed for migrations)
     from models import (
         admin, beneficiary, charity, charityApplications, 
-        charityStory, donation, donor, inventory, task
+        charityStory, donation, donor, inventory
     )
 
     # Register blueprints
@@ -85,7 +74,7 @@ def register_blueprints(app):
     
     # API routes
     app.register_blueprint(auth_controller.auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(mpesa_controller.mpesa_bp, url_prefix = 'api/mpesa')
+    app.register_blueprint(mpesa_controller.mpesa_bp, url_prefix = '/api/mpesa')
     app.register_blueprint(donor_controller.donor_bp, url_prefix='/api/donors')
     app.register_blueprint(charity_controller.charity_bp, url_prefix='/api/charity')
     app.register_blueprint(admin_controller.admin_bp, url_prefix='/api/admin')

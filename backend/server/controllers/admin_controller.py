@@ -1,12 +1,38 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required,get_jwt_identity
-from app import db,mail
+from extensions import db,mail
 from models.charityApplications import CharityApplication
 from flask_mail import Message
 from models.charity import Charity
 from datetime import datetime
+from models.donor import Donor
+from models.donation import Donation
 
-admin_bp = Blueprint('admin_controller', __name__)
+admin_bp = Blueprint('admin', __name__)
+
+@admin_bp.route('/dashboard', methods=['GET'])
+@jwt_required()
+def admin_dashboard():
+    total_donors = Donor.query.count()
+    total_charities = Charity.query.count()
+    total_donations = Donation.query.count()
+    total_amount = db.session.query(db.func.sum(Donation.amount)).scalar() or 0
+
+    top_charities = db.session.query(
+        Charity.name,
+        db.func.sum(Donation.amount).label('total')
+    ).join(Donation).group_by(Charity.id).order_by(db.desc('total')).limit(5).all()
+
+    top_charity_data = [{"name": name, "total_donated": float(total)} for name, total in top_charities]
+
+    return jsonify({
+        "total_donors": total_donors,
+        "total_charities": total_charities,
+        "total_donations": total_donations,
+        "total_amount": float(total_amount),
+        "top_charities": top_charity_data
+    }), 200
+
 
 @admin_bp.route('/charity_applications', methods=['GET'])
 @jwt_required()
