@@ -18,19 +18,22 @@ import CharityDashboard from './components/Charity/CharityDashboard';
 import CharityApplicationForm from './components/Charity/CharityApplicationForm';
 import BeneficiariesList from './components/Charity/BeneficiariesList';
 
+import AdminDashboard from './components/Admin/AdminDashboard';
+import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
+import CharityApplicationsList from './components/Admin/CharityApplicationsList';
+import CharityManagement from './components/Admin/CharityManagement';
 
 function App() {
-  
   return (
     <Router>
-      <Navbar/>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Home/>}/> 
-        <Route path="/about" element={<About/>}/>
-        <Route path="/register/donor" element={<SignUpForm role='donor'/>}/> 
-        <Route path="/register/charity" element={<SignUpForm role='charity'/>}/>
-        <Route path="/login/donor" element={<LoginForm role='donor'/>}/>
-        <Route path="/login/charity" element={<LoginForm role='charity'/>}/> 
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/register/donor" element={<SignUpForm role="donor" />} />
+        <Route path="/register/charity" element={<SignUpForm role="charity" />} />
+        <Route path="/login/donor" element={<LoginForm role="donor" />} />
+        <Route path="/login/charity" element={<LoginForm role="charity" />} />
         <Route path="/donor/charities" element={<CharityList />} />
         <Route path="/charities/:id" element={<CharityDescription />} />
         <Route path="/donate/:id" element={<DonationForm />} />
@@ -43,6 +46,11 @@ function App() {
         <Route path="/charity/beneficiaries" element={<BeneficiariesList />} />
         <Route path="/charity/inventory" element={<InventoryList />} />
         <Route path="/charity/profile" element={<CharityProfileForm />} />
+
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/review/:id" element={<ApplicationReviewModal />} />
+        <Route path="/admin/applications" element={<CharityApplicationsList />} />
+        <Route path="/admin/charities" element={<CharityManagement />} />
       </Routes>
     </Router>
   );
