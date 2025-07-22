@@ -9,19 +9,19 @@ function CharityDescription() {
 
   useEffect(() => {
     
-    fetch(`/charities/${id}`)
+    fetch(`/api/donors/charities/${id}`)
       .then(res => res.json())
       .then(data => setCharity(data))
       .catch(err => console.error('Error fetching charity:', err));
 
    
-    fetch(`/charities/${id}/beneficiaries`)
+    fetch(`/api/donors/charities/${id}/beneficiaries`)
       .then(res => res.json())
       .then(data => setBeneficiaries(data))
       .catch(err => console.error('Error fetching beneficiaries:', err));
 
   
-    fetch(`/charities/${id}/inventory_items`)
+    fetch(`/api/donors/charities/${id}/inventory_items`)
       .then(res => res.json())
       .then(data => setInventoryItems(data))
       .catch(err => console.error('Error fetching inventory items:', err));

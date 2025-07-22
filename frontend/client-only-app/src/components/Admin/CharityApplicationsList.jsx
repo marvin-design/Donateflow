@@ -8,7 +8,7 @@ function CharityApplicationsList() {
   const token = localStorage.getItem('adminToken');
 
   useEffect(() => {
-    axios.get('/api/charity_applications', {
+    axios.get('/api/admin/charity_applications', {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => setApplications(res.data.applications))
@@ -46,7 +46,7 @@ function CharityApplicationsList() {
           onClose={() => setSelectedApp(null)}
           onSuccess={() => {
             setSelectedApp(null);
-            axios.get('/api/charity_applications', {
+            axios.get('/api/admin/charity_applications', {
               headers: { Authorization: `Bearer ${token}` }
             }).then(res => setApplications(res.data.applications));
           }}

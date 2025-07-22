@@ -1,63 +1,88 @@
 import React, { useEffect, useState } from 'react';
+import axios from '../../utils/axios';
 
-function DonationHistory({ donorId }) {
+const DonationHistory = ({ donorId }) => {
   const [donations, setDonations] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        const token = localStorage.getItem('token'); 
-
-        const response = await fetch(`/donor/${donorId}/donations`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        const token = localStorage.getItem('access_token');
+        const response = await axios.get(`/api/donors/${donorId}/donations`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          setDonations(data.donations);
-        } else {
-          setError(data.error || 'Failed to fetch donation history');
-        }
+        
+        // Handle both response formats
+        const donationsData = response.data.donations || response.data;
+        setDonations(donationsData || []);
       } catch (err) {
-        console.error('Error fetching donation history:', err);
-        setError('Server error while fetching donation history');
+        setError(err.response?.data?.error || 'Failed to load donation history');
+        console.error('Error fetching donations:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchDonations();
   }, [donorId]);
 
+  const displayedDonations = showAll ? [...donations].reverse() : donations.slice(0, 3).reverse();
+
+  if (loading) return <div className="loading-spinner">Loading donation history...</div>;
+  if (error) return <div className="error-message">{error}</div>;
+
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Donation History</h2>
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="donation-history-container">
+      <h2 className="donation-history-title">Your Donation History</h2>
+      
       {donations.length === 0 ? (
-        <p>No donations found.</p>
+        <p className="no-donations-message">No donations found.</p>
       ) : (
-        <ul className="space-y-4">
-          {donations.map((donation) => (
-            <li
-              key={donation.id}
-              className="border p-4 rounded shadow-md bg-white"
+        <>
+          <ul className="donation-list">
+            {displayedDonations.map(donation => (
+              <li key={donation.id} className="donation-card">
+                <div className="donation-header">
+                  <h3 className="charity-name">{donation.charity.name}</h3>
+                  <p className="donation-date">
+                    {new Date(donation.donation_date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </p>
+                </div>
+                
+                <div className="donation-details">
+                  <p className="donation-amount">KES {donation.amount.toLocaleString()}</p>
+                  <p className="payment-method">Paid via {donation.payment_method}</p>
+                  
+                  {donation.is_recurring && (
+                    <div className="recurring-info">
+                      <span className="recurring-badge">Recurring</span>
+                      <span className="frequency">{donation.frequency}</span>
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          {donations.length > 3 && (
+            <button 
+              className="toggle-history-button"
+              onClick={() => setShowAll(!showAll)}
             >
-              <p><strong>Amount:</strong> KES {donation.amount}</p>
-              <p><strong>Recurring:</strong> {donation.is_recurring ? 'Yes' : 'No'}</p>
-              {donation.is_recurring && (
-                <p><strong>Frequency:</strong> {donation.frequency}</p>
-              )}
-              <p><strong>Payment Method:</strong> {donation.payment_method}</p>
-              <p><strong>Date:</strong> {new Date(donation.donation_date).toLocaleString()}</p>
-              <p><strong>Charity:</strong> {donation.charity.name}</p>
-            </li>
-          ))}
-        </ul>
+              {showAll ? 'Show Less' : 'View All Donations'}
+            </button>
+          )}
+        </>
       )}
     </div>
   );
-}
+};
 
 export default DonationHistory;
