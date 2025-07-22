@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import StoryFeed from "./StoriesFeed";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
@@ -50,6 +51,9 @@ const Home = () => {
             </div>
           )}
         </div>
+      </div>
+      <div>
+        <StoryFeed />
       </div>
       <div>
         <Footer/>
