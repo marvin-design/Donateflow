@@ -6,7 +6,7 @@ import ErrorBoundary from './components/Donor/ErrorBoundary';
 
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Navbar from "./pages/Navbar";
+
 import LoginForm from "./auth/LoginForm";
 import RegisterForm from './auth/RegisterForm';
 import CharityDescription from './components/Donor/CharityDescription';
@@ -23,7 +23,8 @@ import CharityProfileForm from './components/Charity/CharityProfileForm';
 import CharityDashboard from './components/Charity/CharityDashboard';
 import CharityApplicationForm from './components/Charity/CharityApplicationForm';
 import BeneficiariesList from './components/Charity/BeneficiariesList';
-import ThankYou from './pages/Thankyou';//import RecurringDonations from './components/Donor/RecurringDonations';
+import ThankYou from './pages/Thankyou';
+//import RecurringDonations from './components/Donor/RecurringDonations';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
 import CharityApplicationsList from './components/Admin/CharityApplicationsList';
@@ -33,7 +34,7 @@ function App() {
   return (
     <ErrorBoundary>
       <Router>
-        <Navbar />
+        
         <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -42,6 +43,7 @@ function App() {
           <Route path="/register/charity" element={<RegisterForm role='charity' />} />
           <Route path="/login/donor" element={<LoginForm role='donor' />} />
           <Route path="/login/charity" element={<LoginForm role='charity' />} />
+          <Route path='/login/admin' element={<LoginForm role="admin"/>}/>
           <Route path="/donor/charities" element={<CharityList />} />
           <Route path="/charities/:id" element={<CharityDescription />} />
           <Route path="/donate/:id" element={<DonationForm />} />
