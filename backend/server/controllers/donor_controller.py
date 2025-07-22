@@ -62,8 +62,10 @@ def post_donor_donations():
         charity_id = data.get('charity_id')
         is_recurring = data.get('is_recurring', False)
         frequency = data.get('frequency', None)
+        phone_number= data.get('phone_number')
         payment_method = data.get('payment_method')
         donation_date = data.get('donation_date')
+
 
         if not amount or not charity_id or not payment_method:
             return jsonify({'error': 'Missing required fields'}), 400
@@ -77,6 +79,7 @@ def post_donor_donations():
             donor_id=donor_id,
             charity_id=charity_id,
             amount=amount,
+            phone_number=phone_number,
             is_recurring=is_recurring,
             frequency=frequency,
             payment_method=payment_method,
@@ -103,6 +106,7 @@ def get_donor_donations(donor_id):
                 'id': donation.id,
                 'amount': str(donation.amount),
                 'is_recurring': donation.is_recurring,
+                'phone_number': donation.phone_number,
                 'frequency': donation.frequency,
                 'payment_method': donation.payment_method,
                 'donation_date': donation.donation_date.isoformat(),
@@ -153,12 +157,16 @@ def update_donor_profile(donor_id):
         "name": donor.name,
         "email": donor.email
     }), 200
+
+
 @donor_bp.route('/donations/recurring', methods=['GET'])
 @jwt_required()
 def get_recurring_donations():
     current_user_id = get_jwt_identity()
     donations = Donation.query.filter_by(donor_id=current_user_id, is_recurring=True).all()
     return jsonify([d.to_dict() for d in donations]), 200
+
+
 @donor_bp.route('/isrecurring', methods=['PATCH'])
 @jwt_required()
 def update_recurring():

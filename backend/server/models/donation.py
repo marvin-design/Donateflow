@@ -14,6 +14,8 @@ class Donation(db.Model, SerializerMixin):
     is_recurring = db.Column(db.Boolean, default=False)
     frequency = db.Column(db.String(20))
     payment_method = db.Column(db.String(50))
+    phone_number = db.Column(db.String(20))
+    status = db.Column(db.String(20),default='pending')
     transaction_reference = db.Column(db.String(100))
     donation_date = db.Column(db.DateTime, default=datetime.utcnow)
     reminder_sent = db.Column(db.Boolean, default=False)
