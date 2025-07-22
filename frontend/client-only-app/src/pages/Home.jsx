@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import StoryFeed from "./StoriesFeed";
 import Footer from "./Footer";
 
+
 const Home = () => {
   const [showRegisterDropdown, setShowRegisterDropdown] = useState(false);
   const [showLoginDropdown, setShowLoginDropdown] = useState(false);
 
   return (
+    <>
+    
     <div style={styles.container}>
       <h1 style={styles.header}>Welcome to DonateFlow</h1>
       <p style={styles.paragraph}>If you do not have an account, please register below.</p>
@@ -56,6 +59,7 @@ const Home = () => {
         <Footer/>
       </div>
     </div>
+    </>
   );
 };
 

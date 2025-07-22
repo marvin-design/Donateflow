@@ -15,7 +15,7 @@ const DonationHistory = ({ donorId }) => {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        // Handle both response formats
+        
         const donationsData = response.data.donations || response.data;
         setDonations(donationsData || []);
       } catch (err) {
