@@ -31,4 +31,4 @@ class Config:
     MPESA_CALLBACK_URL = os.getenv('MPESA_CALLBACK_URL')
 
     #images config
-    IMAGE_CLOUDINARY_KEY = os.getenv('CLOUDINARY_URL')
+    CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')

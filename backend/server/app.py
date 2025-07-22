@@ -79,7 +79,7 @@ def register_blueprints(app):
     app.register_blueprint(donor_controller.donor_bp, url_prefix='/api/donors')
     app.register_blueprint(charity_controller.charity_bp, url_prefix='/api/charity')
     app.register_blueprint(admin_controller.admin_bp, url_prefix='/api/admin')
-    app.register_blueprint(images_controller)
+    app.register_blueprint(images_controller.images_bp, url_prefix='/api/images')
 
 if __name__ == '__main__':
     app = create_app()
