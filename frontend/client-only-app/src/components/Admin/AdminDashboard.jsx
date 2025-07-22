@@ -8,7 +8,7 @@ function AdminDashboard() {
   const token = localStorage.getItem('adminToken');
 
   useEffect(() => {
-    axios.get('/api/dashboard', {
+    axios.get('/api/admin/dashboard', {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => setStats(res.data))

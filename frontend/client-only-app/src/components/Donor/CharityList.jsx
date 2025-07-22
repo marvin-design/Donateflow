@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../api/axios';
+import axios from '../../utils/axios';
 
 const CharityList = () => {
   const [charities, setCharities] = useState([]);
@@ -12,7 +12,7 @@ const CharityList = () => {
     const fetchCharities = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await axios.get('/charities', {
+        const response = await axios.get('/api/donors/charities', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setCharities(response.data.charities || response.data);
@@ -47,13 +47,13 @@ const CharityList = () => {
             <div className="charity-actions">
               <button
                 className="details-button"
-                onClick={() => navigate(`/charities/${charity.id}`)}
+                onClick={() => navigate(`/api/donors/charities/${charity.id}`)}
               >
                 Learn More
               </button>
               <button
                 className="donate-button"
-                onClick={() => navigate(`/donate/${charity.id}`)}
+                onClick={() => navigate(`/api/donors/donate/${charity.id}`)}
               >
                 Donate
               </button>

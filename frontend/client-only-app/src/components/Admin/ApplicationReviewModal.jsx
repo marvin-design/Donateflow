@@ -6,7 +6,7 @@ function ApplicationReviewModal({ application, onClose, onSuccess }) {
   const token = localStorage.getItem('adminToken');
 
   const handleAction = (action) => {
-    axios.post(`/api/charity_applications/${application.id}/review`, { action }, {
+    axios.post(`/api/admin/charity_applications/${application.id}/review`, { action }, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => {

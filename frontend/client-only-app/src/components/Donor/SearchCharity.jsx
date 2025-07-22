@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from '../../api/axios';
+import axios from '../../utils/axios';
 
 const SearchCharity = () => {
   const [name, setName] = useState('');
@@ -7,7 +7,7 @@ const SearchCharity = () => {
 
   const handleSearch = async () => {
     const token = localStorage.getItem('access_token');
-    const res = await axios.get(`/charity?name=${encodeURIComponent(name)}`, {
+    const res = await axios.get(`/api/donors/charity?name=${encodeURIComponent(name)}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setResult(res.data);

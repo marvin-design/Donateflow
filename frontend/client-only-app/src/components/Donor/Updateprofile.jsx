@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../../api/axios';
+import axios from '../../utils/axios';
 
 const UpdateDonorProfile = ({ donorId }) => {
   const [profileForm, setProfileForm] = useState({
@@ -25,7 +25,7 @@ const UpdateDonorProfile = ({ donorId }) => {
         setLoading(prev => ({ ...prev, donations: true }));
         
         // Fetch profile data
-        const profileResponse = await axios.get(`/donor/${donorId}/profile`, {
+        const profileResponse = await axios.get(`/api/donors/${donorId}/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfileForm({
@@ -34,7 +34,7 @@ const UpdateDonorProfile = ({ donorId }) => {
         });
 
         // Fetch recurring donations
-        const donationsResponse = await axios.get('/donations/recurring', {
+        const donationsResponse = await axios.get('/api/donors/donations/recurring', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -77,7 +77,7 @@ const UpdateDonorProfile = ({ donorId }) => {
 
     try {
       const token = localStorage.getItem('access_token');
-      await axios.patch(`/donor/${donorId}/profile`, profileForm, {
+      await axios.patch(`/api/donors/${donorId}/profile`, profileForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSuccess('Profile updated successfully!');
@@ -102,7 +102,7 @@ const UpdateDonorProfile = ({ donorId }) => {
 
       await Promise.all(
         updates.map(update => 
-          axios.patch('/donations/recurring', update, {
+          axios.patch('/api/donors/donations/recurring', update, {
             headers: { Authorization: `Bearer ${token}` }
           })
       ));

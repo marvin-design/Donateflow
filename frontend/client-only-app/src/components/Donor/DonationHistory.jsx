@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../../api/axios';
+import axios from '../../utils/axios';
 
 const DonationHistory = ({ donorId }) => {
   const [donations, setDonations] = useState([]);
@@ -11,7 +11,7 @@ const DonationHistory = ({ donorId }) => {
     const fetchDonations = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await axios.get(`/donor/${donorId}/donations`, {
+        const response = await axios.get(`/api/donors/${donorId}/donations`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         

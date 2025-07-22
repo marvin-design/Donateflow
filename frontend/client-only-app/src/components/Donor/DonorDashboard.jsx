@@ -11,7 +11,7 @@ const DonorDashboard = ({ donorId }) => {
     const fetchDonations = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`/donor/${donorId}/donations`, {
+        const response = await axios.get(`/api/donors/${donorId}/donations`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

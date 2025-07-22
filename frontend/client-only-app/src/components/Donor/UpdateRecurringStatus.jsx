@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from '../../api/axios';
+import axios from '../../utils/axios';
 
 const UpdateRecurringStatus = () => {
   const [form, setForm] = useState({
@@ -16,7 +16,7 @@ const UpdateRecurringStatus = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     const token = localStorage.getItem('access_token');
-    await axios.patch('/isrecurring', form, {
+    await axios.patch('/api/donors/isrecurring', form, {
       headers: { Authorization: `Bearer ${token}` }
     });
     alert('Recurring status updated');

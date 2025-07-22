@@ -57,7 +57,7 @@ const DonationForm = ({ charityId }) => {
 
     try {
       // Step 1: Submit donation record
-      const { data } = await axios.post('/donations', form);
+      const { data } = await axios.post('/api/donors/donations', form);
       setDonationId(data.donation_id);
 
       if (form.payment_method === 'mpesa') {
