@@ -21,7 +21,7 @@ const CharityDashboard = () => {
       }
 
       try {
-        const res = await fetch(`/api/charity/${charity.id}/dashboard`, {
+        const res = await fetch(`/api/charity/dashboard/${charity.id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

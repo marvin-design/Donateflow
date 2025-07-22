@@ -17,7 +17,7 @@ const Login = ({ role }) => {
     setError("");
 
     try {
-      const res = await axios.post(`/login/${role}`, form);
+      const res = await axios.post(`/api/auth/login/${role}`, form);
 
       const { access_token, user_id, role: userRole, name } = res.data;
 
@@ -28,11 +28,11 @@ const Login = ({ role }) => {
 
       // Redirect to appropriate dashboard
       if (userRole === "donor") {
-        navigate(`/dashboard/donor/${user_id}`);
+        navigate(`/donors/dashboard/${user_id}`);
       } else if (userRole === "charity") {
-        navigate(`/dashboard/charity/${user_id}`);
+        navigate(`/charity/dashboard/${user_id}`);
       } else if (userRole === "admin") {
-        navigate(`/dashboard/admin`);
+        navigate(`/admin/dashboard`);
       } else {
         setError("Unrecognized user role.");
       }

@@ -29,7 +29,7 @@ const StoryFeed = () => {
             )}
             <h3>{story.title}</h3>
             <p>{story.content?.slice(0, 100)}...</p>
-            <Link to={`/stories/${story.id}`} className="read-more">Read More</Link>
+            <Link to={`/api/charity/stories/${story.id}`} className="read-more">Read More</Link>
           </div>
         ))}
       </div>

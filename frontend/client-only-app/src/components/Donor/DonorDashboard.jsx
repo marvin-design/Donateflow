@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios'
+import { useParams } from 'react-router-dom';
 
-const DonorDashboard = ({ donorId }) => {
+
+const DonorDashboard = () => {
   const [donations, setDonations] = useState([]);
+  const { donorId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAll, setShowAll] = useState(false);
@@ -11,7 +14,7 @@ const DonorDashboard = ({ donorId }) => {
     const fetchDonations = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`/api/donors/${donorId}/donations`, {
+        const response = await axios.get(`/api/donors/dashboard/${donorId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

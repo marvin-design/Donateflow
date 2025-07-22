@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "../../utils/axios";
 
 function ApplicationReviewModal({ application, onClose, onSuccess }) {
   const [message, setMessage] = useState('');

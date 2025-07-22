@@ -1,112 +1,141 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import StoryFeed from "./StoriesFeed";
 import Footer from "./Footer";
 
 
 const Home = () => {
-  const [showRegisterDropdown, setShowRegisterDropdown] = useState(false);
-  const [showLoginDropdown, setShowLoginDropdown] = useState(false);
-
   return (
     <>
     
     <div style={styles.container}>
       <h1 style={styles.header}>Welcome to DonateFlow</h1>
-      <p style={styles.paragraph}>If you do not have an account, please register below.</p>
+      <p style={styles.paragraph}>
+        Join our mission to connect generous donors with trusted charities.
+      </p>
 
-      <div style={styles.buttonContainer}>
-        <div style={styles.dropdownContainer}>
-          <button
-            style={styles.button}
-            onClick={() => {
-              setShowRegisterDropdown(!showRegisterDropdown);
-              setShowLoginDropdown(false); 
-            }}
-          >
-            Register
-          </button>
-          {showRegisterDropdown && (
-            <div style={styles.dropdown}>
-              <Link to="/register/donor" style={styles.link}>Donor</Link>
-              <Link to="/register/charity" style={styles.link}>Charity</Link>
-            </div>
-          )}
+      <div style={styles.cardWrapper}>
+        {/* Donor Card */}
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>Are You a Donor?</h2>
+          <p style={styles.cardText}>
+            Make a difference by supporting a cause you care about.
+          </p>
+          <Link to="/register/donor" style={styles.primaryBtn}>
+            Register as Donor
+          </Link>
+          <Link to="/login/donor" style={styles.secondaryLink}>
+            Already a donor? Sign in
+          </Link>
         </div>
 
-        <div style={styles.dropdownContainer}>
-          <button
-            style={styles.button}
-            onClick={() => {
-              setShowLoginDropdown(!showLoginDropdown);
-              setShowRegisterDropdown(false); 
-            }}
-          >
-            Sign In
-          </button>
-          {showLoginDropdown && (
-            <div style={styles.dropdown}>
-              <Link to="/login/donor" style={styles.link}>Donor</Link>
-              <Link to="/login/charity" style={styles.link}>Charity</Link>
-            </div>
-          )}
+        {/* Charity Card */}
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>Are You a Charity?</h2>
+          <p style={styles.cardText}>
+            Apply to receive support and expand your impact.
+          </p>
+          <Link to="/register/charity" style={styles.primaryBtnGreen}>
+            Register as Charity
+          </Link>
+          <Link to="/login/charity" style={styles.secondaryLinkGreen}>
+            Already registered? Sign in
+          </Link>
+          <Link to="/apply" style={styles.applyLink}>
+            Apply to be a Charity
+          </Link>
         </div>
       </div>
-      <div>
+
+      <div style={{ width: "100%", maxWidth: "800px", marginTop: "40px" }}>
         <StoryFeed />
       </div>
-      <div>
-        <Footer/>
-      </div>
+
+      <Footer />
     </div>
     </>
   );
 };
 
-// Faisal you can remove Basic inline styling when styling i just used it to get a visual 
 const styles = {
   container: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     marginTop: "100px",
+    padding: "0 20px",
   },
   header: {
     fontSize: "2.5rem",
     marginBottom: "10px",
+    fontWeight: "bold",
   },
   paragraph: {
-    marginBottom: "30px",
+    marginBottom: "40px",
     fontSize: "1.2rem",
+    textAlign: "center",
+    maxWidth: "600px",
   },
-  buttonContainer: {
+  cardWrapper: {
     display: "flex",
-    gap: "20px",
+    gap: "40px",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
-  dropdownContainer: {
-    position: "relative",
-  },
-  button: {
-    padding: "10px 20px",
-    fontSize: "1rem",
-    cursor: "pointer",
-  },
-  dropdown: {
-    position: "absolute",
-    top: "45px",
-    left: 0,
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "#fff",
+  card: {
     border: "1px solid #ccc",
-    padding: "10px",
-    borderRadius: "5px",
-    zIndex: 1,
+    borderRadius: "8px",
+    padding: "30px 20px",
+    width: "280px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    textAlign: "center",
   },
-  link: {
-    marginBottom: "5px",
+  cardTitle: {
+    fontSize: "1.5rem",
+    marginBottom: "10px",
+  },
+  cardText: {
+    fontSize: "1rem",
+    marginBottom: "20px",
+    color: "#555",
+  },
+  primaryBtn: {
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    padding: "10px 16px",
+    borderRadius: "5px",
     textDecoration: "none",
-    color: "#333",
+    display: "inline-block",
+    marginBottom: "10px",
+  },
+  primaryBtnGreen: {
+    backgroundColor: "#28a745",
+    color: "#fff",
+    padding: "10px 16px",
+    borderRadius: "5px",
+    textDecoration: "none",
+    display: "inline-block",
+    marginBottom: "10px",
+  },
+  secondaryLink: {
+    display: "block",
+    color: "#007BFF",
+    textDecoration: "underline",
+    fontSize: "0.9rem",
+    marginBottom: "10px",
+  },
+  secondaryLinkGreen: {
+    display: "block",
+    color: "#28a745",
+    textDecoration: "underline",
+    fontSize: "0.9rem",
+    marginBottom: "10px",
+  },
+  applyLink: {
+    display: "inline-block",
+    color: "#555",
+    textDecoration: "underline",
+    fontSize: "0.95rem",
+    marginTop: "5px",
   },
 };
 

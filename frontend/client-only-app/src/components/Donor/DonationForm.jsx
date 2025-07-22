@@ -47,7 +47,7 @@ function DonationForm() {
     };
 
     try {
-      await axios.post("/api/donations", donationData);
+      await axios.post("/api/donors/donations", donationData);
       toast.success("Donation successful! Redirecting...", {
         autoClose: 2000,
         onClose: () => navigate("/thank-you"),
