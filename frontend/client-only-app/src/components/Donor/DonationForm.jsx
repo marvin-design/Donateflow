@@ -1,265 +1,144 @@
+
 import React, { useState } from 'react';
-import axios from '../../utils/axios';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorBoundary from '../ErrorBoundary';
 
-const DonationForm = ({ charityId }) => {
-  const [form, setForm] = useState({
-    amount: '',
-    charity_id: charityId || '',
-    payment_method: 'mpesa',
-    is_recurring: false,
-    frequency: '',
-    is_anonymous: false,
-    phone: '',
-    email: '',
-    name: ''
-  });
-
-  const [selectedAmount, setSelectedAmount] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [donationId, setDonationId] = useState(null);
-  const [status, setStatus] = useState('');
+function DonationForm() {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const donationOptions = [500, 1000, 5000];
+  const [selectedAmount, setSelectedAmount] = useState(null);
+  const [customAmount, setCustomAmount] = useState('');
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [frequency, setFrequency] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const handleChange = e => {
-    const { name, value, type, checked } = e.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+  const handleAmountChange = (amount) => {
+    setSelectedAmount(amount);
+    setCustomAmount('');
   };
 
-  const handlePredefinedAmount = (amount) => {
-    setSelectedAmount(amount === selectedAmount ? null : amount);
-    setForm(prev => ({ ...prev, amount: amount === selectedAmount ? '' : amount.toString() }));
+  const handleCustomAmountChange = (e) => {
+    setSelectedAmount(null);
+    setCustomAmount(e.target.value);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-    setStatus('');
 
-    if (!form.amount || Number(form.amount) < 10) {
-      setError('Please enter a valid amount (min KSh 10)');
-      setLoading(false);
+    const amount = selectedAmount
+      ? Number(selectedAmount)
+      : parseFloat(customAmount);
+
+    if (!amount || isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid donation amount.");
       return;
     }
 
-    if (form.payment_method === 'mpesa' && !/^07\d{8}$/.test(form.phone)) {
-      setError('Enter a valid Safaricom number (07XXXXXXXX)');
-      setLoading(false);
-      return;
-    }
+    const donationData = {
+      amount,
+      is_recurring: isRecurring,
+      frequency: isRecurring ? frequency : null,
+      is_anonymous: isAnonymous,
+      charity_id: id,
+    };
 
     try {
-      // Step 1: Submit donation record
-      const { data } = await axios.post('/api/donors/donations', form);
-      setDonationId(data.donation_id);
-
-      if (form.payment_method === 'mpesa') {
-        // Step 2: Trigger M-Pesa STK Push
-        await axios.post('/api/mpesa/donate', {
-          phone: form.phone.replace(/^0/, '254'), // 07XXXXXXXX -> 2547XXXXXXXX
-          amount: form.amount,
-          charity_id: form.charity_id,
-          donor_id: data.donor_id || null
-        });
-
-        setStatus('pending');
-
-        // Step 3: Poll for payment status
-        const interval = setInterval(async () => {
-          try {
-            const res = await axios.get(`/api/mpesa/donation/${data.donation_id}/status`);
-            if (res.data.status !== 'pending') {
-              setStatus(res.data.status);
-              clearInterval(interval);
-            }
-          } catch (err) {
-            console.error(err);
-            setError('Error checking M-Pesa status');
-            clearInterval(interval);
-          }
-        }, 5000);
-      } else {
-        alert('Donation submitted successfully!');
-        navigate('/donation-success');
-      }
+      await axios.post("/api/donations", donationData);
+      toast.success("Donation successful! Redirecting...", {
+        autoClose: 2000,
+        onClose: () => navigate("/thank-you"),
+      });
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || 'Donation failed');
-    } finally {
-      setLoading(false);
+      toast.error("Failed to process donation.");
     }
   };
 
   return (
-    <div className="donation-form-container">
-      <h1>Make a Donation</h1>
-      <p>Every contribution makes a difference.</p>
-
-      {error && <div className="error-message">{error}</div>}
-
-      {status === 'completed' && (
-        <div className="alert alert-success">
-          <p>Payment successful! Thank you for your donation.</p>
-          <p>Transaction ID: {donationId}</p>
-        </div>
-      )}
-
-      {status === 'failed' && (
-        <div className="alert alert-danger">
-          <p>Payment failed. Please try again.</p>
-        </div>
-      )}
-
-      {status === 'pending' && (
-        <div className="alert alert-info">
-          <p>Waiting for M-Pesa confirmation... Check your phone.</p>
-        </div>
-      )}
-
-      {!status && (
-        <form onSubmit={handleSubmit} className="donation-form">
-          {!charityId && (
-            <div className="form-group">
-              <label>Charity ID</label>
-              <input
-                type="number"
-                name="charity_id"
-                value={form.charity_id}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          )}
-
-          <div className="form-group">
-            <label>Donation Amount</label>
-            <div className="amount-options">
-              {donationOptions.map(amount => (
+    <ErrorBoundary>
+      <div className="p-6 max-w-md mx-auto mt-10 bg-white rounded shadow">
+        <h2 className="text-2xl font-semibold mb-4">Make a Donation</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block font-medium mb-1">Select Amount:</label>
+            <div className="flex gap-3">
+              {[100, 500, 1000].map((amt) => (
                 <button
-                  key={amount}
                   type="button"
-                  className={selectedAmount === amount ? 'selected' : ''}
-                  onClick={() => handlePredefinedAmount(amount)}
+                  key={amt}
+                  className={`px-4 py-2 rounded border ${
+                    selectedAmount === amt
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-100'
+                  }`}
+                  onClick={() => handleAmountChange(amt)}
                 >
-                  KSh {amount}
+                  Ksh {amt}
                 </button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Custom Amount (Ksh):</label>
             <input
               type="number"
-              name="amount"
-              placeholder="Or enter custom amount"
-              value={selectedAmount ? '' : form.amount}
-              onChange={handleChange}
-              min="10"
-              required
+              className="w-full border px-3 py-2 rounded"
+              value={customAmount}
+              onChange={handleCustomAmountChange}
+              placeholder="Enter custom amount"
             />
           </div>
 
-          <div className="form-group">
-            <label>Payment Method</label>
-            <select name="payment_method" value={form.payment_method} onChange={handleChange} required>
-              <option value="mpesa">M-Pesa</option>
-              <option value="card">Card</option>
-              <option value="paypal">PayPal</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>M-Pesa Phone (07XXXXXXXX)</label>
+          <div className="flex items-center gap-2">
             <input
-              type="text"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              required={form.payment_method === 'mpesa'}
+              type="checkbox"
+              checked={isRecurring}
+              onChange={() => setIsRecurring(!isRecurring)}
             />
+            <label>Recurring Donation</label>
           </div>
 
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                name="is_anonymous"
-                checked={form.is_anonymous}
-                onChange={handleChange}
-              />
-              Donate anonymously
-            </label>
-          </div>
-
-          {!form.is_anonymous && (
-            <>
-              <div className="form-group">
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                />
-              </div>
-            </>
-          )}
-
-          <div className="form-group">
-            <label>Recurring Donation?</label>
+          {isRecurring && (
             <div>
-              <label>
-                <input
-                  type="radio"
-                  name="is_recurring"
-                  checked={!form.is_recurring}
-                  onChange={() => setForm(prev => ({ ...prev, is_recurring: false, frequency: '' }))}
-                />
-                One-time
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="is_recurring"
-                  checked={form.is_recurring}
-                  onChange={() => setForm(prev => ({ ...prev, is_recurring: true }))}
-                />
-                Recurring
-              </label>
-            </div>
-          </div>
-
-          {form.is_recurring && (
-            <div className="form-group">
-              <label>Frequency</label>
-              <select name="frequency" value={form.frequency} onChange={handleChange} required>
+              <label className="block font-medium mb-1">Frequency:</label>
+              <select
+                value={frequency}
+                onChange={(e) => setFrequency(e.target.value)}
+                className="w-full border px-3 py-2 rounded"
+              >
                 <option value="">Select frequency</option>
+                <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
               </select>
             </div>
           )}
 
-          <button type="submit" disabled={loading}>
-            {loading ? 'Processing...' : 'Donate Now'}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isAnonymous}
+              onChange={() => setIsAnonymous(!isAnonymous)}
+            />
+            <label>Donate anonymously</label>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+          >
+            Donate
           </button>
         </form>
-      )}
-    </div>
+        <ToastContainer position="top-center" />
+      </div>
+    </ErrorBoundary>
   );
-};
+}
 
 export default DonationForm;
