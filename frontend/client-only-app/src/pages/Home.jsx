@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import StoryFeed from "../components/Stories/StoriesFeed";
+import StoryFeed from "./StoriesFeed";
 import Footer from "./Footer";
 
 const Home = () => {
@@ -47,9 +47,10 @@ const Home = () => {
               <Link to="/login/charity" style={styles.link}>Charity</Link>
             </div>
           )}
-
-          <StoryFeed />
         </div>
+      </div>
+      <div>
+        <StoryFeed />
       </div>
       <div>
         <Footer/>
