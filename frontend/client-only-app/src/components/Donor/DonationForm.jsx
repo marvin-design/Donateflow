@@ -1,242 +1,143 @@
+
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorBoundary from './ErrorBoundary';
 
 function DonationForm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [selectedAmount, setSelectedAmount] = useState(null);
+  const [customAmount, setCustomAmount] = useState('');
   const [isRecurring, setIsRecurring] = useState(false);
   const [frequency, setFrequency] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState(null);
-  const [customAmount, setCustomAmount] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [charity_id, setCharityid] = useState('');
 
-  const donationOptions = [5000, 10000, 20000];
-
-  const handlePredefinedAmountClick = (amount) => {
-    if (selectedAmount === amount) {
-      setSelectedAmount(null);
-    } else {
-      setSelectedAmount(amount);
-      setCustomAmount('');
-    }
+  const handleAmountChange = (amount) => {
+    setSelectedAmount(amount);
+    setCustomAmount('');
   };
 
   const handleCustomAmountChange = (e) => {
-    setCustomAmount(e.target.value);
     setSelectedAmount(null);
+    setCustomAmount(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const amount = selectedAmount || customAmount;
+    const amount = selectedAmount
+      ? Number(selectedAmount)
+      : parseFloat(customAmount);
 
-    
-    if (!charity_id || isNaN(charity_id) || Number(charity_id) <= 0) {
-      alert('Please enter a valid numeric Charity ID');
-      return;
-    }
-
-    if (!amount || Number(amount) <= 0) {
-      alert('Please enter a valid donation amount');
-      return;
-    }
-
-    const phoneRegex = /^07\d{8}$/;
-    if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
-      alert('Please enter a valid Safaricom phone number (e.g. 07XXXXXXXX)');
+    if (!amount || isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid donation amount.");
       return;
     }
 
     const donationData = {
-      amount: Number(amount),
+      amount,
       is_recurring: isRecurring,
       frequency: isRecurring ? frequency : null,
       is_anonymous: isAnonymous,
-      payment_method: 'mpesa',
-      charity_id: Number(charity_id),
-      phone: phoneNumber,
-      email: isAnonymous ? null : email,
-      name: isAnonymous ? null : name
+      charity_id: id,
     };
 
     try {
-      const response = await fetch('/donations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(donationData)
+      await axios.post("/api/donations", donationData);
+      toast.success("Donation successful! Redirecting...", {
+        autoClose: 2000,
+        onClose: () => navigate("/thank-you"),
       });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('M-Pesa prompt sent to your phone!');
-        console.log(result);
-
-      
-        setIsRecurring(false);
-        setFrequency('');
-        setIsAnonymous(false);
-        setSelectedAmount(null);
-        setCustomAmount('');
-        setPhoneNumber('');
-        setEmail('');
-        setName('');
-        setCharityid('');
-      } else {
-        alert(result.msg || 'Failed to process donation');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while processing your donation.');
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to process donation.");
     }
   };
 
   return (
-    <div>
-      <h1>Make a Donation</h1>
-      <p>Every contribution makes a difference</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="charity_id">Please enter the number that belongs to the charity you want to donate to</label>
-          <input
-            id="charity_id"
-            type="number"
-            name="charity_id"
-            value={charity_id}
-            onChange={(e) => setCharityid(e.target.value)}
-            min="1"
-            required
-          />
-        </div>
-
-        <p>Donation Type</p>
-        <label>
-          <input
-            type="radio"
-            name="donationType"
-            value="onetime"
-            checked={!isRecurring}
-            onChange={() => {
-              setIsRecurring(false);
-              setFrequency('');
-            }}
-          />
-          One-Time
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="donationType"
-            value="recurring"
-            checked={isRecurring}
-            onChange={() => setIsRecurring(true)}
-          />
-          Recurring
-        </label>
-
-        {isRecurring && (
+    <ErrorBoundary>
+      <div className="p-6 max-w-md mx-auto mt-10 bg-white rounded shadow">
+        <h2 className="text-2xl font-semibold mb-4">Make a Donation</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label>
-              <input
-                type="radio"
-                name="frequency"
-                value="weekly"
-                checked={frequency === 'weekly'}
-                onChange={(e) => setFrequency(e.target.value)}
-              />
-              Weekly
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="frequency"
-                value="monthly"
-                checked={frequency === 'monthly'}
-                onChange={(e) => setFrequency(e.target.value)}
-              />
-              Monthly
-            </label>
+            <label className="block font-medium mb-1">Select Amount:</label>
+            <div className="flex gap-3">
+              {[100, 500, 1000].map((amt) => (
+                <button
+                  type="button"
+                  key={amt}
+                  className={`px-4 py-2 rounded border ${
+                    selectedAmount === amt
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-100'
+                  }`}
+                  onClick={() => handleAmountChange(amt)}
+                >
+                  Ksh {amt}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
 
-        <p>Donation Amount</p>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          {donationOptions.map((amount) => (
-            <button
-              type="button"
-              key={amount}
-              onClick={() => handlePredefinedAmountClick(amount)}
-              style={{
-                padding: '10px',
-                border: selectedAmount === amount ? '2px solid green' : '1px solid gray',
-                backgroundColor: selectedAmount === amount ? '#e0ffe0' : 'white',
-                borderRadius: '5px',
-                cursor: 'pointer',
-              }}
-            >
-              sh.{amount.toLocaleString()}
-            </button>
-          ))}
-        </div>
+          <div>
+            <label className="block font-medium mb-1">Custom Amount (Ksh):</label>
+            <input
+              type="number"
+              className="w-full border px-3 py-2 rounded"
+              value={customAmount}
+              onChange={handleCustomAmountChange}
+              placeholder="Enter custom amount"
+            />
+          </div>
 
-        <div style={{ marginTop: '10px' }}>
-          <label>Custom amount:</label>
-          <input
-            type="number"
-            name="customAmount"
-            value={customAmount}
-            onChange={handleCustomAmountChange}
-          />
-        </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isRecurring}
+              onChange={() => setIsRecurring(!isRecurring)}
+            />
+            <label>Recurring Donation</label>
+          </div>
 
-        <div>
-          <label>
+          {isRecurring && (
+            <div>
+              <label className="block font-medium mb-1">Frequency:</label>
+              <select
+                value={frequency}
+                onChange={(e) => setFrequency(e.target.value)}
+                className="w-full border px-3 py-2 rounded"
+              >
+                <option value="">Select frequency</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          )}
+
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={isAnonymous}
-              onChange={(e) => setIsAnonymous(e.target.checked)}
+              onChange={() => setIsAnonymous(!isAnonymous)}
             />
-            Make this donation anonymous
-          </label>
-        </div>
-
-        {!isAnonymous && (
-          <div>
-            <p>Donor Information</p>
-            <label>Email Address</label>
-            <input
-              type="text"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <label>Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <label>Donate anonymously</label>
           </div>
-        )}
 
-        <p>Payment Method</p>
-        <label>Enter M-Pesa phone number</label>
-        <input
-          type="text"
-          name="number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          placeholder="07XXXXXXXX"
-        />
-
-        <br />
-        <button type="submit">Donate</button>
-      </form>
-    </div>
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+          >
+            Donate
+          </button>
+        </form>
+        <ToastContainer position="top-center" />
+      </div>
+    </ErrorBoundary>
   );
 }
 
