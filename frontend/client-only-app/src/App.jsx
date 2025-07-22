@@ -55,6 +55,11 @@ function App() {
           <Route path="/charity/inventory" element={<InventoryList />} />
           <Route path="/charity/profile" element={<CharityProfileForm />} />
           <Route path="/thank-you" element={<ThankYou />} />
+          
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/review/:id" element={<ApplicationReviewModal />} />
+        <Route path="/admin/applications" element={<CharityApplicationsList />} />
+        <Route path="/admin/charities" element={<CharityManagement />} />
         </Routes>
       </Router>
     </ErrorBoundary>
