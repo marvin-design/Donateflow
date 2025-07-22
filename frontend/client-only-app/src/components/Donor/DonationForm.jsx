@@ -1,243 +1,265 @@
 import React, { useState } from 'react';
+import axios from '../../utils/axios';
+import { useNavigate } from 'react-router-dom';
 
-function DonationForm() {
-  const [isRecurring, setIsRecurring] = useState(false);
-  const [frequency, setFrequency] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(false);
+const DonationForm = ({ charityId }) => {
+  const [form, setForm] = useState({
+    amount: '',
+    charity_id: charityId || '',
+    payment_method: 'mpesa',
+    is_recurring: false,
+    frequency: '',
+    is_anonymous: false,
+    phone: '',
+    email: '',
+    name: ''
+  });
+
   const [selectedAmount, setSelectedAmount] = useState(null);
-  const [customAmount, setCustomAmount] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [charity_id, setCharityid] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [donationId, setDonationId] = useState(null);
+  const [status, setStatus] = useState('');
+  const navigate = useNavigate();
 
-  const donationOptions = [5000, 10000, 20000];
+  const donationOptions = [500, 1000, 5000];
 
-  const handlePredefinedAmountClick = (amount) => {
-    if (selectedAmount === amount) {
-      setSelectedAmount(null);
-    } else {
-      setSelectedAmount(amount);
-      setCustomAmount('');
-    }
+  const handleChange = e => {
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
-  const handleCustomAmountChange = (e) => {
-    setCustomAmount(e.target.value);
-    setSelectedAmount(null);
+  const handlePredefinedAmount = (amount) => {
+    setSelectedAmount(amount === selectedAmount ? null : amount);
+    setForm(prev => ({ ...prev, amount: amount === selectedAmount ? '' : amount.toString() }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+    setStatus('');
 
-    const amount = selectedAmount || customAmount;
-
-    
-    if (!charity_id || isNaN(charity_id) || Number(charity_id) <= 0) {
-      alert('Please enter a valid numeric Charity ID');
+    if (!form.amount || Number(form.amount) < 10) {
+      setError('Please enter a valid amount (min KSh 10)');
+      setLoading(false);
       return;
     }
 
-    if (!amount || Number(amount) <= 0) {
-      alert('Please enter a valid donation amount');
+    if (form.payment_method === 'mpesa' && !/^07\d{8}$/.test(form.phone)) {
+      setError('Enter a valid Safaricom number (07XXXXXXXX)');
+      setLoading(false);
       return;
     }
-
-    const phoneRegex = /^07\d{8}$/;
-    if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
-      alert('Please enter a valid Safaricom phone number (e.g. 07XXXXXXXX)');
-      return;
-    }
-
-    const donationData = {
-      amount: Number(amount),
-      is_recurring: isRecurring,
-      frequency: isRecurring ? frequency : null,
-      is_anonymous: isAnonymous,
-      payment_method: 'mpesa',
-      charity_id: Number(charity_id),
-      phone: phoneNumber,
-      email: isAnonymous ? null : email,
-      name: isAnonymous ? null : name
-    };
 
     try {
-      const response = await fetch('/donations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(donationData)
-      });
+      // Step 1: Submit donation record
+      const { data } = await axios.post('/donations', form);
+      setDonationId(data.donation_id);
 
-      const result = await response.json();
-      if (response.ok) {
-        alert('M-Pesa prompt sent to your phone!');
-        console.log(result);
+      if (form.payment_method === 'mpesa') {
+        // Step 2: Trigger M-Pesa STK Push
+        await axios.post('/api/mpesa/donate', {
+          phone: form.phone.replace(/^0/, '254'), // 07XXXXXXXX -> 2547XXXXXXXX
+          amount: form.amount,
+          charity_id: form.charity_id,
+          donor_id: data.donor_id || null
+        });
 
-      
-        setIsRecurring(false);
-        setFrequency('');
-        setIsAnonymous(false);
-        setSelectedAmount(null);
-        setCustomAmount('');
-        setPhoneNumber('');
-        setEmail('');
-        setName('');
-        setCharityid('');
+        setStatus('pending');
+
+        // Step 3: Poll for payment status
+        const interval = setInterval(async () => {
+          try {
+            const res = await axios.get(`/api/mpesa/donation/${data.donation_id}/status`);
+            if (res.data.status !== 'pending') {
+              setStatus(res.data.status);
+              clearInterval(interval);
+            }
+          } catch (err) {
+            console.error(err);
+            setError('Error checking M-Pesa status');
+            clearInterval(interval);
+          }
+        }, 5000);
       } else {
-        alert(result.msg || 'Failed to process donation');
+        alert('Donation submitted successfully!');
+        navigate('/donation-success');
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while processing your donation.');
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.error || 'Donation failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className="donation-form-container">
       <h1>Make a Donation</h1>
-      <p>Every contribution makes a difference</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="charity_id">Please enter the number that belongs to the charity you want to donate to</label>
-          <input
-            id="charity_id"
-            type="number"
-            name="charity_id"
-            value={charity_id}
-            onChange={(e) => setCharityid(e.target.value)}
-            min="1"
-            required
-          />
+      <p>Every contribution makes a difference.</p>
+
+      {error && <div className="error-message">{error}</div>}
+
+      {status === 'completed' && (
+        <div className="alert alert-success">
+          <p>Payment successful! Thank you for your donation.</p>
+          <p>Transaction ID: {donationId}</p>
         </div>
+      )}
 
-        <p>Donation Type</p>
-        <label>
-          <input
-            type="radio"
-            name="donationType"
-            value="onetime"
-            checked={!isRecurring}
-            onChange={() => {
-              setIsRecurring(false);
-              setFrequency('');
-            }}
-          />
-          One-Time
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="donationType"
-            value="recurring"
-            checked={isRecurring}
-            onChange={() => setIsRecurring(true)}
-          />
-          Recurring
-        </label>
+      {status === 'failed' && (
+        <div className="alert alert-danger">
+          <p>Payment failed. Please try again.</p>
+        </div>
+      )}
 
-        {isRecurring && (
-          <div>
-            <label>
+      {status === 'pending' && (
+        <div className="alert alert-info">
+          <p>Waiting for M-Pesa confirmation... Check your phone.</p>
+        </div>
+      )}
+
+      {!status && (
+        <form onSubmit={handleSubmit} className="donation-form">
+          {!charityId && (
+            <div className="form-group">
+              <label>Charity ID</label>
               <input
-                type="radio"
-                name="frequency"
-                value="weekly"
-                checked={frequency === 'weekly'}
-                onChange={(e) => setFrequency(e.target.value)}
+                type="number"
+                name="charity_id"
+                value={form.charity_id}
+                onChange={handleChange}
+                required
               />
-              Weekly
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="frequency"
-                value="monthly"
-                checked={frequency === 'monthly'}
-                onChange={(e) => setFrequency(e.target.value)}
-              />
-              Monthly
-            </label>
-          </div>
-        )}
+            </div>
+          )}
 
-        <p>Donation Amount</p>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          {donationOptions.map((amount) => (
-            <button
-              type="button"
-              key={amount}
-              onClick={() => handlePredefinedAmountClick(amount)}
-              style={{
-                padding: '10px',
-                border: selectedAmount === amount ? '2px solid green' : '1px solid gray',
-                backgroundColor: selectedAmount === amount ? '#e0ffe0' : 'white',
-                borderRadius: '5px',
-                cursor: 'pointer',
-              }}
-            >
-              sh.{amount.toLocaleString()}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ marginTop: '10px' }}>
-          <label>Custom amount:</label>
-          <input
-            type="number"
-            name="customAmount"
-            value={customAmount}
-            onChange={handleCustomAmountChange}
-          />
-        </div>
-
-        <div>
-          <label>
+          <div className="form-group">
+            <label>Donation Amount</label>
+            <div className="amount-options">
+              {donationOptions.map(amount => (
+                <button
+                  key={amount}
+                  type="button"
+                  className={selectedAmount === amount ? 'selected' : ''}
+                  onClick={() => handlePredefinedAmount(amount)}
+                >
+                  KSh {amount}
+                </button>
+              ))}
+            </div>
             <input
-              type="checkbox"
-              checked={isAnonymous}
-              onChange={(e) => setIsAnonymous(e.target.checked)}
-            />
-            Make this donation anonymous
-          </label>
-        </div>
-
-        {!isAnonymous && (
-          <div>
-            <p>Donor Information</p>
-            <label>Email Address</label>
-            <input
-              type="text"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <label>Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              type="number"
+              name="amount"
+              placeholder="Or enter custom amount"
+              value={selectedAmount ? '' : form.amount}
+              onChange={handleChange}
+              min="10"
+              required
             />
           </div>
-        )}
 
-        <p>Payment Method</p>
-        <label>Enter M-Pesa phone number</label>
-        <input
-          type="text"
-          name="number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          placeholder="07XXXXXXXX"
-        />
+          <div className="form-group">
+            <label>Payment Method</label>
+            <select name="payment_method" value={form.payment_method} onChange={handleChange} required>
+              <option value="mpesa">M-Pesa</option>
+              <option value="card">Card</option>
+              <option value="paypal">PayPal</option>
+            </select>
+          </div>
 
-        <br />
-        <button type="submit">Donate</button>
-      </form>
+          <div className="form-group">
+            <label>M-Pesa Phone (07XXXXXXXX)</label>
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              required={form.payment_method === 'mpesa'}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>
+              <input
+                type="checkbox"
+                name="is_anonymous"
+                checked={form.is_anonymous}
+                onChange={handleChange}
+              />
+              Donate anonymously
+            </label>
+          </div>
+
+          {!form.is_anonymous && (
+            <>
+              <div className="form-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                />
+              </div>
+            </>
+          )}
+
+          <div className="form-group">
+            <label>Recurring Donation?</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="is_recurring"
+                  checked={!form.is_recurring}
+                  onChange={() => setForm(prev => ({ ...prev, is_recurring: false, frequency: '' }))}
+                />
+                One-time
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="is_recurring"
+                  checked={form.is_recurring}
+                  onChange={() => setForm(prev => ({ ...prev, is_recurring: true }))}
+                />
+                Recurring
+              </label>
+            </div>
+          </div>
+
+          {form.is_recurring && (
+            <div className="form-group">
+              <label>Frequency</label>
+              <select name="frequency" value={form.frequency} onChange={handleChange} required>
+                <option value="">Select frequency</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          )}
+
+          <button type="submit" disabled={loading}>
+            {loading ? 'Processing...' : 'Donate Now'}
+          </button>
+        </form>
+      )}
     </div>
   );
-}
+};
 
 export default DonationForm;
