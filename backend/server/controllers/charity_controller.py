@@ -50,7 +50,7 @@ def apply_charity():
 
 
 
-@charity_bp.route('/<int:charity_id>/dashboard', methods=['GET'])
+@charity_bp.route('/dashboard/<int:charity_id>', methods=['GET'])
 @jwt_required()
 def get_dashboard(charity_id):
     """Secure view of charity dashboard (no identity check)."""
@@ -174,7 +174,10 @@ def get_story(story_id):
 
 @charity_bp.route('/stories/feed', methods=['GET'])
 def story_feed():
-    stories = Story.query.order_by(Story.posted_at.desc()).limit(4).all()
-    return jsonify([story.to_dict() for story in stories]), 200
-
+    try:
+        stories = Story.query.order_by(Story.posted_at.desc()).limit(4).all()
+        return jsonify([story.to_dict() for story in stories]), 200
+    except Exception as e:
+        print("Error in story_feed:", e)
+        return jsonify({"error": str(e)}), 500
 
