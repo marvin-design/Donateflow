@@ -7,6 +7,7 @@ const CharityProfileForm = ({ charity, onUpdate }) => {
     email: charity.email,
     description: charity.description
   });
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -14,9 +15,41 @@ const CharityProfileForm = ({ charity, onUpdate }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate(formData);
+    const token = localStorage.getItem('access_token');
+    const storedCharity = JSON.parse(localStorage.getItem('logged_in_charity'));
+
+    if (!token || !storedCharity?.id) {
+      setMessage('Unauthorized: Please log in again.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/charity/${storedCharity.id}/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Failed to update profile');
+
+      setMessage('Profile updated successfully.');
+
+      const updatedCharity = { ...storedCharity, ...formData };
+      localStorage.setItem('logged_in_charity', JSON.stringify(updatedCharity));
+
+      if (onUpdate) onUpdate(updatedCharity);
+
+    } catch (err) {
+      console.error(err);
+      setMessage(err.message);
+    }
   };
 
   return (
@@ -67,6 +100,8 @@ const CharityProfileForm = ({ charity, onUpdate }) => {
 
         <button type="submit" className="btn-primary">Save Changes</button>
       </form>
+
+      {message && <p className="form-message">{message}</p>}
     </div>
   );
 };

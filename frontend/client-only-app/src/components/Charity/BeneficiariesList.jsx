@@ -1,15 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddBeneficiaryForm from './AddBeneficiaryForm';
 
-const BeneficiariesList = ({ beneficiaries }) => {
+const BeneficiariesList = () => {
   const [showForm, setShowForm] = useState(false);
+  const [beneficiaries, setBeneficiaries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('access_token');
+  const charity = JSON.parse(localStorage.getItem('logged_in_charity'));
+
+  useEffect(() => {
+    if (!token || !charity?.id) {
+      navigate('/login');
+      return;
+    }
+
+    const fetchBeneficiaries = async () => {
+      try {
+        const res = await fetch(`/api/charity/${charity.id}/beneficiaries`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch beneficiaries');
+
+        setBeneficiaries(data);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+        navigate('/login');
+      }
+    };
+
+    fetchBeneficiaries();
+  }, [charity?.id, token, navigate]);
+
   const handleAddBeneficiary = (newBeneficiary) => {
-    console.log('Adding beneficiary:', newBeneficiary);
+    setBeneficiaries(prev => [...prev, newBeneficiary]);
     setShowForm(false);
   };
+
+  if (loading) return <p>Loading beneficiaries...</p>;
 
   return (
     <div className="list-container">
@@ -34,12 +71,16 @@ const BeneficiariesList = ({ beneficiaries }) => {
       {showForm && <AddBeneficiaryForm onAdd={handleAddBeneficiary} />}
 
       <div className="items-list">
-        {beneficiaries.map((beneficiary, index) => (
-          <div key={index} className="list-item">
-            <h3>{beneficiary.name}</h3>
-            <p>{beneficiary.location}</p>
-          </div>
-        ))}
+        {beneficiaries.length > 0 ? (
+          beneficiaries.map((beneficiary, index) => (
+            <div key={index} className="list-item">
+              <h3>{beneficiary.name}</h3>
+              <p>{beneficiary.location}</p>
+            </div>
+          ))
+        ) : (
+          <p>No beneficiaries found.</p>
+        )}
       </div>
     </div>
   );
