@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import StoryFeed from "../components/Stories/StoriesFeed";
+import Footer from "./Footer";
 
 const Home = () => {
   const [showRegisterDropdown, setShowRegisterDropdown] = useState(false);
@@ -49,6 +50,9 @@ const Home = () => {
 
           <StoryFeed />
         </div>
+      </div>
+      <div>
+        <Footer/>
       </div>
     </div>
   );
