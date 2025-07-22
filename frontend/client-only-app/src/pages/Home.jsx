@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import StoryFeed from "./StoriesFeed";
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+
 
 const Home = () => {
   const [showRegisterDropdown, setShowRegisterDropdown] = useState(false);
@@ -10,7 +10,7 @@ const Home = () => {
 
   return (
     <>
-    <Navbar/>
+    
     <div style={styles.container}>
       <h1 style={styles.header}>Welcome to DonateFlow</h1>
       <p style={styles.paragraph}>If you do not have an account, please register below.</p>

@@ -29,12 +29,13 @@ import AdminDashboard from './components/Admin/AdminDashboard';
 import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
 import CharityApplicationsList from './components/Admin/CharityApplicationsList';
 import CharityManagement from './components/Admin/CharityManagement';
+import Navbar from './pages/Navbar';
 
 function App() {
   return (
     <ErrorBoundary>
       <Router>
-        
+        <Navbar/>
         <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           <Route path="/" element={<Home />} />
