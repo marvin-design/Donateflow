@@ -14,16 +14,16 @@ import DonationForm from './components/Donor/DonationForm';
 import DonorDashboard from './components/Donor/DonorDashboard';
 import CharityList from './components/Donor/CharityList';
 import DonationHistory from './components/Donor/DonationHistory';
-import SearchCharity from './components/Donor/SearchCharity';
-import UpdateRecurringStatus from './components/Donor/UpdateRecurringStatus';
-import DonorProfileForm from './components/Donor/DonorProfileForm';
+//import SearchCharity from './components/Donor/SearchCharity';
+//import UpdateRecurringStatus from './components/Donor/UpdateRecurringStatus';
+//import DonorProfileForm from './components/Donor/DonorProfileForm';
 import Updateprofile from './components/Donor/Updateprofile';
 import InventoryList from './components/Charity/InventoryList';
 import CharityProfileForm from './components/Charity/CharityProfileForm';
 import CharityDashboard from './components/Charity/CharityDashboard';
 import CharityApplicationForm from './components/Charity/CharityApplicationForm';
 import BeneficiariesList from './components/Charity/BeneficiariesList';
-import ThankYou from './pages/Thankyou';import RecurringDonations from './components/Donor/RecurringDonations';
+import ThankYou from './pages/Thankyou';//import RecurringDonations from './components/Donor/RecurringDonations';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
 import CharityApplicationsList from './components/Admin/CharityApplicationsList';
@@ -47,7 +47,7 @@ function App() {
           <Route path="/donate/:id" element={<DonationForm />} />
           <Route path="/donor/dashboard" element={<DonorDashboard />} />
           <Route path="/donor/history" element={<DonationHistory />} />
-          <Route path="/donor/profile" element={<DonorProfileForm />} />
+          {/*<Route path="/donor/profile" element={<DonorProfileForm />} />*/}
           <Route path="/donor/profile/update" element={<Updateprofile />} />
           <Route path="/apply" element={<CharityApplicationForm />} />
           <Route path="/charity/dashboard" element={<CharityDashboard />} />
@@ -60,6 +60,7 @@ function App() {
         <Route path="/admin/review/:id" element={<ApplicationReviewModal />} />
         <Route path="/admin/applications" element={<CharityApplicationsList />} />
         <Route path="/admin/charities" element={<CharityManagement />} />
+       
         </Routes>
       </Router>
     </ErrorBoundary>
