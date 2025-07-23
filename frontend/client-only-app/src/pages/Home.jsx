@@ -1,4 +1,4 @@
-// src/pages/Home.jsx
+n// src/pages/Home.jsx
 
 import { Link } from "react-router-dom";
 
