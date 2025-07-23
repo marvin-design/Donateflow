@@ -33,7 +33,7 @@ const DonorDashboard = () => {
 
   const totalAmount = donations.reduce((sum, donation) => sum + parseFloat(donation.amount), 0);
   const totalDonations = donations.length;
-  const uniqueCharities = new Set(donations.map(d => d.charity.name)).size;
+  //const uniqueCharities = new Set(donations.map(d => d.charity.name)).size;
   const displayedDonations = showAll ? [...donations].reverse() : donations.slice(-2).reverse();
 
   if (loading) return <div>Loading...</div>;
@@ -57,7 +57,7 @@ const DonorDashboard = () => {
         </div>
         <div className="stat-card">
           <h4>Charities Supported</h4>
-          <p>{uniqueCharities}</p>
+          {/*<p>{uniqueCharities}</p>*/}
         </div>
       </div>
 
@@ -72,7 +72,7 @@ const DonorDashboard = () => {
                 <li key={donation.id}>
                   <p>Amount: KES {donation.amount}</p>
                   <p>Date: {new Date(donation.donation_date).toLocaleDateString()}</p>
-                  <p>Charity: {donation.charity.name}</p>
+                 {/* <p>Charity: {donation.charity.name}</p>*/}
                 </li>
               ))}
             </ul>
@@ -88,11 +88,11 @@ const DonorDashboard = () => {
       <div className="quick-actions">
         <h3>Quick Actions</h3>
         <ul>
-          <li><Link to="/charities">Browse Charities</Link></li>
-          <li><Link to="/stories/feed">Read Impact Stories</Link></li>
-          <li><Link to="/search-charity">Search a Charity</Link></li>
+          <li><Link to="/donors/charities">Browse Charities</Link></li>
+          <li><Link to="/charity/stories/feed">Read Impact Stories</Link></li>
+          <li><Link to="/search-charities">Search a Charity</Link></li>
           <li><Link to="/donors/profile/update">Manage Profile & Settings</Link></li>
-          <li><Link to="/donors/isrecurring">Update Recurring Donations</Link></li>
+          <li><Link to="/donors/recurring-donations">Update Recurring Donations</Link></li>
         </ul>
       </div>
     </div>

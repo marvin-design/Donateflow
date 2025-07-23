@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from '../../utils/axios';
-import ImageUpload from '../ImageUpload';
+import ImageUpload from '../ImagesUpload'
 import { useParams } from 'react-router-dom';
 
 const CreateStoryForm = () => {
