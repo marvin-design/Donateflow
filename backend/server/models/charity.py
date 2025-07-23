@@ -22,7 +22,7 @@ class Charity(db.Model, SerializerMixin):
 
 
     serialize_rules = ('-beneficiaries.charity', 
-                        '-stories.charity', 
+                        '-stories', 
                         '-inventory_items.charity', 
                         '-donations.charity',
                         )

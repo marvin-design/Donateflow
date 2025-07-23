@@ -28,7 +28,7 @@ class Donation(db.Model, SerializerMixin):
     # Serialization rules 
     serialize_rules = (
         '-donor.donations', 
-        '-charity.donations',
+        '-charity',
     )
 
     def __repr__(self):

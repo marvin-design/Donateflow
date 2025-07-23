@@ -14,7 +14,7 @@ class Beneficiary(db.Model, SerializerMixin):
     charity = db.relationship("Charity", back_populates="beneficiaries")
     inventory_items = db.relationship("InventoryItem", back_populates="beneficiary")
 
-    serialize_rules = ('-charity.beneficiaries', 
+    serialize_rules = ('-charity', 
                     '-inventory_items.beneficiary',)
 
     def __repr__(self):

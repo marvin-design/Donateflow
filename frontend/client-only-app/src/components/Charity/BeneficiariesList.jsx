@@ -8,12 +8,15 @@ const BeneficiariesList = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem('access_token');
-  const charity = JSON.parse(localStorage.getItem('logged_in_charity'));
+const token = localStorage.getItem('token');
+const charity = {
+  id: localStorage.getItem('user_id'),
+  name: localStorage.getItem('name')
+};
 
   useEffect(() => {
     if (!token || !charity?.id) {
-      navigate('/login');
+      navigate('/login/charity');
       return;
     }
 
@@ -34,7 +37,7 @@ const BeneficiariesList = () => {
       } catch (err) {
         console.error(err);
         setLoading(false);
-        navigate('/login');
+        navigate('/login/charity');
       }
     };
 

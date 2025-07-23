@@ -13,13 +13,13 @@ flask-apscheduler = "*"
 flask-jwt-extended = "*"
 sqlalchemy-serializer = "*"
 requests = "*"
-flask-cors = "*"
 bcrypt = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
 flask-login = "*"
 flask-bcrypt = "*"
 cloudinary = "*"
+flask-cors = "*"
 
 [dev-packages]
 

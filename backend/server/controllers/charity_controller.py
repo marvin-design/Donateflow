@@ -47,13 +47,12 @@ def apply_charity():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
-
+    
 
 
 @charity_bp.route('/dashboard/<int:charity_id>', methods=['GET'])
 @jwt_required()
 def get_dashboard(charity_id):
-    """Secure view of charity dashboard (no identity check)."""
     charity = Charity.query.get_or_404(charity_id)
 
     return jsonify({
@@ -65,7 +64,6 @@ def get_dashboard(charity_id):
             "last_inventory_added": charity.inventory_items[-1].to_dict() if charity.inventory_items else None
         }
     })
-
 
 @charity_bp.route('/<int:charity_id>/beneficiaries', methods=['POST'])
 def add_beneficiary(charity_id):
