@@ -28,8 +28,8 @@ const StoryFeed = () => {
               <img src={story.photo_url} alt={story.title} className="story-image" />
             )}
             <h3>{story.title}</h3>
-            <p>{story.content?.slice(0, 100)}...</p>
-            <Link to={`/api/charity/stories/${story.id}`} className="read-more">Read More</Link>
+            <p>{story.content}</p>
+            
           </div>
         ))}
       </div>

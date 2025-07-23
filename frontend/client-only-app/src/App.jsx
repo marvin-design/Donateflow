@@ -1,12 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import ErrorBoundary from './components/Donor/ErrorBoundary';
-
 import Home from "./pages/Home";
 import About from "./pages/About";
-
 import LoginForm from "./auth/LoginForm";
 import RegisterForm from './auth/RegisterForm';
 import CharityDescription from './components/Donor/CharityDescription';
@@ -30,6 +27,7 @@ import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
 import CharityApplicationsList from './components/Admin/CharityApplicationsList';
 import CharityManagement from './components/Admin/CharityManagement';
 import Navbar from './pages/Navbar';
+import CreateStoryForm from './components/Charity/CreateStoryForm';
 
 function App() {
   return (
@@ -56,6 +54,7 @@ function App() {
           <Route path="/charity/beneficiaries" element={<BeneficiariesList />} />
           <Route path="/charity/inventory" element={<InventoryList />} />
           <Route path="/charity/profile" element={<CharityProfileForm />} />
+          <Route path='/charity/:id/stories' element={<CreateStoryForm/>}/>
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/search-charities" element={<SearchCharity />} />
           <Route path="/donations/:donationId/update-recurring" element={<UpdateRecurringStatus />} />

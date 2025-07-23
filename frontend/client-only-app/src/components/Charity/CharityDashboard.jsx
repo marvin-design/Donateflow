@@ -83,39 +83,16 @@ const CharityDashboard = () => {
           )}
         </div>
       </div>
+        <div className="quick-actions">
+          <h3>Quick Actions</h3>
+          <ul>
+            <li><Link to="/charity/beneficiaries">Manage Beneficiaries</Link></li>
+            <li><Link to="/charity/inventory">Manage Inventory</Link></li>
+            <li><Link to="/charity/stories">Share a Story</Link></li>
+            <li><Link to="/charity/profile">Update Charity Profile</Link></li>
+          </ul>
+        </div>
 
-      <div className="dashboard-tabs">
-        <button 
-          className={activeTab === 'beneficiaries' ? 'active' : ''}
-          onClick={() => setActiveTab('beneficiaries')}
-        >
-          Beneficiaries
-        </button>
-        <button 
-          className={activeTab === 'inventory' ? 'active' : ''}
-          onClick={() => setActiveTab('inventory')}
-        >
-          Inventory
-        </button>
-        <button 
-          className={activeTab === 'profile' ? 'active' : ''}
-          onClick={() => setActiveTab('profile')}
-        >
-          Profile
-        </button>
-      </div>
-
-      <div className="dashboard-content">
-        {activeTab === 'beneficiaries' && (
-          <BeneficiariesList beneficiaries={charityData.beneficiaries || []} />
-        )}
-        {activeTab === 'inventory' && (
-          <InventoryList inventory={charityData.inventory_items || []} />
-        )}
-        {activeTab === 'profile' && (
-          <CharityProfileForm charity={charityData} />
-        )}
-      </div>
     </div>
   );
 };

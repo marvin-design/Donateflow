@@ -64,7 +64,7 @@ const InventoryList = () => {
         <div>
           <button 
             className="btn-secondary"
-            onClick={() => navigate('/api/charity/dashboard')}
+            onClick={() => navigate('/charity/dashboard')}
           >
             Back to Dashboard
           </button>
