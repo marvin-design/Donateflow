@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required,get_jwt_identity
+from flask_jwt_extended import jwt_required,get_jwt_identity, get_jwt
 from extensions import db,mail
 from models.charityApplications import CharityApplication
 from flask_mail import Message
@@ -13,6 +13,9 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/dashboard', methods=['GET'])
 @jwt_required()
 def admin_dashboard():
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        return jsonify({"error": "Unauthorized"}), 403
     total_donors = Donor.query.count()
     total_charities = Charity.query.count()
     total_donations = Donation.query.count()
@@ -37,6 +40,9 @@ def admin_dashboard():
 @admin_bp.route('/charity_applications', methods=['GET'])
 @jwt_required()
 def get_charity_applications():
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        return jsonify({"error": "Unauthorized"}), 403
     status_filter = request.args.get('status')
     try:
         if status_filter:
@@ -57,6 +63,9 @@ def get_charity_applications():
 @admin_bp.route('/charity_applications/<int:application_id>/review', methods=['POST'])
 @jwt_required()
 def review_charity_application(application_id):
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        return jsonify({"error": "Unauthorized"}), 403
     data = request.get_json()
     action = data.get('action') 
 
@@ -137,6 +146,9 @@ def review_charity_application(application_id):
 @admin_bp.route('/charity/<int:charity_id>', methods=['DELETE'])
 @jwt_required()
 def delete_charity(charity_id):
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        return jsonify({"error": "Unauthorized"}), 403
     charity = Charity.query.get(charity_id)
     if not charity:
         return jsonify({'error': 'Charity not found'}), 404

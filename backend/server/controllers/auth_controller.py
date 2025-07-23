@@ -57,27 +57,6 @@ def register_charity():
 
     return jsonify({"msg": "Charity application submitted. Awaiting approval."}), 201
 
-
-@auth_bp.route('/register/admin', methods=['POST'])
-def register_admin():
-    data = request.get_json()
-    name = data.get('name')
-    email = data.get('email')
-    password = data.get('password')
-
-    if not all([email, password]):
-        return jsonify({"error": "Email and password are required"}), 400
-
-    if Admin.query.filter_by(email=email).first():
-        return jsonify({"error": "Admin email already registered"}), 409
-
-    admin = Admin(name=name, email=email, password_hash=generate_password_hash(password))
-    db.session.add(admin)
-    db.session.commit()
-
-    token = create_access_token(identity=admin.id, additional_claims={"role": "admin"})
-    return jsonify({"access_token": token, "user_id": admin.id, "role": "admin", "name": admin.name}), 201
-
 # === LOGIN ROUTES ===
 
 @auth_bp.route('/login/donor', methods=['POST'])

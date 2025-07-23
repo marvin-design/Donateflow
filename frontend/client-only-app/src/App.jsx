@@ -23,9 +23,9 @@ import BeneficiariesList from './components/Charity/BeneficiariesList';
 import ThankYou from './pages/Thankyou';
 import RecurringDonations from './components/Donor/RecurringDonations';
 import AdminDashboard from './components/Admin/AdminDashboard';
-import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
-import CharityApplicationsList from './components/Admin/CharityApplicationsList';
-import CharityManagement from './components/Admin/CharityManagement';
+// import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
+// import CharityApplicationsList from './components/Admin/CharityApplicationsList';
+// import CharityManagement from './components/Admin/CharityManagement';
 import Navbar from './pages/Navbar';
 import CreateStoryForm from './components/Charity/CreateStoryForm';
 
@@ -60,9 +60,9 @@ function App() {
           <Route path="/donations/:donationId/update-recurring" element={<UpdateRecurringStatus />} />
           <Route path="/donors/recurring-donations" element={<RecurringDonations />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/review/:id" element={<ApplicationReviewModal />} />
+          {/* <Route path="/admin/review/:id" element={<ApplicationReviewModal />} />
           <Route path="/admin/applications" element={<CharityApplicationsList />} />
-          <Route path="/admin/charities" element={<CharityManagement />} />
+          <Route path="/admin/charities" element={<CharityManagement />} /> */}
        
         </Routes>
       </Router>
