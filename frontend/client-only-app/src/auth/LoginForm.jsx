@@ -1,7 +1,7 @@
 // src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios.js"; // Axios instance with JWT support
+import axios from "../utils/axios.js";
 
 const Login = ({ role }) => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -17,7 +17,7 @@ const Login = ({ role }) => {
     setError("");
 
     try {
-      const res = await axios.post(`/login/${role}`, form);
+      const res = await axios.post(`/api/auth/login/${role}`, form);
 
       const { access_token, user_id, role: userRole, name } = res.data;
 
@@ -28,11 +28,11 @@ const Login = ({ role }) => {
 
       // Redirect to appropriate dashboard
       if (userRole === "donor") {
-        navigate(`/dashboard/donor/${user_id}`);
+        navigate(`/donors/dashboard/${user_id}`);
       } else if (userRole === "charity") {
-        navigate(`/dashboard/charity/${user_id}`);
+        navigate(`/charity/dashboard/${user_id}`);
       } else if (userRole === "admin") {
-        navigate(`/dashboard/admin`);
+        navigate(`/admin/dashboard`);
       } else {
         setError("Unrecognized user role.");
       }

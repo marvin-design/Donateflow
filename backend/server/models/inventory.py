@@ -15,7 +15,8 @@ class InventoryItem(db.Model, SerializerMixin):
     charity = db.relationship("Charity", back_populates="inventory_items")
 
     # Serialization
-    serialize_rules = ('-beneficiary.inventory_items', '-charity.inventory_items',)
+    serialize_rules = ('-beneficiary.inventory_items', 
+                       '-charity.inventory_items',)
 
     def __repr__(self):
         return f"<InventoryItem(id={self.id}, item_name={self.item_name}, amount={self.amount})>"

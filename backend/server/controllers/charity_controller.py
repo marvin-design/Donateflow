@@ -4,6 +4,7 @@ from models.charity import Charity
 from models.beneficiary import Beneficiary
 from models.inventory import InventoryItem
 from models.charityApplications import CharityApplication
+from models.charityStory import Story
 from extensions import db
 from flask_jwt_extended import jwt_required,get_jwt_identity, get_jwt
 from werkzeug.security import generate_password_hash
@@ -49,7 +50,7 @@ def apply_charity():
 
 
 
-@charity_bp.route('/<int:charity_id>/dashboard', methods=['GET'])
+@charity_bp.route('/dashboard/<int:charity_id>', methods=['GET'])
 @jwt_required()
 def get_dashboard(charity_id):
     """Secure view of charity dashboard (no identity check)."""
@@ -143,3 +144,40 @@ def update_charity_profile(charity_id):
         "email": charity.email,
         "description": charity.description
     }), 200
+
+@charity_bp.route('/<int:charity_id>/stories', methods=['POST'])
+@jwt_required()
+def create_story(charity_id):
+    data = request.get_json()
+    title = data.get('title')
+    content = data.get('content')
+    photo_url = data.get('photo_url')
+
+    if not title or not photo_url:
+        return jsonify({"error": "Title and photo URL are required"}), 400
+
+    new_story = Story(
+        title=title,
+        content=content,
+        photo_url=photo_url,
+        charity_id=charity_id
+    )
+    db.session.add(new_story)
+    db.session.commit()
+
+    return jsonify(new_story.to_dict()), 201
+
+@charity_bp.route('/stories/<int:story_id>', methods=['GET'])
+def get_story(story_id):
+    story = Story.query.get_or_404(story_id)
+    return jsonify(story.to_dict()), 200
+
+@charity_bp.route('/stories/feed', methods=['GET'])
+def story_feed():
+    try:
+        stories = Story.query.order_by(Story.posted_at.desc()).limit(4).all()
+        return jsonify([story.to_dict() for story in stories]), 200
+    except Exception as e:
+        print("Error in story_feed:", e)
+        return jsonify({"error": str(e)}), 500
+

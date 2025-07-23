@@ -69,7 +69,8 @@ def register_blueprints(app):
         mpesa_controller,
         charity_controller,
         donor_controller,
-        admin_controller
+        admin_controller,
+        images_controller
     )
     
     # API routes
@@ -78,7 +79,20 @@ def register_blueprints(app):
     app.register_blueprint(donor_controller.donor_bp, url_prefix='/api/donors')
     app.register_blueprint(charity_controller.charity_bp, url_prefix='/api/charity')
     app.register_blueprint(admin_controller.admin_bp, url_prefix='/api/admin')
+    app.register_blueprint(images_controller.images_bp, url_prefix='/api/images')
 
+
+    @app.route("/routes", methods=["GET"])
+    def list_routes():
+        import urllib
+        output = []
+        for rule in app.url_map.iter_rules():
+            methods = ','.join(rule.methods)
+            url = urllib.parse.unquote(str(rule))
+            line = f"{url} → Methods: {methods}"
+            output.append(line)
+        return {"routes": output}
+    
 if __name__ == '__main__':
     app = create_app()
     app.run(debug=True)

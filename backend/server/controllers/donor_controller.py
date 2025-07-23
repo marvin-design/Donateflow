@@ -36,6 +36,7 @@ def donor_dashboard(donor_id):
         "total_donated": total_donated,
         "donations": donations_data
     }), 200
+# unsure if this route is necessary though i do not think it is due to the added routes 
 
 
 
@@ -50,18 +51,21 @@ def get_charities():
         return jsonify({'error': str(e)}), 500  
     
 
-@donor_bp.route('/<int:donor_id>/donations', methods=['POST'])
+@donor_bp.route('/donations', methods=['POST'])
 @jwt_required()
-def post_donor_donations(donor_id):
+def post_donor_donations():
     try:
+        donor_id = get_jwt_identity()
         data = request.get_json()
 
         amount = data.get('amount')
         charity_id = data.get('charity_id')
         is_recurring = data.get('is_recurring', False)
         frequency = data.get('frequency', None)
+        phone_number= data.get('phone_number')
         payment_method = data.get('payment_method')
         donation_date = data.get('donation_date')
+
 
         if not amount or not charity_id or not payment_method:
             return jsonify({'error': 'Missing required fields'}), 400
@@ -75,6 +79,7 @@ def post_donor_donations(donor_id):
             donor_id=donor_id,
             charity_id=charity_id,
             amount=amount,
+            phone_number=phone_number,
             is_recurring=is_recurring,
             frequency=frequency,
             payment_method=payment_method,
@@ -101,6 +106,7 @@ def get_donor_donations(donor_id):
                 'id': donation.id,
                 'amount': str(donation.amount),
                 'is_recurring': donation.is_recurring,
+                'phone_number': donation.phone_number,
                 'frequency': donation.frequency,
                 'payment_method': donation.payment_method,
                 'donation_date': donation.donation_date.isoformat(),
@@ -151,4 +157,72 @@ def update_donor_profile(donor_id):
         "name": donor.name,
         "email": donor.email
     }), 200
+
+
+@donor_bp.route('/donations/recurring', methods=['GET'])
+@jwt_required()
+def get_recurring_donations():
+    current_user_id = get_jwt_identity()
+    donations = Donation.query.filter_by(donor_id=current_user_id, is_recurring=True).all()
+    return jsonify([d.to_dict() for d in donations]), 200
+
+
+@donor_bp.route('/isrecurring', methods=['PATCH'])
+@jwt_required()
+def update_recurring():
+    data = request.get_json()
+    donation_id = data.get('donation_id')
+    is_recurring = data.get('is_recurring')
+    frequency = data.get('frequency')
+
+    if donation_id is None:
+        return jsonify({"error": "Donation ID is required"}), 400
+
+    donation = Donation.query.get(donation_id)
+
+    if not donation:
+        return jsonify({"error": "Donation not found"}), 404
+
+    current_user_id = get_jwt_identity()
+
+    if donation.donor_id != current_user_id:
+        return jsonify({"error": "Unauthorized to update this donation"}), 403
+
+    if is_recurring is not None:
+        donation.is_recurring = is_recurring
+
+    if frequency:
+        donation.frequency = frequency
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": "Donation updated successfully",
+            "donation": {
+                "id": donation.id,
+                "is_recurring": donation.is_recurring,
+                "frequency": donation.frequency
+            }
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to update donation", "details": str(e)}), 500
+
+
+@donor_bp.route('/search-charity', methods=['GET'])
+@jwt_required()
+def search_charity_by_name():
+    name = request.args.get('name')
+    if not name:
+        return jsonify({"error": "Charity name is required"}), 400
+
+    charity = Charity.query.filter(Charity.name.ilike(f"%{name}%")).first()
+    if charity:
+        return jsonify({
+            "id": charity.id,
+            "name": charity.name,
+            "description": charity.description
+        }), 200
+
+    return jsonify({"error": "Charity not found"}), 404
 

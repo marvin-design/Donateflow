@@ -7,16 +7,13 @@ const PrivateRoute = ({ allowedRoles }) => {
   const role = localStorage.getItem('role');
 
   if (!token) {
-    // No token - redirect to login
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(role)) {
-    // Has token but wrong role - redirect to unauthorized
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Authorized - render child routes
   return <Outlet />;
 };
 

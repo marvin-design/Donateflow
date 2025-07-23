@@ -6,20 +6,54 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
     amount: 1,
     beneficiary_id: beneficiaries[0]?.id || ''
   });
+  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onAdd(formData);
-    setFormData({
-      item_name: '',
-      amount: 1,
-      beneficiary_id: beneficiaries[0]?.id || ''
-    });
+    const token = localStorage.getItem('access_token');
+    const charity = JSON.parse(localStorage.getItem('logged_in_charity'));
+
+    if (!token || !charity?.id) {
+      setMessage('You must be logged in as a charity.');
+      return;
+    }
+
+    try {
+      const payload = {
+        ...formData,
+        sent_date: new Date().toISOString().split('T')[0] 
+      };
+
+      const res = await fetch(`/api/charity/${charity.id}/inventory_items`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Failed to add item');
+
+      onAdd(data); //add to parent
+      setMessage('Inventory item added successfully!');
+      setFormData({
+        item_name: '',
+        amount: 1,
+        beneficiary_id: beneficiaries[0]?.id || ''
+      });
+
+    } catch (err) {
+      console.error(err);
+      setMessage(err.message);
+    }
   };
 
   return (
@@ -67,6 +101,8 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
 
         <button type="submit" className="btn-primary">Add Item</button>
       </form>
+
+      {message && <p>{message}</p>}
     </div>
   );
 };

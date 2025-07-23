@@ -5,16 +5,45 @@ const AddBeneficiaryForm = ({ onAdd }) => {
     name: '',
     location: ''
   });
+  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onAdd(formData);
-    setFormData({ name: '', location: '' }); // Reset form
+    const token = localStorage.getItem('access_token');
+    const charity = JSON.parse(localStorage.getItem('logged_in_charity'));
+
+    if (!token || !charity?.id) {
+      setMessage("Not authorized or charity not found");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/charity/${charity.id}/beneficiaries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Failed to add beneficiary');
+
+      setMessage('Beneficiary added successfully!');
+      onAdd(data); 
+      setFormData({ name: '', location: '' });
+
+    } catch (err) {
+      console.error(err);
+      setMessage(err.message);
+    }
   };
 
   return (
@@ -45,6 +74,8 @@ const AddBeneficiaryForm = ({ onAdd }) => {
 
         <button type="submit" className="btn-primary">Add Beneficiary</button>
       </form>
+
+      {message && <p>{message}</p>}
     </div>
   );
 };
