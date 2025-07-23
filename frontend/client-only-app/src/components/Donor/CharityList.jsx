@@ -47,13 +47,13 @@ const CharityList = () => {
             <div className="charity-actions">
               <button
                 className="details-button"
-                onClick={() => navigate(`/api/donors/charities/${charity.id}`)}
+                onClick={() => navigate(`/charities/${charity.id}`)}
               >
                 Learn More
               </button>
               <button
                 className="donate-button"
-                onClick={() => navigate(`/api/donors/donate/${charity.id}`)}
+                onClick={() => navigate(`/donate/${charity.id}`)}
               >
                 Donate
               </button>

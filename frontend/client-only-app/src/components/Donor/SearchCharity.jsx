@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from '../../utils/axios';
+import { useNavigate } from 'react-router-dom'
 
 const SearchCharity = () => {
   const [name, setName] = useState('');
   const [result, setResult] = useState(null);
+  const navigate = useNavigate()
 
   const handleSearch = async () => {
     const token = localStorage.getItem('access_token');
@@ -17,7 +19,15 @@ const SearchCharity = () => {
     <div>
       <input value={name} onChange={e => setName(e.target.value)} placeholder="Charity Name" />
       <button onClick={handleSearch}>Search</button>
-      {result && <p>Found: {result.name} (ID: {result.id})</p>}
+      {result && (
+        <div className="charity-result">
+          <h4>{result.name}</h4>
+          <p>{result.description}</p>
+          <p>ID: {result.id}</p>
+          <button onClick={() => navigate(`/donate/${result.id}`)}>Donate</button>
+          <button onClick={() => navigate(`/charities/${result.id}`)}>Learn More</button>
+        </div>
+      )}
     </div>
   );
 };

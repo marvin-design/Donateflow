@@ -209,11 +209,20 @@ def update_recurring():
         return jsonify({"error": "Failed to update donation", "details": str(e)}), 500
 
 
-@donor_bp.route('/charity', methods=['GET'])
+@donor_bp.route('/search-charity', methods=['GET'])
 @jwt_required()
-def get_charity_by_name():
+def search_charity_by_name():
     name = request.args.get('name')
-    charity = Charity.query.filter_by(name=name).first()
+    if not name:
+        return jsonify({"error": "Charity name is required"}), 400
+
+    charity = Charity.query.filter(Charity.name.ilike(f"%{name}%")).first()
     if charity:
-        return jsonify({"id": charity.id, "name": charity.name})
+        return jsonify({
+            "id": charity.id,
+            "name": charity.name,
+            "description": charity.description
+        }), 200
+
     return jsonify({"error": "Charity not found"}), 404
+

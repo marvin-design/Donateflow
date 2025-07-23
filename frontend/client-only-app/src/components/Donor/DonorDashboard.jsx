@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../../utils/axios'
-import { useParams } from 'react-router-dom';
-
+import axios from '../../utils/axios';
+import { useParams, Link } from 'react-router-dom';
 
 const DonorDashboard = () => {
   const [donations, setDonations] = useState([]);
@@ -37,59 +36,64 @@ const DonorDashboard = () => {
   const uniqueCharities = new Set(donations.map(d => d.charity.name)).size;
   const displayedDonations = showAll ? [...donations].reverse() : donations.slice(-2).reverse();
 
-  if (loading) return <div className="loading-spinner">Loading...</div>;
-  if (error) return <div className="error-message">{error}</div>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="donor-dashboard">
       <div className="dashboard-header">
-        <h2 className="welcome-title">Welcome back</h2>
-        <p className="welcome-message">Thank you for choosing to make a difference</p>
+        <h2>Welcome back</h2>
+        <p>Thank you for choosing to make a difference</p>
       </div>
 
       <div className="stats-container">
-        <div className="stat-card amount-card">
-          <h3 className="stat-title">Total Amount Donated</h3>
-          <div className="stat-value">KES {totalAmount.toFixed(2)}</div>
+        <div className="stat-card">
+          <h4>Total Donated</h4>
+          <p>KES {totalAmount.toFixed(2)}</p>
         </div>
-
-        <div className="stat-card count-card">
-          <h3 className="stat-title">Total Donations Made</h3>
-          <div className="stat-value">{totalDonations}</div>
+        <div className="stat-card">
+          <h4>Total Donations</h4>
+          <p>{totalDonations}</p>
         </div>
-
-        <div className="stat-card charities-card">
-          <h3 className="stat-title">Different Charities Donated To</h3>
-          <div className="stat-value">{uniqueCharities}</div>
+        <div className="stat-card">
+          <h4>Charities Supported</h4>
+          <p>{uniqueCharities}</p>
         </div>
       </div>
 
       <div className="donations-section">
-        <h3 className="section-title">Recent Donations</h3>
-        <p className="section-subtitle">Your latest contributions</p>
-        
+        <h3>Recent Donations</h3>
         {donations.length === 0 ? (
-          <p className="no-donations">No donations found.</p>
+          <p>No donations found.</p>
         ) : (
-          <ul className="donations-list">
-            {displayedDonations.map((donation) => (
-              <li key={donation.id} className="donation-item">
-                <p className="donation-amount">Amount: KES {donation.amount}</p>
-                <p className="donation-date">Date: {new Date(donation.donation_date).toLocaleString()}</p>
-                <p className="donation-charity">Charity: {donation.charity.name}</p>
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul>
+              {displayedDonations.map((donation) => (
+                <li key={donation.id}>
+                  <p>Amount: KES {donation.amount}</p>
+                  <p>Date: {new Date(donation.donation_date).toLocaleDateString()}</p>
+                  <p>Charity: {donation.charity.name}</p>
+                </li>
+              ))}
+            </ul>
+            {donations.length > 2 && (
+              <button onClick={() => setShowAll(!showAll)}>
+                {showAll ? 'Show Less' : 'View All Donations'}
+              </button>
+            )}
+          </>
         )}
+      </div>
 
-        {donations.length > 2 && (
-          <button 
-            className="toggle-donations-btn"
-            onClick={() => setShowAll(!showAll)}
-          >
-            {showAll ? 'Show Less' : 'View All Donations'}
-          </button>
-        )}
+      <div className="quick-actions">
+        <h3>Quick Actions</h3>
+        <ul>
+          <li><Link to="/charities">Browse Charities</Link></li>
+          <li><Link to="/stories/feed">Read Impact Stories</Link></li>
+          <li><Link to="/search-charity">Search a Charity</Link></li>
+          <li><Link to="/donors/profile/update">Manage Profile & Settings</Link></li>
+          <li><Link to="/donors/isrecurring">Update Recurring Donations</Link></li>
+        </ul>
       </div>
     </div>
   );
