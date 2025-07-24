@@ -2,19 +2,46 @@ import { Link } from "react-router-dom";
 import StoryFeed from "./StoriesFeed";
 import Footer from "./Footer";
 
-
 const Home = () => {
   return (
     <>
-    
-    <div style={styles.container}>
-      <h1 style={styles.header}>Welcome to DonateFlow</h1>
-      <p style={styles.paragraph}>
-        Join our mission to connect generous donors with trusted charities.
-      </p>
+      {/* Hero Section */}
+      <div style={styles.heroSection}>
+        <h1 style={styles.heroHeader}>Empowering Girls Through Education</h1>
+        <p style={styles.heroSubtext}>
+          Supporting girls in sub-Saharan Africa with sanitary pads, clean
+          water, and educational resources so they never miss school again.
+        </p>
+        <div style={styles.heroButtons}>
+          <Link to="/register/donor" style={styles.heroDonateBtn}>
+            Start Donating
+          </Link>
+          <Link to="/charities" style={styles.heroLearnBtn}>
+            Learn More
+          </Link>
+        </div>
+      </div>
 
+      {/* Stats Section */}
+      <div style={styles.statsSection}>
+        <div style={styles.statsContainer}>
+          <div style={styles.statBox}>
+            <div style={styles.statValue}>2450</div>
+            <div style={styles.statLabel}>Girls Helped</div>
+          </div>
+          <div style={styles.statBox}>
+            <div style={styles.statValue}>45</div>
+            <div style={styles.statLabel}>Schools Reached</div>
+          </div>
+          <div style={styles.statBox}>
+            <div style={styles.statValue}>$125,000</div>
+            <div style={styles.statLabel}>Total Donated</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Donor & Charity Cards */}
       <div style={styles.cardWrapper}>
-        {/* Donor Card */}
         <div style={styles.card}>
           <h2 style={styles.cardTitle}>Are You a Donor?</h2>
           <p style={styles.cardText}>
@@ -28,7 +55,6 @@ const Home = () => {
           </Link>
         </div>
 
-        {/* Charity Card */}
         <div style={styles.card}>
           <h2 style={styles.cardTitle}>Are You a Charity?</h2>
           <p style={styles.cardText}>
@@ -46,43 +72,93 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Feed & Footer */}
       <div style={{ width: "100%", maxWidth: "800px", marginTop: "40px" }}>
         <StoryFeed />
       </div>
 
       <Footer />
-    </div>
     </>
   );
 };
 
 const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginTop: "100px",
-    padding: "0 20px",
-  },
-  header: {
-    fontSize: "2.5rem",
-    marginBottom: "10px",
-    fontWeight: "bold",
-  },
-  paragraph: {
-    marginBottom: "40px",
-    fontSize: "1.2rem",
+  heroSection: {
+    background: "linear-gradient(135deg, #f97316 0%, #ea730c 100%)",
+    color: "white",
+    padding: "80px 24px",
     textAlign: "center",
-    maxWidth: "600px",
+  },
+  heroHeader: {
+    fontSize: "48px",
+    fontWeight: "bold",
+    marginBottom: "16px",
+    lineHeight: "1.2",
+  },
+  heroSubtext: {
+    fontSize: "20px",
+    marginBottom: "32px",
+    opacity: "0.9",
+  },
+  heroButtons: {
+    display: "flex",
+    gap: "16px",
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+  heroDonateBtn: {
+    backgroundColor: "white",
+    color: "#f97316",
+    padding: "12px 24px",
+    borderRadius: "6px",
+    textDecoration: "none",
+    fontWeight: "500",
+    fontSize: "16px",
+  },
+  heroLearnBtn: {
+    backgroundColor: "transparent",
+    color: "white",
+    padding: "12px 24px",
+    borderRadius: "6px",
+    textDecoration: "none",
+    fontWeight: "500",
+    fontSize: "16px",
+    border: "1px solid white",
+  },
+  statsSection: {
+    backgroundColor: "#f9fafb",
+    padding: "60px 0",
+  },
+  statsContainer: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "40px",
+    textAlign: "center",
+    padding: "0 24px",
+  },
+  statBox: {},
+  statValue: {
+    fontSize: "48px",
+    fontWeight: "bold",
+    color: "#f97316",
+    marginBottom: "8px",
+  },
+  statLabel: {
+    color: "#6b7280",
+    fontSize: "16px",
   },
   cardWrapper: {
     display: "flex",
     gap: "40px",
     flexWrap: "wrap",
     justifyContent: "center",
+    padding: "80px 24px",
+    backgroundColor: "#fff",
   },
   card: {
-    border: "1px solid #ccc",
+    border: "1px solid #e5e7eb",
     borderRadius: "8px",
     padding: "30px 20px",
     width: "280px",
@@ -92,6 +168,7 @@ const styles = {
   cardTitle: {
     fontSize: "1.5rem",
     marginBottom: "10px",
+    fontWeight: "600",
   },
   cardText: {
     fontSize: "1rem",
@@ -99,7 +176,7 @@ const styles = {
     color: "#555",
   },
   primaryBtn: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#f97316",
     color: "#fff",
     padding: "10px 16px",
     borderRadius: "5px",
@@ -118,7 +195,7 @@ const styles = {
   },
   secondaryLink: {
     display: "block",
-    color: "#007BFF",
+    color: "#f97316",
     textDecoration: "underline",
     fontSize: "0.9rem",
     marginBottom: "10px",
