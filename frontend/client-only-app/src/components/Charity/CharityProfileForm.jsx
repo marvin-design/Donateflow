@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const CharityProfileForm = ({ charity, onUpdate }) => {
+const CharityProfileForm = ({ onUpdate }) => {
+  const storedCharity = JSON.parse(localStorage.getItem('logged_in_charity'));
   const [formData, setFormData] = useState({
-    name: charity.name,
-    email: charity.email,
-    description: charity.description
-  });
+  name: storedCharity?.name || '',
+  email: storedCharity?.email || '',
+  description: storedCharity?.description || ''
+});
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -18,15 +19,15 @@ const CharityProfileForm = ({ charity, onUpdate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('access_token');
-    const storedCharity = JSON.parse(localStorage.getItem('logged_in_charity'));
+    const Charity = JSON.parse(localStorage.getItem('logged_charity'));
 
-    if (!token || !storedCharity?.id) {
+    if (!token || !Charity?.id) {
       setMessage('Unauthorized: Please log in again.');
       return;
     }
 
     try {
-      const res = await fetch(`/api/charity/${storedCharity.id}/profile`, {
+      const res = await fetch(`/api/charity/${Charity.id}/profile`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const CharityProfileForm = ({ charity, onUpdate }) => {
         <h2>Edit Profile</h2>
         <button 
           className="btn-secondary"
-          onClick={() => navigate('/charity/dashboard')}
+          onClick={() => navigate(`/charity/dashboard/${storedCharity?.id}`)}
         >
           Back to Dashboard
         </button>
