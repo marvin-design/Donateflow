@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddInventoryItemForm from './AddInventoryItemForm';
+import axios from '../../utils/axios'; // <-- Adjust this path if necessary
 
 const InventoryList = () => {
   const [inventory, setInventory] = useState([]);
@@ -14,36 +15,28 @@ const InventoryList = () => {
 
   useEffect(() => {
     if (!token || !charity?.id) {
-      navigate('/login');
+      navigate('/login/charity');
       return;
     }
 
     const fetchData = async () => {
       try {
-      
+        const headers = {
+          Authorization: `Bearer ${token}`
+        };
+
         const [itemsRes, beneficiariesRes] = await Promise.all([
-          fetch(`/api/charity/${charity.id}/inventory_items`, {
-            headers: { Authorization: `Bearer ${token}` }
-          }),
-          fetch(`/api/charity/${charity.id}/beneficiaries`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
+          axios.get(`/api/charity/${charity.id}/inventory_items`, { headers }),
+          axios.get(`/api/charity/${charity.id}/beneficiaries`, { headers })
         ]);
 
-        const items = await itemsRes.json();
-        const beneficiaries = await beneficiariesRes.json();
-
-        if (!itemsRes.ok || !beneficiariesRes.ok) {
-          throw new Error(items.error || beneficiaries.error || 'Fetch error');
-        }
-
-        setInventory(items);
-        setBeneficiaries(beneficiaries);
+        setInventory(itemsRes.data);
+        setBeneficiaries(beneficiariesRes.data);
         setLoading(false);
 
       } catch (err) {
         console.error(err);
-        navigate('/login');
+        navigate('/login/charity');
       }
     };
 

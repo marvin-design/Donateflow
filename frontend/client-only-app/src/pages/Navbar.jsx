@@ -28,7 +28,7 @@ const CustomNavbar = () => {
         <Navbar.Toggle aria-controls="main-navbar-nav" />
         <Navbar.Collapse id="main-navbar-nav">
           <Nav className="mx-auto gap-3 position-relative">
-            {["About", "Charities", "Admin"].map((item, index) => (
+            {["About", "Charities"].map((item, index) => (
               <Nav.Link
                 key={item}
                 as={Link}

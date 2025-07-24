@@ -4,6 +4,7 @@ import axios from '../../utils/axios';
 import BeneficiariesList from './BeneficiariesList';
 import InventoryList from './InventoryList';
 import CharityProfileForm from './CharityProfileForm';
+import CharityDonations from './CharityDonations';
 
 const CharityDashboard = () => {
   const [activeTab, setActiveTab] = useState('beneficiaries');
@@ -64,16 +65,14 @@ const CharityDashboard = () => {
         <div className="dashboard-nav-buttons">
           <button 
             className="btn-secondary"
-            onClick={() => navigate('/charities')}
+            onClick={() => navigate('/donors/charities')}
           >
             View All Charities
           </button>
-          <button 
-            className="btn-secondary"
-            onClick={() => navigate('/donations')}
-          >
-            View Donations
-          </button>
+          <div>
+            <CharityDonations/>
+          </div>
+          
         </div>
 
         <div className="dashboard-stats">

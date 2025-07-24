@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddBeneficiaryForm from './AddBeneficiaryForm';
+import axios from '../../utils/axios';
 
 const BeneficiariesList = () => {
   const [showForm, setShowForm] = useState(false);
@@ -9,40 +10,35 @@ const BeneficiariesList = () => {
   const navigate = useNavigate();
 
 const token = localStorage.getItem('token');
-const charity = {
-  id: localStorage.getItem('user_id'),
-  name: localStorage.getItem('name')
-};
+const charityId = localStorage.getItem('user_id');
 
-  useEffect(() => {
-    if (!token || !charity?.id) {
+useEffect(() => {
+  if (!token) {
+    navigate('/login/charity');
+    return;
+  }
+
+  const fetchBeneficiaries = async () => {
+    try {
+      const res = await axios.get(`/api/charity/${charityId}/beneficiaries`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (res.status !== 200) throw new Error(res.data.error || 'Failed to fetch beneficiaries');
+
+      setBeneficiaries(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
       navigate('/login/charity');
-      return;
     }
+  };
 
-    const fetchBeneficiaries = async () => {
-      try {
-        const res = await fetch(`/api/charity/${charity.id}/beneficiaries`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.error || 'Failed to fetch beneficiaries');
-
-        setBeneficiaries(data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
-        navigate('/login/charity');
-      }
-    };
-
-    fetchBeneficiaries();
-  }, [charity?.id, token, navigate]);
+  fetchBeneficiaries();
+}, [token, charityId, navigate]);
 
   const handleAddBeneficiary = (newBeneficiary) => {
     setBeneficiaries(prev => [...prev, newBeneficiary]);
@@ -58,7 +54,7 @@ const charity = {
         <div>
           <button 
             className="btn-secondary"
-            onClick={() => navigate('/charity/dashboard')}
+            onClick={() => navigate(`/charity/dashboard/${charityId.id}`)}
           >
             Back to Dashboard
           </button>
