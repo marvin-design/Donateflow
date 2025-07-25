@@ -29,6 +29,7 @@ import AdminDashboard from './components/Admin/AdminDashboard';
 import Navbar from './pages/Navbar';
 import CreateStoryForm from './components/Charity/CreateStoryForm';
 import StoryFeed from './pages/StoriesFeed';
+import CharityDonations from './components/Charity/CharityDonations'
 
 function App() {
   return (
@@ -55,7 +56,7 @@ function App() {
           <Route path="/charity/:id/beneficiaries" element={<BeneficiariesList />} />
           <Route path="/charity/inventory" element={<InventoryList />} />
           <Route path="/charity/profile" element={<CharityProfileForm />} />
-          <Route path='/charity/:id/stories' element={<CreateStoryForm/>}/>
+          <Route path='/charity/stories' element={<CreateStoryForm/>}/>
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/search-charities" element={<SearchCharity />} />
           <Route path="/donations/:donationId/update-recurring" element={<UpdateRecurringStatus />} />
@@ -65,6 +66,8 @@ function App() {
           <Route path="/admin/applications" element={<CharityApplicationsList />} />
           <Route path="/admin/charities" element={<CharityManagement />} /> */}
           <Route path='/charity/stories/feed' element={<StoryFeed/>}></Route>
+          <Route path="/charity/:charityId/donations" element={<CharityDonations />} />
+
        
         </Routes>
       </Router>
