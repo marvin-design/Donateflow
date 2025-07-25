@@ -51,6 +51,8 @@ const CharityDashboard = () => {
     fetchDashboardData();
   }, [navigate]);
 
+  
+
   const handleCardClick = (type) => {
     if (type === "beneficiaries") {
       setModalData(charityData.last_beneficiary);

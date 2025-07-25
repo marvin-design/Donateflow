@@ -1,128 +1,49 @@
-import React, { useState } from "react";
-import { Navbar, Nav, Container, Dropdown, NavDropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { FaUserCircle, FaHeart } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const CustomNavbar = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleMouseEnter = (index) => {
-    setActiveIndex(index);
-  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
-  const handleMouseLeave = () => {
-    setActiveIndex(null);
+    if (token && role) {
+      setUserRole(role);
+    } else {
+      setUserRole(null);
+    }
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
   };
 
   return (
-    <Navbar bg="white" expand="lg" className="shadow-sm py-3 border-bottom">
+    <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand
-          as={Link}
-          to="/"
-          className="fw-bold fs-4 text-black d-flex align-items-center gap-2"
-        >
-          <FaHeart color="#F97316" /> DonateFlow
-        </Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">DonateFlow</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
+            {/* Always show About link */}
+            <Nav.Link as={Link} to="/about">About</Nav.Link>
 
-        <Navbar.Toggle aria-controls="main-navbar-nav" />
-        <Navbar.Collapse id="main-navbar-nav">
-          <Nav className="mx-auto gap-3 position-relative">
-            {["About", "Charities"].map((item, index) => (
-              <Nav.Link
-                key={item}
-                as={Link}
-                to={`/${item.toLowerCase()}`}
-                className="text-dark fw-semibold nav-link-hover position-relative"
-                style={{
-                  transition: "color 0.3s ease, transform 0.3s ease",
-                }}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-              >
-                {item}
-                {activeIndex === index && (
-                  <span
-                    className="woosh-line"
-                    style={{
-                      position: "absolute",
-                      bottom: "-5px",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      width: "100%",
-                      height: "2px",
-                      backgroundColor: "#F97316",
-                      transition: "transform 0.3s ease",
-                    }}
-                  />
-                )}
-              </Nav.Link>
-            ))}
-          </Nav>
-
-          <Nav className="align-items-center gap-3">
-            <Dropdown>
-              <Dropdown.Toggle
-                variant="outline-warning"
-                size="sm"
-                className="rounded-pill fw-medium"
-                style={{
-                  transition: "background-color 0.3s ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#F97316"; // Orange background on hover
-                  e.currentTarget.style.color = "white"; // White text on hover
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = ""; // Reset background
-                  e.currentTarget.style.color = ""; // Reset text color
-                }}
-              >
-                Donor
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  href="#/action-1"
-                  style={{ transition: "background-color 0.3s ease" }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      "rgba(255, 165, 0, 0.2)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = "")
-                  }
-                >
-                  Donor
-                </Dropdown.Item>
-                <Dropdown.Item
-                  href="#/action-2"
-                  style={{ transition: "background-color 0.3s ease" }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      "rgba(255, 165, 0, 0.2)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = "")
-                  }
-                >
-                  Charity
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-
-            <NavDropdown
-              title={<FaUserCircle size={22} />}
-              id="account-dropdown"
-              align="end"
-              className="text-dark"
-            >
-              <NavDropdown.Item as={Link} to="/profile">
-                Profile
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/logout">
-                Logout
-              </NavDropdown.Item>
-            </NavDropdown>
+            {/* Show role-based dropdown if logged in */}
+            {userRole === "charity" && (
+              <NavDropdown title="Charity Profile" id="charity-dropdown">
+                <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+              </NavDropdown>
+            )}
+            {userRole === "donor" && (
+              <NavDropdown title="Donor Profile" id="donor-dropdown">
+                <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+              </NavDropdown>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
