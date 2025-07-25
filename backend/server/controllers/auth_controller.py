@@ -87,9 +87,16 @@ def login_charity():
         return jsonify({"error": "Charity not approved yet"}), 403
 
     token = create_access_token(identity=user.id, additional_claims={"role": "charity"})
-    return jsonify({"access_token": token, "user_id": user.id, "role": "charity", "name": user.name}), 200
+    #made changes
+    return jsonify({
+    "access_token": token,
+    "user_id": user.id,
+    "role": "charity",
+    "name": user.name
+}), 200
 
-SECRET_ADMIN_KEY = os.getenv('SECRET_ADMIN_KEY')
+
+
 @auth_bp.route('/login/admin', methods=['POST'])
 def login_admin():
     data = request.get_json()
@@ -97,7 +104,7 @@ def login_admin():
     password = data.get('password')
     secret_key = data.get('secret_key')
 
-    if secret_key != "SECRET_ADMIN_KEY": 
+    if secret_key != "SECRET_ADMIN_KEY":  # Replace with env variable later
         return jsonify({"error": "Unauthorized"}), 403
 
     user = Admin.query.filter_by(email=email).first()

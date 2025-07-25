@@ -10,11 +10,11 @@ const InventoryList = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem('access_token');
-  const charity = JSON.parse(localStorage.getItem('logged_in_charity'));
+const token = localStorage.getItem('token');
+const charityId = localStorage.getItem('user_id');
 
   useEffect(() => {
-    if (!token || !charity?.id) {
+    if (!token || !charityId) {
       navigate('/login/charity');
       return;
     }
@@ -26,8 +26,8 @@ const InventoryList = () => {
         };
 
         const [itemsRes, beneficiariesRes] = await Promise.all([
-          axios.get(`/api/charity/${charity.id}/inventory_items`, { headers }),
-          axios.get(`/api/charity/${charity.id}/beneficiaries`, { headers })
+          axios.get(`/api/charity/${charityId}/inventory_items`, { headers }),
+          axios.get(`/api/charity/${charityId}/beneficiaries`, { headers })
         ]);
 
         setInventory(itemsRes.data);
@@ -41,7 +41,7 @@ const InventoryList = () => {
     };
 
     fetchData();
-  }, [charity?.id, token, navigate]);
+  }, [charityId, token, navigate]);
 
   const handleAddItem = (newItem) => {
     setInventory(prev => [...prev, newItem]);
@@ -57,7 +57,7 @@ const InventoryList = () => {
         <div>
           <button 
             className="btn-secondary"
-            onClick={() => navigate('/charity/dashboard')}
+            onClick={() => navigate(`/charity/dashboard/${charityId.id}`)}
           >
             Back to Dashboard
           </button>

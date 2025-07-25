@@ -15,10 +15,10 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('access_token');
-    const charity = JSON.parse(localStorage.getItem('logged_in_charity'));
+    const token = localStorage.getItem('token');
+     const charityId = parseInt(localStorage.getItem("user_id")); 
 
-    if (!token || !charity?.id) {
+    if (!token || !charityId) {
       setMessage('You must be logged in as a charity.');
       return;
     }
@@ -29,7 +29,7 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
         sent_date: new Date().toISOString().split('T')[0] 
       };
 
-      const res = await fetch(`/api/charity/${charity.id}/inventory_items`, {
+      const res = await fetch(`http://localhost:5000/api/charity/${charityId}/inventory_items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

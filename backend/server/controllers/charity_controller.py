@@ -7,12 +7,28 @@ from models.charityApplications import CharityApplication
 from models.donation import Donation
 from models.charityStory import Story
 from extensions import db
-from flask_jwt_extended import jwt_required,get_jwt_identity, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
 
 
-charity_bp = Blueprint ("charity", __name__ )
+charity_bp = Blueprint("charity", __name__)
+
+# ====== NEW SEARCH ENDPOINT ======
+@charity_bp.route('/search', methods=['GET'])
+def search_charities():
+    """Search charities by name (case-insensitive)"""
+    search_query = request.args.get('q', '').strip()
+    
+    if not search_query:
+        return jsonify({"error": "Empty search query"}), 400
+
+    # Case-insensitive search by name with limit
+    charities = Charity.query.filter(
+        Charity.name.ilike(f"%{search_query}%")
+    ).limit(5).all()  # Return max 5 results
+
+    return jsonify([charity.to_dict() for charity in charities]), 200
 
 
 @charity_bp.route('/apply', methods=['POST'])
@@ -44,12 +60,10 @@ def apply_charity():
 
     except KeyError as e:
         raise BadRequest(f"Missing required field: {str(e)}")
-
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
-
 
 @charity_bp.route('/dashboard/<int:charity_id>', methods=['GET'])
 @jwt_required()
@@ -66,7 +80,7 @@ def get_dashboard(charity_id):
         }
     })
 
-@charity_bp.route('/beneficiaries', methods=['POST'])
+@charity_bp.route('/<int:charity_id>/beneficiaries', methods=['POST'])
 def add_beneficiary(charity_id):
     """Add a new beneficiary."""
     data = request.get_json()
@@ -144,7 +158,7 @@ def update_charity_profile(charity_id):
         "description": charity.description
     }), 200
 
-@charity_bp.route('/stories', methods=['POST'])
+@charity_bp.route('/<int:charity_id>/stories', methods=['POST'])
 @jwt_required()
 def create_story(charity_id):
     data = request.get_json()
@@ -180,12 +194,9 @@ def story_feed():
         print("Error in story_feed:", e)
         return jsonify({"error": str(e)}), 500
     
-# GET /charities/<int:charity_id>/donations
 @charity_bp.route('/<int:charity_id>/donations', methods=['GET'])
 def get_charity_donations(charity_id):
     donations = Donation.query.filter_by(charity_id=charity_id).all()
     if not donations:
         return jsonify([]), 200
-    return jsonify([donation.serialize() for donation in donations]), 200
-
-
+    return jsonify([donation.to_dict() for donation in donations]), 200

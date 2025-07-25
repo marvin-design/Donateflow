@@ -33,3 +33,4 @@ class Config:
 
     #images config
     CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
+    SECRET_ADMIN_KEY = os.getenv('SECRET_ADMIN_KEY')

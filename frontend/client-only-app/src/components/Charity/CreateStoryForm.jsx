@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import axios from '../../utils/axios';
-import ImageUpload from '../ImageUpload'
-import { useParams } from 'react-router-dom';
+
 
 const CreateStoryForm = () => {
-  const { id: charityId } = useParams();  // From route param
+  const token = localStorage.getItem('token');
+  const charityId = localStorage.getItem('user_id');
+
   const [form, setForm] = useState({
     title: '',
     content: '',
@@ -24,8 +25,8 @@ const CreateStoryForm = () => {
     e.preventDefault();
     setMessage('');
 
+
     try {
-      const token = localStorage.getItem('token');
       const res = await axios.post(`/api/charity/${charityId}/stories`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -68,8 +69,15 @@ const CreateStoryForm = () => {
         />
 
         <label>Upload Image:</label>
-        <ImageUpload onUploadSuccess={handleImageUploadSuccess} />
-
+        <input
+          type="text"
+          name="photo_url"
+          value={form.photo_url}
+          onChange={handleChange}
+          required
+        />
+       
+        
         <button type="submit">Post Story</button>
       </form>
     </div>
