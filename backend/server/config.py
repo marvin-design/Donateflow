@@ -8,6 +8,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
     JWT_HEADER_TYPE = 'Bearer'
+    SECRET_ADMIN_KEY = os.getenv('SECRET_ADMIN_KEY')
 
     # CORS settings
     CORS_ORIGINS = ['http://localhost:5173']

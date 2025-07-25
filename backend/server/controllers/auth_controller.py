@@ -6,6 +6,7 @@ from extensions import db
 from models.donor import Donor
 from models.charity import Charity
 from models.admin import Admin
+import os
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -88,16 +89,25 @@ def login_charity():
     token = create_access_token(identity=user.id, additional_claims={"role": "charity"})
     return jsonify({"access_token": token, "user_id": user.id, "role": "charity", "name": user.name}), 200
 
-
+SECRET_ADMIN_KEY = os.getenv('SECRET_ADMIN_KEY')
 @auth_bp.route('/login/admin', methods=['POST'])
 def login_admin():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    secret_key = data.get('secret_key')
+
+    if secret_key != "SECRET_ADMIN_KEY": 
+        return jsonify({"error": "Unauthorized"}), 403
 
     user = Admin.query.filter_by(email=email).first()
     if not user or not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
     token = create_access_token(identity=user.id, additional_claims={"role": "admin"})
-    return jsonify({"access_token": token, "user_id": user.id, "role": "admin", "name": user.name}), 200
+    return jsonify({
+        "access_token": token,
+        "user_id": user.id,
+        "role": "admin",
+        "name": user.name
+    }), 200
