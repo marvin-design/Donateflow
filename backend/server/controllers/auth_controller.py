@@ -94,10 +94,19 @@ def login_admin():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    secret_key = data.get('secret_key')
+
+    if secret_key != "SECRET_ADMIN_KEY":  # Replace with env variable later
+        return jsonify({"error": "Unauthorized"}), 403
 
     user = Admin.query.filter_by(email=email).first()
     if not user or not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
     token = create_access_token(identity=user.id, additional_claims={"role": "admin"})
-    return jsonify({"access_token": token, "user_id": user.id, "role": "admin", "name": user.name}), 200
+    return jsonify({
+        "access_token": token,
+        "user_id": user.id,
+        "role": "admin",
+        "name": user.name
+    }), 200
