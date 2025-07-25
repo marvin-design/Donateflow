@@ -17,7 +17,6 @@ def upload_image():
     # Check for empty filename
     if file.filename == '':
         return jsonify({"error": "Empty filename"}), 400
-
     try:
         # Upload image to Cloudinary
         upload_result = cloudinary.uploader.upload(
