@@ -23,7 +23,7 @@ const CharityApplicationForm = () => {
     }
 
     try {
-      const response = await fetch("/api/charity/apply", {
+      const response = await fetch("http://localhost:5000/api/charity/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

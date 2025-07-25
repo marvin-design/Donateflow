@@ -18,16 +18,16 @@ const CharityProfileForm = ({ onUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('access_token');
-    const Charity = JSON.parse(localStorage.getItem('logged_charity'));
+    const token = localStorage.getItem('token');
+    const charityId = parseInt(localStorage.getItem("user_id")); 
 
-    if (!token || !Charity?.id) {
+    if (!token || !charityId) {
       setMessage('Unauthorized: Please log in again.');
       return;
     }
 
     try {
-      const res = await fetch(`/api/charity/${Charity.id}/profile`, {
+      const res = await fetch(`http://localhost:5000/api/charity/${charityId}/profile`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

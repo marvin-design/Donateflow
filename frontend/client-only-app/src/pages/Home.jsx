@@ -16,7 +16,7 @@ const Home = () => {
           <Link to="/register/donor" style={styles.heroDonateBtn}>
             Start Donating
           </Link>
-          <Link to="/charities" style={styles.heroLearnBtn}>
+          <Link to="/about" style={styles.heroLearnBtn}>
             Learn More
           </Link>
         </div>

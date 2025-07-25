@@ -11,40 +11,47 @@ const AddBeneficiaryForm = ({ onAdd }) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const token = localStorage.getItem('token');
+  const charityId = parseInt(localStorage.getItem("user_id")); 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('access_token');
-    const charity = JSON.parse(localStorage.getItem('logged_in_charity'));
+  if (!token || !charityId) {
+    setMessage("Not authorized or charity not found");
+    return;
+  }
 
-    if (!token || !charity?.id) {
-      setMessage("Not authorized or charity not found");
-      return;
+  try {
+    const res = await fetch(`http://localhost:5000/api/charity/${charityId}/beneficiaries`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(formData)
+    });
+    //the fetch here and the token were the issue so do not alter them
+
+    let data = null;
+    const contentType = res.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      data = await res.json();
     }
 
-    try {
-      const res = await fetch(`/api/charity/${charity.id}/beneficiaries`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || 'Failed to add beneficiary');
-
-      setMessage('Beneficiary added successfully!');
-      onAdd(data); 
-      setFormData({ name: '', location: '' });
-
-    } catch (err) {
-      console.error(err);
-      setMessage(err.message);
+    if (!res.ok) {
+      throw new Error((data && data.error) || 'Failed to add beneficiary');
     }
-  };
+
+    setMessage('Beneficiary added successfully!');
+    if (data) onAdd(data); 
+    setFormData({ name: '', location: '' });
+
+  } catch (err) {
+    console.error("Submission error:", err);
+    setMessage(err.message || 'An error occurred');
+  }
+};
 
   return (
     <div className="form-container">

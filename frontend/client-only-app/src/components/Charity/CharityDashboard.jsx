@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from '../../utils/axios';
 import BeneficiariesList from './BeneficiariesList';
@@ -13,19 +13,20 @@ const CharityDashboard = () => {
   const [modalData, setModalData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const charityId = useRef();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       const token = localStorage.getItem("token");
-      const charityId = localStorage.getItem("user_id");
+      charityId.current = localStorage.getItem("user_id");
 
-      if (!token || !charityId) {
+      if (!token || !charityId.current) {
         navigate("/login/charity");
         return;
       }
 
       try {
-        const res = await axios.get(`/api/charity/dashboard/${charityId}`, {
+        const res = await axios.get(`/api/charity/dashboard/${charityId.current}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -49,6 +50,8 @@ const CharityDashboard = () => {
 
     fetchDashboardData();
   }, [navigate]);
+
+  
 
   const handleCardClick = (type) => {
     if (type === "beneficiaries") {
@@ -106,17 +109,13 @@ const CharityDashboard = () => {
         </p>
 
         <div className="dashboard-nav-buttons">
-          <button 
-            className="btn-secondary"
-            onClick={() => navigate('/donors/charities')}
-          >
-            View All Charities
-          </button>
-          <div>
-            <CharityDonations/>
-          </div>
           
+         <div>
+        <Link to={`/charity/${charityId.current}/donations`}>Donations </Link>
+      </div>
+              
         </div>
+     
 
         {/* Enhanced Quick Actions Section */}
         <div className="quick-actions text-center mt-5">
