@@ -3,15 +3,23 @@ import { useParams } from 'react-router-dom';
 import axios from '../../utils/axios'; // adjust path as needed
 
 export default function CharityDonations() {
-  const { charityId } = useParams();
+  
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+
+const token = localStorage.getItem('token');
+const charityId = localStorage.getItem('user_id');
+
   useEffect(() => {
+    if (!token || !charityId) {
+      navigate('/login/charity');
+      return;
+    }
     const fetchDonations = async () => {
       try {
-        const response = await axios.get(`/api/charities/${charityId}/donations`);
+        const response = await axios.get(`/api/charity/${charityId}/donations`);
         setDonations(response.data);
       } catch (err) {
         console.error(err);

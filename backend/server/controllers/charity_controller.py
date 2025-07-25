@@ -66,7 +66,7 @@ def get_dashboard(charity_id):
         }
     })
 
-@charity_bp.route('/beneficiaries', methods=['POST'])
+@charity_bp.route('/<int:charity_id>/beneficiaries', methods=['POST'])
 def add_beneficiary(charity_id):
     """Add a new beneficiary."""
     data = request.get_json()
@@ -144,7 +144,7 @@ def update_charity_profile(charity_id):
         "description": charity.description
     }), 200
 
-@charity_bp.route('/stories', methods=['POST'])
+@charity_bp.route('/<int:charity_id>/stories', methods=['POST'])
 @jwt_required()
 def create_story(charity_id):
     data = request.get_json()
@@ -186,6 +186,6 @@ def get_charity_donations(charity_id):
     donations = Donation.query.filter_by(charity_id=charity_id).all()
     if not donations:
         return jsonify([]), 200
-    return jsonify([donation.serialize() for donation in donations]), 200
+    return jsonify([donation.to_dict() for donation in donations]), 200
 
 

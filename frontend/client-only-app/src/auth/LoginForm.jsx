@@ -19,12 +19,14 @@ const Login = ({ role }) => {
     try {
       const res = await axios.post(`/api/auth/login/${role}`, form);
 
-      const { access_token, user_id, role: userRole, name } = res.data;
-
+      const { access_token, user_id, role: userRole, name} = res.data;
+      
       localStorage.setItem("token", access_token);
       localStorage.setItem("role", userRole);
       localStorage.setItem("user_id", user_id);
       localStorage.setItem("name", name);
+        
+     
 
       // Redirect to appropriate dashboard
       if (userRole === "donor") {
