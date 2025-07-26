@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../utils/axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const DonorDashboard = () => {
   const [donations, setDonations] = useState([]);
@@ -8,6 +8,7 @@ const DonorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAll, setShowAll] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDonations = async () => {
@@ -33,17 +34,39 @@ const DonorDashboard = () => {
 
   const totalAmount = donations.reduce((sum, donation) => sum + parseFloat(donation.amount), 0);
   const totalDonations = donations.length;
-  //const uniqueCharities = new Set(donations.map(d => d.charity.name)).size;
   const displayedDonations = showAll ? [...donations].reverse() : donations.slice(-2).reverse();
+
+  const handleHome = () => {
+    navigate('/');
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="donor-dashboard">
-      <div className="dashboard-header">
+      <div className="dashboard-header" style={{ position: 'relative' }}>
         <h2>Welcome back</h2>
         <p>Thank you for choosing to make a difference</p>
+        
+        {/* Home Button - Far right in header */}
+        <button 
+          onClick={handleHome}
+          className="home-button"
+          style={{
+            position: 'absolute',
+            right: '20px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            padding: '8px 16px',
+            background: '#e6f7ff',
+            border: '1px solid #91d5ff',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          🏠 Home
+        </button>
       </div>
 
       <div className="stats-container">
@@ -57,7 +80,6 @@ const DonorDashboard = () => {
         </div>
         <div className="stat-card">
           <h4>Charities Supported</h4>
-          {/*<p>{uniqueCharities}</p>*/}
         </div>
       </div>
 
@@ -72,7 +94,6 @@ const DonorDashboard = () => {
                 <li key={donation.id}>
                   <p>Amount: KES {donation.amount}</p>
                   <p>Date: {new Date(donation.donation_date).toLocaleDateString()}</p>
-                 {/* <p>Charity: {donation.charity.name}</p>*/}
                 </li>
               ))}
             </ul>

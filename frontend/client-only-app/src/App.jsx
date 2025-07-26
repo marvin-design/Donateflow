@@ -29,15 +29,13 @@ import AdminDashboard from './components/Admin/AdminDashboard';
 import Navbar from './pages/Navbar';
 import CreateStoryForm from './components/Charity/CreateStoryForm';
 import StoryFeed from './pages/StoriesFeed';
-import CharityDonations from './components/Charity/CharityDonations'
-import HiddenAdminLogin from './components/Admin/HiddenAdminLogin';
+import CharityDonations from './components/Charity/CharityDonations';
 
 function App() {
   return (
     <ErrorBoundary>
       <Router>
         <Navbar/>
-        <HiddenAdminLogin />
         <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           <Route path="/" element={<Home />} />

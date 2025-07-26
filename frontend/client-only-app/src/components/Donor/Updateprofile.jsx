@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../utils/axios';
+import { useNavigate } from 'react-router-dom';
 
 const UpdateDonorProfile = ({ donorId }) => {
   const [profileForm, setProfileForm] = useState({
@@ -15,6 +16,7 @@ const UpdateDonorProfile = ({ donorId }) => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   // Fetch donor profile and recurring donations
   useEffect(() => {
@@ -56,6 +58,11 @@ const UpdateDonorProfile = ({ donorId }) => {
 
     fetchData();
   }, [donorId]);
+
+  // Back button handler
+  const handleBack = () => {
+    navigate('/donors/dashboard/3'); // Adjust this path to match your donor route
+  };
 
   const handleProfileChange = e => {
     const { name, value } = e.target;
@@ -119,6 +126,22 @@ const UpdateDonorProfile = ({ donorId }) => {
 
   return (
     <div className="donor-profile-container">
+      {/* Back Button */}
+      <button 
+        onClick={handleBack}
+        className="back-button"
+        style={{
+          marginBottom: '20px',
+          padding: '8px 16px',
+          background: '#f0f0f0',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}
+      >
+        ← Back 
+      </button>
+
       <h2 className="profile-title">Update Your Profile</h2>
       
       {error && <div className="error-message">{error}</div>}

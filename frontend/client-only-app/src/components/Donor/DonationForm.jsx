@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -15,6 +14,12 @@ function DonationForm() {
   const [isRecurring, setIsRecurring] = useState(false);
   const [frequency, setFrequency] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+
+  const handleBack = () => {
+    navigate('/donors/charities');
+  };
 
   const handleAmountChange = (amount) => {
     setSelectedAmount(amount);
@@ -26,8 +31,32 @@ function DonationForm() {
     setCustomAmount(e.target.value);
   };
 
+  const validatePhoneNumber = (number) => {
+    const cleaned = number.replace(/\D/g, '');
+    const kenyanRegex = /^(?:07\d{8}|01\d{8}|\+254[17]\d{8})$/;
+    
+    if (!kenyanRegex.test(cleaned)) {
+      setPhoneError('Invalid Kenyan phone number');
+      return false;
+    }
+    
+    setPhoneError('');
+    return true;
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    setPhoneNumber(value);
+    if (value) validatePhoneNumber(value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isAnonymous && !validatePhoneNumber(phoneNumber)) {
+      toast.error(phoneError || "Please enter a valid phone number");
+      return;
+    }
 
     const amount = selectedAmount
       ? Number(selectedAmount)
@@ -44,6 +73,7 @@ function DonationForm() {
       frequency: isRecurring ? frequency : null,
       is_anonymous: isAnonymous,
       charity_id: id,
+      phone_number: isAnonymous ? null : phoneNumber.replace(/\D/g, '')
     };
 
     try {
@@ -61,6 +91,13 @@ function DonationForm() {
   return (
     <ErrorBoundary>
       <div className="p-6 max-w-md mx-auto mt-10 bg-white rounded shadow">
+        <button 
+          onClick={handleBack}
+          className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+        >
+          ← Back to Charities
+        </button>
+        
         <h2 className="text-2xl font-semibold mb-4">Make a Donation</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -93,6 +130,25 @@ function DonationForm() {
               placeholder="Enter custom amount"
             />
           </div>
+
+          {!isAnonymous && (
+            <div>
+              <label className="block font-medium mb-1">Phone Number:</label>
+              <input
+                type="tel"
+                className={`w-full border px-3 py-2 rounded ${
+                  phoneError ? 'border-red-500' : 'border-gray-300'
+                }`}
+                value={phoneNumber}
+                onChange={handlePhoneChange}
+                placeholder="e.g. 0712345678 or +254712345678"
+                required={!isAnonymous}
+              />
+              {phoneError && (
+                <p className="text-red-500 text-sm mt-1">{phoneError}</p>
+              )}
+            </div>
+          )}
 
           <div className="flex items-center gap-2">
             <input
