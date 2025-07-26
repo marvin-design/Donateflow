@@ -15,7 +15,7 @@ export default function HiddenAdminLogin() {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
       e.preventDefault();
       console.log("🎯 Triggering Admin Modal!");
-      setShowAdminLogin(true);
+      setShowAdminLogin(false);
     }
 
     };
