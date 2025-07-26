@@ -6,6 +6,7 @@ from extensions import db
 from models.donor import Donor
 from models.charity import Charity
 from models.admin import Admin
+import os
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -103,7 +104,7 @@ def login_admin():
     password = data.get('password')
     secret_key = data.get('secret_key')
 
-    if secret_key != "SECRET_ADMIN_KEY":  # Replace with env variable later
+    if secret_key != os.getenv('SECRET_ADMIN_KEY'): 
         return jsonify({"error": "Unauthorized"}), 403
 
     user = Admin.query.filter_by(email=email).first()
