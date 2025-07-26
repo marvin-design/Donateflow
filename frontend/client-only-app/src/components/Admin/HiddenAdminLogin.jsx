@@ -15,7 +15,7 @@ export default function HiddenAdminLogin() {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
       e.preventDefault();
       console.log("🎯 Triggering Admin Modal!");
-      setShowAdminLogin(false);
+      setShowAdminLogin(true);
     }
 
     };
@@ -37,6 +37,7 @@ export default function HiddenAdminLogin() {
       const res = await axios.post("/api/auth/login/admin", form);
       localStorage.setItem("adminToken", res.data.access_token);
       localStorage.setItem("role", res.data.role);
+      setShowAdminLogin(false);
       navigate("/admin/dashboard");
     } catch (err) {
       alert(err.response?.data?.error || "Login failed");
