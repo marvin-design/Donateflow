@@ -7,10 +7,19 @@ name = "pypi"
 flask = "*"
 sqlalchemy = "*"
 flask-migrate = "*"
-flask-apscheduler = "*"
 flask-mail = "*"
+python-dotenv = "*"
+flask-jwt-extended = "*"
+requests = "*"
+bcrypt = "*"
+psycopg2-binary = "*"
+gunicorn = "*"
+flask-login = "*"
+flask-bcrypt = "*"
+cloudinary = "*"
+flask-cors = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.12"
+python_version = "3.8"

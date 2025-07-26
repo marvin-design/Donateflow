@@ -1,4 +1,4 @@
-from app import db
+from extensions import db 
 from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
 
@@ -14,11 +14,11 @@ class Story(db.Model, SerializerMixin):
     
     
 
-    # Serialization rules
-    serialize_rules = ('-charity_stories',)
-
     #Relationship
     charity = db.relationship('Charity',back_populates = 'stories' )
+
+    # Serialization rules
+    serialize_rules = ('-charity',)
     
 
     def __repr__(self):
