@@ -29,7 +29,7 @@ import AdminDashboard from './components/Admin/AdminDashboard';
 import Navbar from './pages/Navbar';
 import CreateStoryForm from './components/Charity/CreateStoryForm';
 import StoryFeed from './pages/StoriesFeed';
-import CharityDonations from './components/Charity/CharityDonations'
+import CharityDonations from './components/Charity/CharityDonations';
 import HiddenAdminLogin from './components/Admin/HiddenAdminLogin';
 
 function App() {
@@ -73,6 +73,7 @@ function App() {
        
         </Routes>
       </Router>
+      
     </ErrorBoundary>
   );
 }

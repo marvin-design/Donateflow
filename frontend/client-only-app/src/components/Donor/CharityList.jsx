@@ -27,12 +27,33 @@ const CharityList = () => {
     fetchCharities();
   }, []);
 
+  // Back button handler
+  const handleBack = () => {
+    navigate('/donors/dashboard/3'); // Adjust this path to match your donor route
+  };
+
   if (loading) return <div className="loading-spinner">Loading charities...</div>;
   if (error) return <div className="error-message">{error}</div>;
   if (charities.length === 0) return <div className="no-charities">No charities found</div>;
 
   return (
     <div className="charity-list-container">
+      {/* Back Button */}
+      <button 
+        onClick={handleBack}
+        className="back-button"
+        style={{
+          marginBottom: '20px',
+          padding: '8px 16px',
+          background: '#f0f0f0',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}
+      >
+        ← Back 
+      </button>
+
       <h2 className="charity-list-title">Available Charities</h2>
       
       <div className="charities-grid">

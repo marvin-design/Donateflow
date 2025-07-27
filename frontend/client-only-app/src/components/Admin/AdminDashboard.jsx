@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from "../../utils/axios";
 import CharityApplicationsList from './CharityApplicationsList';
 import CharityManagement from './CharityManagement';
-
+import { useNavigate } from 'react-router-dom';
 function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const token = localStorage.getItem('adminToken');
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('/api/admin/dashboard', {
@@ -15,8 +16,17 @@ function AdminDashboard() {
     .catch(err => console.error(err));
   }, []);
 
+
+   const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
+
   return (
     <div>
+      <div>
+                <button onClick={handleLogout}>Logout</button>
+                </div>
       <h1>Admin Dashboard</h1>
       {stats && (
         <div>
