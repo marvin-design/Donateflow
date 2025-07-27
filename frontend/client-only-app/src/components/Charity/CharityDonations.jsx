@@ -1,66 +1,168 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from '../../utils/axios'; // adjust path as needed
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios";
 
 export default function CharityDonations() {
-  
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-
-const token = localStorage.getItem('token');
-const charityId = localStorage.getItem('user_id');
+  const token = localStorage.getItem("token");
+  const charityId = localStorage.getItem("user_id");
 
   useEffect(() => {
-    if (!token || !charityId) {
-      navigate('/login/charity');
-      return;
-    }
     const fetchDonations = async () => {
+      if (!token || !charityId) {
+        navigate("/login/charity");
+        return;
+      }
+
       try {
-        const response = await axios.get(`/api/charity/${charityId}/donations`);
+        const response = await axios.get(
+          `/api/charity/${charityId}/donations`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setDonations(response.data);
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch donations.');
+        setError("Failed to fetch donations.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchDonations();
-  }, [charityId]);
+  }, [charityId, navigate, token]);
 
-  if (loading) return <p className="p-4">Loading donations...</p>;
-  if (error) return <p className="p-4 text-red-500">{error}</p>;
-  if (donations.length === 0) return <p className="p-4">No donations yet.</p>;
+  if (loading) return <p className="loading-text">Loading donations...</p>;
+  if (error) return <p className="error-text">{error}</p>;
+  if (donations.length === 0)
+    return <p className="no-donations">No donations yet.</p>;
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Your Donations</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300 text-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border px-4 py-2">Donor</th>
-              <th className="border px-4 py-2">Amount (KES)</th>
-              <th className="border px-4 py-2">Date</th>
-              <th className="border px-4 py-2">Message</th>
-            </tr>
-          </thead>
-          <tbody>
-            {donations.map((donation) => (
-              <tr key={donation.id} className="text-center">
-                <td className="border px-4 py-2">{donation.donor_name}</td>
-                <td className="border px-4 py-2">{donation.amount}</td>
-                <td className="border px-4 py-2">{new Date(donation.date).toLocaleDateString()}</td>
-                <td className="border px-4 py-2">{donation.message || '—'}</td>
+    <div className="donation-bg">
+      <div className="donation-container">
+        <h2 className="donation-title">Donation History</h2>
+        <div className="donation-table-wrapper">
+          <table className="donation-table">
+            <thead>
+              <tr>
+                <th>Donor</th>
+                <th>Amount (KES)</th>
+                <th>Date</th>
+                <th>Message</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {donations.map((donation) => (
+                <tr key={donation.id}>
+                  <td>{donation.donor_name}</td>
+                  <td>{donation.amount.toLocaleString()}</td>
+                  <td>{new Date(donation.date).toLocaleDateString()}</td>
+                  <td>{donation.message || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <style>{`
+        body {
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .donation-bg {
+          min-height: 100vh;
+          background: linear-gradient(270deg, #f97316, #f59e0b, #f97316);
+          background-size: 600% 600%;
+          animation: moveBg 15s ease infinite;
+          display: flex;
+          justify-content: center;
+          align-items: start;
+          padding: 60px 20px;
+        }
+
+        @keyframes moveBg {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .donation-container {
+          width: 100%;
+          max-width: 1100px;
+          background: #ffffff;
+          border-radius: 12px;
+          padding: 30px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .donation-title {
+          font-size: 1.8rem;
+          font-weight: 600;
+          color: #f97316;
+          text-align: center;
+          margin-bottom: 30px;
+        }
+
+        .donation-table-wrapper {
+          overflow-x: auto;
+        }
+
+        .donation-table {
+          width: 100%;
+          border-collapse: collapse;
+          background: #fff;
+          border-radius: 10px;
+          overflow: hidden;
+        }
+
+        .donation-table thead {
+          background: #f97316;
+          color: #fff;
+        }
+
+        .donation-table th,
+        .donation-table td {
+          padding: 14px 20px;
+          text-align: center;
+          border-bottom: 1px solid #eee;
+        }
+
+        .donation-table tbody tr {
+          transition: background 0.2s ease;
+        }
+
+        .donation-table tbody tr:hover {
+          background-color: #fff7ed;
+        }
+
+        .loading-text,
+        .no-donations,
+        .error-text {
+          text-align: center;
+          margin-top: 40px;
+          font-size: 1rem;
+          color: #6b7280;
+        }
+
+        .error-text {
+          color: #dc2626;
+        }
+      `}</style>
     </div>
   );
 }
