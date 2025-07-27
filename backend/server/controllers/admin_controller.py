@@ -52,7 +52,7 @@ def get_charity_applications():
         
         application_list = [
             {'id': app.id, 
-             'charity_name': app.charity_name, 'email': app.email, 
+             'charity_name': app.charity_name, 'email': app.email,'description': app.description,
              'status': app.status} for app in applications]
         return jsonify({'applications': application_list}), 200
     except Exception as e:
@@ -98,8 +98,7 @@ def review_charity_application(application_id):
             mail.send(msg)
 
          
-            db.session.delete(application)
-            db.session.commit()
+           
 
             return jsonify({'message': 'Application rejected, deleted, and email sent'}), 200
 
@@ -161,3 +160,23 @@ def delete_charity(charity_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
     
+@admin_bp.route('/charities', methods=['GET'])
+@jwt_required()
+def get_approved_charities():
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    try:
+        charities = Charity.query.all()
+        charity_list = [{
+            'id': c.id,
+            'name': c.name,
+            'email': c.email,
+            'description': c.description,
+            'approved_at': c.approved_at
+        } for c in charities]
+        
+        return jsonify({'charities': charity_list}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

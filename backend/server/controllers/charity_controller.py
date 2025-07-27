@@ -200,3 +200,4 @@ def get_charity_donations(charity_id):
     if not donations:
         return jsonify([]), 200
     return jsonify([donation.to_dict() for donation in donations]), 200
+

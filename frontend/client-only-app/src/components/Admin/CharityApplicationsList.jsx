@@ -8,7 +8,7 @@ function CharityApplicationsList() {
   const token = localStorage.getItem('adminToken');
 
   useEffect(() => {
-    axios.get('/api/admin/charity_applications', {
+    axios.get('/api/admin/charity_applications?status=pending', {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => setApplications(res.data.applications))
@@ -23,6 +23,7 @@ function CharityApplicationsList() {
           <tr>
             <th>Charity Name</th>
             <th>Email</th>
+            <th>Description</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -32,6 +33,7 @@ function CharityApplicationsList() {
             <tr key={app.id}>
               <td>{app.charity_name}</td>
               <td>{app.email}</td>
+              <td>{app.description}</td>
               <td>{app.status}</td>
               <td>
                 <button onClick={() => setSelectedApp(app)}>Review</button>

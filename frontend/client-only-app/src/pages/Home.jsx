@@ -60,15 +60,14 @@ const Home = () => {
           <p style={styles.cardText}>
             Apply to receive support and expand your impact.
           </p>
-          <Link to="/register/charity" style={styles.primaryBtnGreen}>
-            Register as Charity
+          <Link to="/apply" style={styles.primaryBtnGreen}>
+            Apply
           </Link>
+          
           <Link to="/login/charity" style={styles.secondaryLinkGreen}>
-            Already registered? Sign in
+            Already have an account? Sign in
           </Link>
-          <Link to="/apply" style={styles.applyLink}>
-            Apply to be a Charity
-          </Link>
+        
         </div>
       </div>
 

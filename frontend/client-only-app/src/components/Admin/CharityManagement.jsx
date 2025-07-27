@@ -6,17 +6,12 @@ function CharityManagement() {
   const token = localStorage.getItem('adminToken');
 
   useEffect(() => {
-    axios.get('/api/admin/dashboard', {
+    axios.get('/api/admin/charities', {
       headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => {
-      axios.get('/api/admin/charity_applications?status=approved', {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(response => {
-        const approved = response.data.applications || [];
-        setCharities(approved);
-      });
-    });
+    }).then(response => {
+      const approved = response.data.charities || [];
+      setCharities(approved);
+    }).catch(err => console.error(err));
   }, []);
 
   const handleDelete = (id) => {
@@ -35,7 +30,7 @@ function CharityManagement() {
       <ul>
         {charities.map(charity => (
           <li key={charity.id}>
-            {charity.charity_name} - {charity.email}
+            {charity.name} - {charity.email}
             <button onClick={() => handleDelete(charity.id)}>Delete</button>
           </li>
         ))}
