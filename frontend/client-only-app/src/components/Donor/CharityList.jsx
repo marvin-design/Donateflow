@@ -27,60 +27,65 @@ const CharityList = () => {
     fetchCharities();
   }, []);
 
-  // Back button handler
   const handleBack = () => {
-    navigate('/donors/dashboard/3'); // Adjust this path to match your donor route
+    navigate('/donors/dashboard/3'); // replace with dynamic ID if needed
   };
 
-  if (loading) return <div className="loading-spinner">Loading charities...</div>;
-  if (error) return <div className="error-message">{error}</div>;
-  if (charities.length === 0) return <div className="no-charities">No charities found</div>;
+  if (loading) return <div className="text-center py-5 text-white">Loading charities...</div>;
+  if (error) return <div className="alert alert-danger text-center mt-4">{error}</div>;
+  if (charities.length === 0) return <div className="text-center py-5 text-white">No charities found</div>;
 
   return (
-    <div className="charity-list-container">
-      {/* Back Button */}
-      <button 
-        onClick={handleBack}
-        className="back-button"
-        style={{
-          marginBottom: '20px',
-          padding: '8px 16px',
-          background: '#f0f0f0',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        ← Back 
-      </button>
+    <div className="min-vh-100 py-5 px-3" style={{ background: 'linear-gradient(to bottom right, #f97316, #ea730c)' }}>
+      <div className="container bg-white rounded-4 shadow p-4">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="fw-bold text-dark mb-0">Available Charities</h2>
+          <button
+            onClick={handleBack}
+            className="btn btn-outline-dark rounded-pill px-3 py-1"
+            style={{ transition: 'all 0.3s ease' }}
+          >
+            ← Back
+          </button>
+        </div>
 
-      <h2 className="charity-list-title">Available Charities</h2>
-      
-      <div className="charities-grid">
-        {charities.map(charity => (
-          <div key={charity.id} className="charity-card">
-            <div className="charity-info">
-              <h3 className="charity-name">{charity.name}</h3>
-              <p className="charity-description">{charity.description}</p>
-              <p className="charity-id">ID: {charity.id}</p>
+        <div className="row">
+          {charities.map((charity) => (
+            <div key={charity.id} className="col-md-6 col-lg-4 mb-4">
+              <div className="card h-100 border-0 shadow-sm rounded-4">
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title fw-semibold">{charity.name}</h5>
+                  <p className="card-text text-muted">{charity.description}</p>
+                  <small className="text-muted">ID: {charity.id}</small>
+
+                  <div className="mt-auto pt-3 d-flex gap-2">
+                    <button
+                      className="btn btn-outline-dark btn-sm flex-fill"
+                      onClick={() => navigate(`/charities/${charity.id}`)}
+                      style={{ transition: 'all 0.3s ease' }}
+                    >
+                      Learn More
+                    </button>
+                    <button
+                      className="btn btn-sm flex-fill"
+                      onClick={() => navigate(`/donate/${charity.id}`)}
+                      style={{
+                        backgroundColor: '#f97316',
+                        color: '#fff',
+                        border: 'none',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea730c'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+                    >
+                      Donate
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="charity-actions">
-              <button
-                className="details-button"
-                onClick={() => navigate(`/charities/${charity.id}`)}
-              >
-                Learn More
-              </button>
-              <button
-                className="donate-button"
-                onClick={() => navigate(`/donate/${charity.id}`)}
-              >
-                Donate
-              </button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

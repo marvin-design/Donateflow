@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../../utils/axios';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "../../utils/axios";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 const DonorDashboard = () => {
   const [donations, setDonations] = useState([]);
   const { donorId } = useParams();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const response = await axios.get(`/api/donors/dashboard/${donorId}`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
-
         setDonations(response.data.donations);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch donation history');
-        console.error('Error fetching donations:', err);
+        setError(
+          err.response?.data?.error || "Failed to fetch donation history"
+        );
+        console.error("Error fetching donations:", err);
       } finally {
         setLoading(false);
       }
@@ -32,89 +33,143 @@ const DonorDashboard = () => {
     fetchDonations();
   }, [donorId]);
 
-  const totalAmount = donations.reduce((sum, donation) => sum + parseFloat(donation.amount), 0);
+  const totalAmount = donations.reduce(
+    (sum, donation) => sum + parseFloat(donation.amount),
+    0
+  );
   const totalDonations = donations.length;
-  const displayedDonations = showAll ? [...donations].reverse() : donations.slice(-2).reverse();
+  const displayedDonations = showAll
+    ? [...donations].reverse()
+    : donations.slice(-2).reverse();
 
   const handleHome = () => {
-    navigate('/');
+    navigate("/");
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading)
+    return <div className="text-center p-4 text-muted">Loading...</div>;
+  if (error) return <div className="text-danger text-center p-4">{error}</div>;
 
   return (
-    <div className="donor-dashboard">
-      <div className="dashboard-header" style={{ position: 'relative' }}>
-        <h2>Welcome back</h2>
-        <p>Thank you for choosing to make a difference</p>
-        
-        {/* Home Button - Far right in header */}
-        <button 
-          onClick={handleHome}
-          className="home-button"
-          style={{
-            position: 'absolute',
-            right: '20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            padding: '8px 16px',
-            background: '#e6f7ff',
-            border: '1px solid #91d5ff',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          🏠 Home
-        </button>
-      </div>
-
-      <div className="stats-container">
-        <div className="stat-card">
-          <h4>Total Donated</h4>
-          <p>KES {totalAmount.toFixed(2)}</p>
+    <div
+      className="min-vh-100 px-4 py-5"
+      style={{
+        background: "linear-gradient(135deg, #f97316, #ea730c)",
+        color: "#fff",
+      }}
+    >
+      <div className="container bg-white text-dark p-4 rounded shadow-lg animate__animated animate__fadeIn">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 className="fw-bold">Welcome back</h2>
+            <p className="text-muted">
+              Thank you for choosing to make a difference
+            </p>
+          </div>
+          <button
+            onClick={handleHome}
+            className="btn btn-outline-primary rounded-pill shadow-sm"
+          >
+            🏠 Home
+          </button>
         </div>
-        <div className="stat-card">
-          <h4>Total Donations</h4>
-          <p>{totalDonations}</p>
-        </div>
-        <div className="stat-card">
-          <h4>Charities Supported</h4>
-        </div>
-      </div>
 
-      <div className="donations-section">
-        <h3>Recent Donations</h3>
-        {donations.length === 0 ? (
-          <p>No donations found.</p>
-        ) : (
-          <>
-            <ul>
-              {displayedDonations.map((donation) => (
-                <li key={donation.id}>
-                  <p>Amount: KES {donation.amount}</p>
-                  <p>Date: {new Date(donation.donation_date).toLocaleDateString()}</p>
-                </li>
-              ))}
-            </ul>
-            {donations.length > 2 && (
-              <button onClick={() => setShowAll(!showAll)}>
-                {showAll ? 'Show Less' : 'View All Donations'}
-              </button>
-            )}
-          </>
-        )}
-      </div>
+        {/* Stats Cards */}
+        <div className="row text-center mb-5">
+          <div className="col-md-4 mb-3">
+            <div className="bg-light p-4 rounded shadow-sm h-100 hover-shadow transition-all">
+              <h5>Total Donated</h5>
+              <p className="fw-bold text-success">
+                KES {totalAmount.toFixed(2)}
+              </p>
+            </div>
+          </div>
+          <div className="col-md-4 mb-3">
+            <div className="bg-light p-4 rounded shadow-sm h-100 hover-shadow transition-all">
+              <h5>Total Donations</h5>
+              <p className="fw-bold">{totalDonations}</p>
+            </div>
+          </div>
+          <div className="col-md-4 mb-3">
+            <div className="bg-light p-4 rounded shadow-sm h-100 hover-shadow transition-all">
+              <h5>Charities Supported</h5>
+              <p className="text-muted">Coming soon...</p>
+            </div>
+          </div>
+        </div>
 
-      <div className="quick-actions">
-        <h3>Quick Actions</h3>
-        <ul>
-          <li><Link to="/donors/charities">Browse Charities</Link></li>
-          <li><Link to="/charity/stories/feed">Read Impact Stories</Link></li>
-          <li><Link to="/search-charities">Search a Charity</Link></li>
-          <li><Link to="/donors/profile/update">Manage Profile & Settings</Link></li>
-          <li><Link to="/donors/recurring-donations">Update Recurring Donations</Link></li>
-        </ul>
+        {/* Recent Donations */}
+        <div className="mb-4">
+          <h4 className="mb-3">Recent Donations</h4>
+          {donations.length === 0 ? (
+            <p className="text-muted">No donations found.</p>
+          ) : (
+            <>
+              <ul className="list-group mb-3">
+                {displayedDonations.map((donation) => (
+                  <li
+                    key={donation.id}
+                    className="list-group-item list-group-item-action d-flex justify-content-between align-items-center transition-all"
+                    style={{ cursor: "pointer" }}
+                    title="Donation details"
+                  >
+                    <div>
+                      <strong>KES {donation.amount}</strong>
+                      <br />
+                      <small className="text-muted">
+                        {new Date(donation.donation_date).toLocaleDateString()}
+                      </small>
+                    </div>
+                    <span className="badge bg-primary-subtle text-primary">
+                      ✓
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {donations.length > 2 && (
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  className="btn btn-sm btn-outline-warning"
+                >
+                  {showAll ? "Show Less" : "View All Donations"}
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-3">
+          <h4 className="mb-3">Quick Actions</h4>
+          <ul className="list-group">
+            {[
+              { text: "Browse Charities", path: "/donors/charities" },
+              { text: "Read Impact Stories", path: "/charity/stories/feed" },
+              { text: "Search a Charity", path: "/search-charities" },
+              {
+                text: "Manage Profile & Settings",
+                path: "/donors/profile/update",
+              },
+              {
+                text: "Update Recurring Donations",
+                path: "/donors/recurring-donations",
+              },
+            ].map((link, i) => (
+              <li
+                key={i}
+                className="list-group-item d-flex justify-content-between align-items-center hover-bg-light transition-all"
+              >
+                <Link
+                  to={link.path}
+                  className="text-decoration-none text-primary fw-semibold"
+                >
+                  {link.text}
+                </Link>
+                <i className="bi bi-chevron-right text-muted"></i>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

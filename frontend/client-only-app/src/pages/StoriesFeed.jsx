@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../utils/axios'; 
-
+import React, { useEffect, useState } from "react";
+import axios from "../utils/axios";
 
 const StoryFeed = () => {
   const [stories, setStories] = useState([]);
@@ -8,10 +7,10 @@ const StoryFeed = () => {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const res = await axios.get('/api/charity/stories/feed');
+        const res = await axios.get("/api/charity/stories/feed");
         setStories(res.data);
       } catch (err) {
-        console.error('Failed to load story feed:', err);
+        console.error("Failed to load story feed:", err);
       }
     };
 
@@ -19,20 +18,116 @@ const StoryFeed = () => {
   }, []);
 
   return (
-    <div className="story-feed">
-      <h2>Latest Impact Stories</h2>
-      <div className="story-grid">
-        {stories.map(story => (
-          <div key={story.id} className="story-card">
-            {story.photo_url && (
-              <img src={story.photo_url} alt={story.title} className="story-image" />
-            )}
-            <h3>{story.title}</h3>
-            <p>{story.content}</p>
-            
+    <div className="story-feed-wrapper">
+      <div className="story-feed">
+        <h2 className="feed-title">Latest Impact Stories</h2>
+
+        {stories.length === 0 ? (
+          <p className="text-center text-gray-600">No stories available.</p>
+        ) : (
+          <div className="story-grid">
+            {stories.map((story) => (
+              <div key={story.id} className="story-card">
+                {story.photo_url && (
+                  <img
+                    src={story.photo_url}
+                    alt={story.title}
+                    className="story-image"
+                  />
+                )}
+                <div className="story-content">
+                  <h3 className="story-title">{story.title}</h3>
+                  <p className="story-text">{story.content}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
+
+      <style>{`
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: 'Inter', sans-serif;
+          background: linear-gradient(135deg, #f97316, #f59e0b);
+          background-attachment: fixed;
+        }
+
+        .story-feed-wrapper {
+          padding: 40px 20px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .story-feed {
+          background: rgba(255, 255, 255, 0.96);
+          padding: 30px;
+          border-radius: 12px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .feed-title {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #1f2937; /* dark gray for visibility */
+          margin-bottom: 30px;
+          text-align: center;
+        }
+
+        .story-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 24px;
+        }
+
+        .story-card {
+          background-color: #fff;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+          display: flex;
+          flex-direction: column;
+          transition: transform 0.2s ease;
+        }
+
+        .story-card:hover {
+          transform: translateY(-4px);
+        }
+
+        .story-image {
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+        }
+
+        .story-content {
+          padding: 20px;
+        }
+
+        .story-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #f97316;
+          margin-bottom: 10px;
+        }
+
+        .story-text {
+          font-size: 0.95rem;
+          color: #4b5563;
+          line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+          .story-feed-wrapper {
+            padding: 20px;
+          }
+
+          .story-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </div>
   );
 };

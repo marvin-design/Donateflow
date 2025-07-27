@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ErrorBoundary from './ErrorBoundary';
+import React, { useState } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ErrorBoundary from "./ErrorBoundary";
 
 function DonationForm() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [selectedAmount, setSelectedAmount] = useState(null);
-  const [customAmount, setCustomAmount] = useState('');
+  const [customAmount, setCustomAmount] = useState("");
   const [isRecurring, setIsRecurring] = useState(false);
-  const [frequency, setFrequency] = useState('');
+  const [frequency, setFrequency] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [phoneError, setPhoneError] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   const handleBack = () => {
-    navigate('/donors/charities');
+    navigate("/donors/charities");
   };
 
   const handleAmountChange = (amount) => {
     setSelectedAmount(amount);
-    setCustomAmount('');
+    setCustomAmount("");
   };
 
   const handleCustomAmountChange = (e) => {
@@ -32,15 +32,13 @@ function DonationForm() {
   };
 
   const validatePhoneNumber = (number) => {
-    const cleaned = number.replace(/\D/g, '');
+    const cleaned = number.replace(/\D/g, "");
     const kenyanRegex = /^(?:07\d{8}|01\d{8}|\+254[17]\d{8})$/;
-    
     if (!kenyanRegex.test(cleaned)) {
-      setPhoneError('Invalid Kenyan phone number');
+      setPhoneError("Invalid Kenyan phone number");
       return false;
     }
-    
-    setPhoneError('');
+    setPhoneError("");
     return true;
   };
 
@@ -52,7 +50,6 @@ function DonationForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!isAnonymous && !validatePhoneNumber(phoneNumber)) {
       toast.error(phoneError || "Please enter a valid phone number");
       return;
@@ -73,7 +70,7 @@ function DonationForm() {
       frequency: isRecurring ? frequency : null,
       is_anonymous: isAnonymous,
       charity_id: id,
-      phone_number: isAnonymous ? null : phoneNumber.replace(/\D/g, '')
+      phone_number: isAnonymous ? null : phoneNumber.replace(/\D/g, ""),
     };
 
     try {
@@ -90,108 +87,132 @@ function DonationForm() {
 
   return (
     <ErrorBoundary>
-      <div className="p-6 max-w-md mx-auto mt-10 bg-white rounded shadow">
-        <button 
-          onClick={handleBack}
-          className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+      <div className="container py-5">
+        <div
+          className="bg-white shadow-lg rounded-4 p-4 p-md-5 mx-auto"
+          style={{ maxWidth: "600px" }}
         >
-          ← Back to Charities
-        </button>
-        
-        <h2 className="text-2xl font-semibold mb-4">Make a Donation</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block font-medium mb-1">Select Amount:</label>
-            <div className="flex gap-3">
-              {[100, 500, 1000].map((amt) => (
-                <button
-                  type="button"
-                  key={amt}
-                  className={`px-4 py-2 rounded border ${
-                    selectedAmount === amt
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100'
-                  }`}
-                  onClick={() => handleAmountChange(amt)}
-                >
-                  Ksh {amt}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">Custom Amount (Ksh):</label>
-            <input
-              type="number"
-              className="w-full border px-3 py-2 rounded"
-              value={customAmount}
-              onChange={handleCustomAmountChange}
-              placeholder="Enter custom amount"
-            />
-          </div>
-
-          {!isAnonymous && (
-            <div>
-              <label className="block font-medium mb-1">Phone Number:</label>
-              <input
-                type="tel"
-                className={`w-full border px-3 py-2 rounded ${
-                  phoneError ? 'border-red-500' : 'border-gray-300'
-                }`}
-                value={phoneNumber}
-                onChange={handlePhoneChange}
-                placeholder="e.g. 0712345678 or +254712345678"
-                required={!isAnonymous}
-              />
-              {phoneError && (
-                <p className="text-red-500 text-sm mt-1">{phoneError}</p>
-              )}
-            </div>
-          )}
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isRecurring}
-              onChange={() => setIsRecurring(!isRecurring)}
-            />
-            <label>Recurring Donation</label>
-          </div>
-
-          {isRecurring && (
-            <div>
-              <label className="block font-medium mb-1">Frequency:</label>
-              <select
-                value={frequency}
-                onChange={(e) => setFrequency(e.target.value)}
-                className="w-full border px-3 py-2 rounded"
-              >
-                <option value="">Select frequency</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>
-          )}
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isAnonymous}
-              onChange={() => setIsAnonymous(!isAnonymous)}
-            />
-            <label>Donate anonymously</label>
-          </div>
-
           <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+            onClick={handleBack}
+            className="btn btn-sm btn-outline-dark mb-4"
           >
-            Donate
+            ← Back to Charities
           </button>
-        </form>
-        <ToastContainer position="top-center" />
+
+          <h2 className="mb-4 fw-bold text-orange">Make a Donation</h2>
+
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label fw-medium">Select Amount:</label>
+              <div className="d-flex gap-3 flex-wrap">
+                {[100, 500, 1000].map((amt) => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => handleAmountChange(amt)}
+                    className={`btn ${
+                      selectedAmount === amt
+                        ? "btn-warning text-white"
+                        : "btn-outline-secondary"
+                    } rounded-pill px-4`}
+                  >
+                    Ksh {amt}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-medium">
+                Custom Amount (Ksh):
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                value={customAmount}
+                onChange={handleCustomAmountChange}
+                placeholder="Enter custom amount"
+              />
+            </div>
+
+            {!isAnonymous && (
+              <div className="mb-3">
+                <label className="form-label fw-medium">Phone Number:</label>
+                <input
+                  type="tel"
+                  className={`form-control ${phoneError ? "is-invalid" : ""}`}
+                  value={phoneNumber}
+                  onChange={handlePhoneChange}
+                  placeholder="e.g. 0712345678 or +254712345678"
+                  required={!isAnonymous}
+                />
+                {phoneError && (
+                  <div className="invalid-feedback">{phoneError}</div>
+                )}
+              </div>
+            )}
+
+            <div className="form-check mb-3">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="recurringDonation"
+                checked={isRecurring}
+                onChange={() => setIsRecurring(!isRecurring)}
+              />
+              <label className="form-check-label" htmlFor="recurringDonation">
+                Recurring Donation
+              </label>
+            </div>
+
+            {isRecurring && (
+              <div className="mb-3">
+                <label className="form-label fw-medium">Frequency:</label>
+                <select
+                  className="form-select"
+                  value={frequency}
+                  onChange={(e) => setFrequency(e.target.value)}
+                >
+                  <option value="">Select frequency</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+            )}
+
+            <div className="form-check mb-4">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="anonymousDonation"
+                checked={isAnonymous}
+                onChange={() => setIsAnonymous(!isAnonymous)}
+              />
+              <label className="form-check-label" htmlFor="anonymousDonation">
+                Donate anonymously
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-lg w-100 text-white"
+              style={{
+                backgroundColor: "#f97316",
+                transition: "all 0.3s",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#ea730c")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#f97316")
+              }
+            >
+              Donate
+            </button>
+          </form>
+          <ToastContainer position="top-center" />
+        </div>
       </div>
     </ErrorBoundary>
   );
