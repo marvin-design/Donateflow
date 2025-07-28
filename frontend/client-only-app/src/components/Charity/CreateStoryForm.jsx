@@ -8,12 +8,20 @@ const CreateStoryForm = () => {
   const [form, setForm] = useState({
     title: "",
     content: "",
-    photo_url: "",
+    image: null,
   });
   const [message, setMessage] = useState("");
+  const [preview, setPreview] = useState(null);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      const file = files[0];
+      setForm((prev) => ({ ...prev, image: file }));
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -21,16 +29,22 @@ const CreateStoryForm = () => {
     setMessage("");
 
     try {
-      const res = await axios.post(`/api/charity/${charityId}/stories`, form, {
+      const data = new FormData();
+      data.append("title", form.title);
+      data.append("content", form.content);
+      data.append("image", form.image);
+
+      const res = await axios.post(`/api/charity/${charityId}/stories`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
 
       if (res.data.id) {
         setMessage("✅ Story posted successfully!");
-        setForm({ title: "", content: "", photo_url: "" });
+        setForm({ title: "", content: "", image: null });
+        setPreview(null);
       }
     } catch (err) {
       setMessage("❌ Failed to post story.");
@@ -97,16 +111,24 @@ const CreateStoryForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="form-label fw-semibold">Photo URL</label>
+            <label className="form-label fw-semibold">Upload Photo</label>
             <input
-              type="text"
+              type="file"
               className="form-control"
-              name="photo_url"
-              value={form.photo_url}
+              name="image"
+              accept="image/*"
               onChange={handleChange}
               required
-              placeholder="Enter image URL"
             />
+            {preview && (
+              <div className="mt-3 text-center">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  style={{ width: "100%", borderRadius: "8px", maxHeight: "250px", objectFit: "cover" }}
+                />
+              </div>
+            )}
           </div>
 
           <button
