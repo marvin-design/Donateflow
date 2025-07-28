@@ -56,7 +56,7 @@ function App() {
           <Route path="/apply" element={<CharityApplicationForm />} />
           <Route path="/charity/dashboard/:id" element={<CharityDashboard />} />
           <Route path="/charity/:id/beneficiaries" element={<BeneficiariesList />} />
-          <Route path="/charity/inventory" element={<InventoryList />} />
+          <Route path="/charity/:id/inventory" element={<InventoryList />} />
           <Route path="/charity/profile" element={<CharityProfileForm />} />
           <Route path='/charity/stories' element={<CreateStoryForm/>}/>
           <Route path="/thank-you" element={<ThankYou />} />

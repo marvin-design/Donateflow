@@ -20,7 +20,7 @@ export default function CharityDonations() {
 
       try {
         const response = await axios.get(
-          `/api/charity/${charityId}/donations`,
+          `/api/charity/charities/${charityId}/donations`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -55,16 +55,16 @@ export default function CharityDonations() {
                 <th>Donor</th>
                 <th>Amount (KES)</th>
                 <th>Date</th>
-                <th>Message</th>
+                <th>Frequency</th>
               </tr>
             </thead>
             <tbody>
               {donations.map((donation) => (
                 <tr key={donation.id}>
-                  <td>{donation.donor_name}</td>
+                  <td>{donation.donor_name || "Anonymous"}</td>
                   <td>{donation.amount.toLocaleString()}</td>
-                  <td>{new Date(donation.date).toLocaleDateString()}</td>
-                  <td>{donation.message || "—"}</td>
+                  <td>{donation.donation_date}</td>
+                  <td>{donation.frequency || "one-time"}</td>
                 </tr>
               ))}
             </tbody>

@@ -194,10 +194,58 @@ def story_feed():
         print("Error in story_feed:", e)
         return jsonify({"error": str(e)}), 500
     
-@charity_bp.route('/<int:charity_id>/donations', methods=['GET'])
-def get_charity_donations(charity_id):
-    donations = Donation.query.filter_by(charity_id=charity_id).all()
-    if not donations:
-        return jsonify([]), 200
-    return jsonify([donation.to_dict() for donation in donations]), 200
+@charity_bp.route('/charities/<int:charity_id>/donations', methods=['GET'])
+@jwt_required()
+def get_limited_donations(charity_id):
+    limit = request.args.get("limit", 3, type=int)
 
+    charity = Charity.query.get(charity_id)
+    if not charity:
+        return jsonify({"error": "Charity not found"}), 404
+
+    donations = Donation.query.filter_by(charity_id=charity_id)\
+        .order_by(Donation.donation_date.desc())\
+        .limit(limit).all()
+
+    donation_list = [donation.to_dict() for donation in donations]
+    return jsonify(donation_list), 200
+@charity_bp.route('/charities/<int:charity_id>/beneficiaries', methods=['GET'])
+@jwt_required()
+def get_limited_beneficiaries(charity_id):
+    limit = request.args.get("limit", 3, type=int)
+
+    charity = Charity.query.get(charity_id)
+    if not charity:
+        return jsonify({"error": "Charity not found"}), 404
+
+    beneficiaries = Beneficiary.query.filter_by(charity_id=charity_id)\
+        .order_by(Beneficiary.id.desc())\
+        .limit(limit).all()
+
+    beneficiary_list = [b.to_dict() for b in beneficiaries]
+    return jsonify(beneficiary_list), 200
+@charity_bp.route('/charities/<int:charity_id>/inventory_items', methods=['GET'])
+@jwt_required()
+def get_limited_inventory(charity_id):
+    limit = request.args.get("limit", 3, type=int)
+
+    charity = Charity.query.get(charity_id)
+    if not charity:
+        return jsonify({"error": "Charity not found"}), 404
+
+    inventory_items = InventoryItem.query.filter_by(charity_id=charity_id)\
+        .order_by(InventoryItem.id.desc())\
+        .limit(limit).all()
+
+    
+    inventory_list = []
+    for inventoryitem in inventory_items:
+        inventory_data = inventoryitem.to_dict()
+        if inventoryitem.beneficiary_id:
+            beneficiary = Beneficiary.query.get(inventoryitem.beneficiary_id)
+            inventory_data["beneficiary_name"] = beneficiary.name if beneficiary else "Unknown"
+        else:
+            inventory_data["beneficiary_name"] = "Unassigned"
+        inventory_list.append(inventory_data)
+
+    return jsonify(inventory_list), 200

@@ -6,8 +6,9 @@ const CharityDashboard = () => {
   const [charityData, setCharityData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [modalData, setModalData] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [recentDonations, setRecentDonations] = useState([]);
+  const [recentBeneficiaries, setRecentBeneficiaries] = useState([]);
+  const [recentInventory,setRecentInventory] = useState([]);
   const navigate = useNavigate();
   const charityId = useRef();
 
@@ -50,19 +51,64 @@ const CharityDashboard = () => {
     fetchDashboardData();
   }, [navigate]);
 
-  const handleCardClick = (type) => {
-    if (type === "beneficiaries") {
-      setModalData(charityData.last_beneficiary);
-    } else if (type === "inventory") {
-      setModalData(charityData.last_inventory);
-    }
-    setShowModal(true);
-  };
+    useEffect(() => {
+    const fetchRecentDonations = async () => {
+      const token = localStorage.getItem("token");
+      // charityId.current = localStorage.getItem("user_id");
 
-  const closeModal = () => {
-    setShowModal(false);
-    setModalData(null);
-  };
+
+      try {
+        const res = await axios.get(`/api/charity/charities/${charityId.current}/donations?limit=3`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setRecentDonations(res.data);
+      } catch (err) {
+        console.error("Failed to fetch recent donations:", err);
+      }
+    };
+
+    fetchRecentDonations();
+  }, []);
+  useEffect(() => {
+    const fetchRecentBeneficiaries = async () => {
+      const token = localStorage.getItem("token");
+      // charityId.current = localStorage.getItem("user_id");
+
+
+      try {
+        const res = await axios.get(`/api/charity/charities/${charityId.current}/beneficiaries?limit=3`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setRecentBeneficiaries(res.data);
+      } catch (err) {
+        console.error("Failed to fetch recent donations:", err);
+      }
+    };
+
+    fetchRecentBeneficiaries();
+  }, []);
+  useEffect(() => {
+    const fetchRecentInventory = async () => {
+      const token = localStorage.getItem("token");
+      // charityId.current = localStorage.getItem("user_id");
+
+
+      try {
+        const res = await axios.get(`/api/charity/charities/${charityId.current}/inventory_items?limit=3`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setRecentInventory(res.data);
+      } catch (err) {
+        console.error("Failed to fetch recent donations:", err);
+      }
+    };
+
+    fetchRecentInventory();
+  }, []);
+
+  
+
+
 
   if (loading) return <p className="loading-text">Loading dashboard...</p>;
   if (error) return <p className="error-text">{error}</p>;
@@ -70,48 +116,59 @@ const CharityDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
+     
         <h1 className="dashboard-title">{charityData.name}</h1>
-        <p className="dashboard-description">{charityData.description}</p>
-        <Link
-          to={`/charity/${charityId.current}/donations`}
-          className="btn btn-primary"
-        >
-          <span className="btn-text">View Donations</span>
-          <span className="btn-icon">→</span>
-        </Link>
-      </div>
+        <p className="dashboard-description">{charityData.description}
+        </p>
+      
+        <div className="dashboard-card">
+          <p>Total Recieved</p>
+          <p></p>
+        </div>
+        <div className="dashboard-card">
+          <p>Total Donors</p>
+          <p></p>
+        </div>
+        <div className="dashboard-card">
+          <p>Beneficiaries</p>
+          <p className="card-value">{charityData.total_beneficiaries}</p>
+        </div>
+        <div className="dashboard-card">
+          <p>Stories Published</p>
+          <p></p>
+        </div>
+
+        <div className="dashboard-card">
+          <p>Current Funds </p>
+          <p></p>
+        </div>
+  
 
       <div className="dashboard-grid">
-        <div
-          className="dashboard-card"
-          onClick={() => handleCardClick("beneficiaries")}
-        >
-          <div className="card-content">
-            <h3 className="card-title">Beneficiaries</h3>
-            <p className="card-value">{charityData.total_beneficiaries}</p>
-          </div>
-          <div className="card-overlay">
-            <p className="overlay-text">View Details</p>
-            <span className="overlay-icon">→</span>
-          </div>
-        </div>
-        <div
-          className="dashboard-card"
-          onClick={() => handleCardClick("inventory")}
-        >
-          <div className="card-content">
-            <h3 className="card-title">Inventory Items</h3>
-            <p className="card-value">{charityData.total_inventory}</p>
-          </div>
-          <div className="card-overlay">
-            <p className="overlay-text">View Details</p>
-            <span className="overlay-icon">→</span>
-          </div>
-        </div>
-      </div>
+         <div className="dashboard-card">
+      <div className="card-content">
+        <h3 className="card-title">Recent Donations</h3>
+        <p>Latest contributions to your charity</p>
 
-      <div className="quick-actions-section">
+        {recentDonations.length > 0 ? (
+          recentDonations.map((donation) => (
+            <div key={donation.id}>
+              <p><strong>{donation.donor.name}</strong></p>
+              <p> {donation.donation_date}</p>
+              <b>KES {donation.amount}</b>
+            </div>
+          ))
+        ) : (
+          <p>No donations yet.</p>
+        )}
+
+        <Link to={`/charity/${charityId.current}/donations`}>
+          <span>View All Donations</span>
+        </Link>
+      </div>
+    </div>
+       
+         <div className="quick-actions-section">
         <h2 className="section-title">Quick Actions</h2>
         <div className="quick-actions-grid">
           {[
@@ -140,26 +197,65 @@ const CharityDashboard = () => {
         </div>
       </div>
 
-      {showModal && modalData && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={closeModal}>
-              &times;
-            </button>
-            <h3 className="modal-title">
-              {modalData.name || modalData.item_name}
-            </h3>
-            <p className="modal-description">
-              {modalData.description || "No description available."}
-            </p>
-          </div>
+      <div className="dashboard-card">
+           <div className="card-content">
+        <h3 className="card-title">Beneficiaries</h3>
+        <p>People helped by your charity</p>
+
+        {recentBeneficiaries.length > 0 ? (
+          recentBeneficiaries.map((beneficiary) => (
+            <div key={beneficiary.id}>
+              <strong>{beneficiary.name}</strong> donated <b>KES {beneficiary.location}</b>
+            </div>
+          ))
+        ) : (
+          <p>No beneficiaries yet.</p>
+        )}
+
+        <Link to={`/charity/${charityId.current}/beneficiaries`}>
+          <span>View More</span>
+        </Link>
+      </div>
+
+       </div>
+      <div className="dashboard-card">
+         <div className="card-content">
+        <h3 className="card-title">Inventory</h3>
+        <p>Items distributed to your beneficiaries</p>
+
+        {recentInventory.length > 0 ? (
+          recentInventory.map((inventory) => (
+            <div key={inventory.id}>
+              <p><strong>{inventory.item_name}</strong></p>
+              <b>
+            <p><strong>To:</strong> {inventory.beneficiary_name}</p>
+
+              <p>Total Amount:{inventory.amount} </p>
+              </b> 
+              <p>Sent:{inventory.sent_date}</p>
+            </div>
+          ))
+        ) : (
+          <p>No inventory yet.</p>
+        )}
+
+        <Link to={`/charity/${charityId.current}/inventory`}>
+          <span>View More</span>
+        </Link>
+      </div>
+
+        </div>  
         </div>
-      )}
+ 
+     
+      
+
+ 
 
       <style jsx>{`
         .dashboard-container {
           padding: 2rem;
-          background: linear-gradient(120deg, #f97316, #f59e0b);
+          background: #fff
           min-height: 100vh;
           font-family: "Inter", sans-serif;
         }

@@ -86,7 +86,7 @@ const InventoryList = () => {
                   ?.name || "Unknown"}
               </p>
               <p>
-                <strong>Qty:</strong> {item.amount}
+                <strong>Total Amount:</strong> {item.amount}
               </p>
               <p>
                 <strong>Sent:</strong> {item.sent_date}
