@@ -3,6 +3,7 @@ import axios from "../utils/axios";
 
 const StoryFeed = () => {
   const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -11,6 +12,8 @@ const StoryFeed = () => {
         setStories(res.data);
       } catch (err) {
         console.error("Failed to load story feed:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -22,7 +25,9 @@ const StoryFeed = () => {
       <div className="story-feed">
         <h2 className="feed-title">Latest Impact Stories</h2>
 
-        {stories.length === 0 ? (
+        {loading ? (
+          <p className="text-center text-gray-600">Loading stories...</p>
+        ) : stories.length === 0 ? (
           <p className="text-center text-gray-600">No stories available.</p>
         ) : (
           <div className="story-grid">
@@ -70,7 +75,7 @@ const StoryFeed = () => {
         .feed-title {
           font-size: 2rem;
           font-weight: 700;
-          color: #1f2937; /* dark gray for visibility */
+          color: #1f2937;
           margin-bottom: 30px;
           text-align: center;
         }
@@ -88,16 +93,17 @@ const StoryFeed = () => {
           box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
           display: flex;
           flex-direction: column;
-          transition: transform 0.2s ease;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .story-card:hover {
           transform: translateY(-4px);
+          box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
         }
 
         .story-image {
           width: 100%;
-          height: 180px;
+          height: 200px;
           object-fit: cover;
         }
 

@@ -51,7 +51,7 @@ const Login = ({ role }) => {
       className="min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(135deg, #f97316 0%, #ea730c 50%, #dc2626 100%)", // Static background
+          "rgba(243, 227, 220, 0.95)", // Static background
       }}
     >
       <div

@@ -10,11 +10,12 @@ from extensions import db
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
+import cloudinary.uploader
 
 
 charity_bp = Blueprint("charity", __name__)
 
-# ====== NEW SEARCH ENDPOINT ======
+
 @charity_bp.route('/search', methods=['GET'])
 def search_charities():
     """Search charities by name (case-insensitive)"""
@@ -161,13 +162,24 @@ def update_charity_profile(charity_id):
 @charity_bp.route('/<int:charity_id>/stories', methods=['POST'])
 @jwt_required()
 def create_story(charity_id):
-    data = request.get_json()
-    title = data.get('title')
-    content = data.get('content')
-    photo_url = data.get('photo_url')
+    # Using form instead of JSON because we're sending files
+    title = request.form.get('title')
+    content = request.form.get('content')
 
-    if not title or not photo_url:
-        return jsonify({"error": "Title and photo URL are required"}), 400
+    if 'image' not in request.files:
+        return jsonify({"error": "Image is required"}), 400
+    
+    image_file = request.files['image']
+
+    if not title or image_file.filename == '':
+        return jsonify({"error": "Title and image are required"}), 400
+
+    
+    upload_result = cloudinary.uploader.upload(
+        image_file,
+        folder="donateflow_stories"
+    )
+    photo_url = upload_result['secure_url']
 
     new_story = Story(
         title=title,
@@ -175,10 +187,12 @@ def create_story(charity_id):
         photo_url=photo_url,
         charity_id=charity_id
     )
+
     db.session.add(new_story)
     db.session.commit()
 
     return jsonify(new_story.to_dict()), 201
+
 
 @charity_bp.route('/stories/<int:story_id>', methods=['GET'])
 def get_story(story_id):

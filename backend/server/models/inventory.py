@@ -10,6 +10,7 @@ class InventoryItem(db.Model, SerializerMixin):
     sent_date = db.Column(db.String(50), nullable=False)
     beneficiary_id = db.Column(db.Integer, db.ForeignKey('beneficiaries.id'), nullable=False)
     charity_id = db.Column(db.Integer, db.ForeignKey('charities.id'), nullable=False)
+    
 
     beneficiary = db.relationship("Beneficiary", back_populates="inventory_items")
     charity = db.relationship("Charity", back_populates="inventory_items")

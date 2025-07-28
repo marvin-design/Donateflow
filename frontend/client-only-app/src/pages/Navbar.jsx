@@ -30,10 +30,10 @@ const CustomNavbar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            {/* Always show About link */}
+            
             <Nav.Link as={Link} to="/about">About</Nav.Link>
 
-            {/* Show role-based dropdown if logged in */}
+            
             {userRole === "charity" && (
               <NavDropdown title="Charity Profile" id="charity-dropdown">
                 <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
