@@ -51,55 +51,54 @@ const DonorDashboard = () => {
   if (error) return <div className="text-danger text-center p-4">{error}</div>;
 
   return (
-    <div
-      className="min-vh-100 px-4 py-5"
-      style={{
-        background: "linear-gradient(135deg, #f97316, #ea730c)",
-        color: "#fff",
-      }}
-    >
-      <div className="container bg-white text-dark p-4 rounded shadow-lg animate__animated animate__fadeIn">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <h2 className="fw-bold">Welcome back</h2>
-            <p className="text-muted">
-              Thank you for choosing to make a difference
-            </p>
-          </div>
-          <button
-            onClick={handleHome}
-            className="btn btn-outline-primary rounded-pill shadow-sm"
-          >
-            🏠 Home
-          </button>
+    <div className="container py-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 className="fw-bold">Welcome back</h2>
+          <p className="text-muted">
+            Thank you for choosing to make a difference
+          </p>
         </div>
+        <button
+          onClick={handleHome}
+          className="btn fw-medium rounded-pill border shadow-sm px-4"
+          style={{
+            borderColor: "#f97316",
+            color: "#f97316",
+            backgroundColor: "transparent",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = "#f97316";
+            e.currentTarget.style.color = "#fff";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#f97316";
+          }}
+        >
+          🏠 Home
+        </button>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="row text-center mb-5">
-          <div className="col-md-4 mb-3">
-            <div className="bg-light p-4 rounded shadow-sm h-100 hover-shadow transition-all">
-              <h5>Total Donated</h5>
-              <p className="fw-bold text-success">
-                KES {totalAmount.toFixed(2)}
-              </p>
+      {/* Stats Cards */}
+      <div className="row g-4 mb-5">
+        {[
+          { label: "Total Donated", value: `KES ${totalAmount.toFixed(2)}` },
+          { label: "Total Donations", value: totalDonations },
+          { label: "Charities Supported", value: "Coming soon..." },
+        ].map((stat, i) => (
+          <div className="col-md-4" key={i}>
+            <div className="border rounded p-4 bg-white shadow-sm text-center h-100">
+              <div className="text-muted small mb-1">{stat.label}</div>
+              <div className="h5 fw-bold text-dark">{stat.value}</div>
             </div>
           </div>
-          <div className="col-md-4 mb-3">
-            <div className="bg-light p-4 rounded shadow-sm h-100 hover-shadow transition-all">
-              <h5>Total Donations</h5>
-              <p className="fw-bold">{totalDonations}</p>
-            </div>
-          </div>
-          <div className="col-md-4 mb-3">
-            <div className="bg-light p-4 rounded shadow-sm h-100 hover-shadow transition-all">
-              <h5>Charities Supported</h5>
-              <p className="text-muted">Coming soon...</p>
-            </div>
-          </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Recent Donations */}
-        <div className="mb-4">
+      {/* Recent Donations */}
+      <div className="mb-5">
+        <div className="border rounded p-4 bg-white shadow-sm">
           <h4 className="mb-3">Recent Donations</h4>
           {donations.length === 0 ? (
             <p className="text-muted">No donations found.</p>
@@ -109,9 +108,7 @@ const DonorDashboard = () => {
                 {displayedDonations.map((donation) => (
                   <li
                     key={donation.id}
-                    className="list-group-item list-group-item-action d-flex justify-content-between align-items-center transition-all"
-                    style={{ cursor: "pointer" }}
-                    title="Donation details"
+                    className="list-group-item d-flex justify-content-between align-items-center"
                   >
                     <div>
                       <strong>KES {donation.amount}</strong>
@@ -120,16 +117,26 @@ const DonorDashboard = () => {
                         {new Date(donation.donation_date).toLocaleDateString()}
                       </small>
                     </div>
-                    <span className="badge bg-primary-subtle text-primary">
-                      ✓
-                    </span>
+                    <span className="badge bg-success">✓</span>
                   </li>
                 ))}
               </ul>
               {donations.length > 2 && (
                 <button
                   onClick={() => setShowAll(!showAll)}
-                  className="btn btn-sm btn-outline-warning"
+                  className="btn btn-outline-warning btn-sm rounded-pill px-3"
+                  style={{
+                    borderColor: "#f97316",
+                    color: "#f97316",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f97316";
+                    e.currentTarget.style.color = "#fff";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#f97316";
+                  }}
                 >
                   {showAll ? "Show Less" : "View All Donations"}
                 </button>
@@ -137,11 +144,13 @@ const DonorDashboard = () => {
             </>
           )}
         </div>
+      </div>
 
-        {/* Quick Actions */}
-        <div className="mb-3">
+      {/* Quick Actions */}
+      <div className="mb-3">
+        <div className="border rounded p-4 bg-white shadow-sm">
           <h4 className="mb-3">Quick Actions</h4>
-          <ul className="list-group">
+          <div className="row g-3">
             {[
               { text: "Browse Charities", path: "/donors/charities" },
               { text: "Read Impact Stories", path: "/charity/stories/feed" },
@@ -155,20 +164,29 @@ const DonorDashboard = () => {
                 path: "/donors/recurring-donations",
               },
             ].map((link, i) => (
-              <li
-                key={i}
-                className="list-group-item d-flex justify-content-between align-items-center hover-bg-light transition-all"
-              >
+              <div className="col-sm-6 col-lg-4" key={i}>
                 <Link
                   to={link.path}
-                  className="text-decoration-none text-primary fw-semibold"
+                  className="btn w-100 fw-medium border rounded-pill py-2 px-3 text-center"
+                  style={{
+                    borderColor: "#f97316",
+                    color: "#f97316",
+                    backgroundColor: "transparent",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f97316";
+                    e.currentTarget.style.color = "#fff";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#f97316";
+                  }}
                 >
                   {link.text}
                 </Link>
-                <i className="bi bi-chevron-right text-muted"></i>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </div>

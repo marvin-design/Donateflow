@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios.js";
@@ -18,17 +17,13 @@ const Login = ({ role }) => {
 
     try {
       const res = await axios.post(`/api/auth/login/${role}`, form);
+      const { access_token, user_id, role: userRole, name } = res.data;
 
-      const { access_token, user_id, role: userRole, name} = res.data;
-      
       localStorage.setItem("token", access_token);
       localStorage.setItem("role", userRole);
       localStorage.setItem("user_id", user_id);
       localStorage.setItem("name", name);
-        
-     
 
-      // Redirect to appropriate dashboard
       if (userRole === "donor") {
         navigate(`/donors/dashboard/${user_id}`);
       } else if (userRole === "charity") {
@@ -50,8 +45,7 @@ const Login = ({ role }) => {
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
       style={{
-        background:
-          "rgba(243, 227, 220, 0.95)", // Static background
+        background: "#ffffff", // changed background to white
       }}
     >
       <div
