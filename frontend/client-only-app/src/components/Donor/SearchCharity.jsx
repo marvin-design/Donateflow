@@ -41,33 +41,40 @@ const SearchCharity = () => {
   };
 
   const handleBack = () => {
-    navigate("/donors/dashboard/3"); // Adjust this if needed
+    navigate("/donors/dashboard/3"); // Adjust if dynamic
   };
 
   return (
     <div
-      className="min-vh-100 d-flex align-items-center"
-      style={{
-        background: "linear-gradient(135deg, #f97316, #ea730c)",
-      }}
+      className="min-vh-100 d-flex align-items-center py-5"
+      style={{ backgroundColor: "#f8f9fa" }}
     >
       <div className="container">
-        <div className="bg-white rounded shadow p-4 p-md-5">
-          {/* Back Button */}
+        <div className="bg-white rounded-4 shadow p-4 p-md-5">
           <button
             onClick={handleBack}
-            className="btn btn-outline-secondary mb-4"
+            className="btn btn-outline-dark mb-4"
+            style={{
+              borderColor: "#f97316",
+              color: "#f97316",
+              transition: "all 0.3s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f97316";
+              e.currentTarget.style.color = "#fff";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#f97316";
+            }}
           >
-            <i className="bi bi-arrow-left me-2"></i>
-            Back
+            ← Back
           </button>
 
-          {/* Title */}
           <h4 className="mb-4 text-center fw-bold" style={{ color: "#f97316" }}>
             Search for a Charity
           </h4>
 
-          {/* Input Group */}
           <div className="input-group mb-4">
             <input
               type="text"
@@ -79,32 +86,48 @@ const SearchCharity = () => {
             />
             <button
               className="btn text-white"
-              style={{ backgroundColor: "#f97316" }}
+              style={{
+                backgroundColor: "#f97316",
+                transition: "all 0.3s",
+              }}
               onClick={handleSearch}
               disabled={loading}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#ea580c")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#f97316")
+              }
             >
               {loading ? "Searching..." : "Search"}
             </button>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="alert alert-danger mb-4" role="alert">
               {error}
             </div>
           )}
 
-          {/* Result */}
           {result && (
             <div className="p-4 bg-light border border-2 rounded-4">
               <h5 className="fw-semibold mb-3" style={{ color: "#f97316" }}>
                 {result.name}
               </h5>
               <p className="text-muted mb-3">{result.description}</p>
-              <div className="d-flex gap-3">
+              <div className="d-flex gap-2">
                 <button
                   className="btn text-white"
-                  style={{ backgroundColor: "#f97316" }}
+                  style={{
+                    backgroundColor: "#f97316",
+                    transition: "all 0.3s",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#ea580c")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#f97316")
+                  }
                   onClick={() => navigate(`/donate/${result.id}`)}
                 >
                   Donate
@@ -112,6 +135,19 @@ const SearchCharity = () => {
                 <button
                   className="btn btn-outline-dark"
                   onClick={() => navigate(`/charities/${result.id}`)}
+                  style={{
+                    borderColor: "#f97316",
+                    color: "#f97316",
+                    transition: "all 0.3s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f97316";
+                    e.currentTarget.style.color = "#fff";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#f97316";
+                  }}
                 >
                   Learn More
                 </button>

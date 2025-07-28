@@ -28,27 +28,22 @@ const CharityList = () => {
   }, []);
 
   const handleBack = () => {
-    navigate("/donors/dashboard/3"); // replace with dynamic ID if needed
+    navigate("/donors/dashboard/3"); // Replace with dynamic ID if needed
   };
 
   if (loading)
     return (
-      <div className="text-center py-5 text-white">Loading charities...</div>
+      <div className="text-center py-5 text-muted">Loading charities...</div>
     );
   if (error)
     return <div className="alert alert-danger text-center mt-4">{error}</div>;
   if (charities.length === 0)
     return (
-      <div className="text-center py-5 text-white">No charities found</div>
+      <div className="text-center py-5 text-muted">No charities found</div>
     );
 
   return (
-    <div
-      className="min-vh-100 py-5 px-3"
-      style={{
-        background: "linear-gradient(to bottom right, #f97316, #ea730c)",
-      }}
-    >
+    <div className="min-vh-100 py-5 px-3" style={{ background: "#ffffff" }}>
       <div className="container bg-white rounded-4 shadow p-4 animate__animated animate__fadeIn">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="fw-bold text-dark mb-0">Available Charities</h2>
@@ -78,7 +73,9 @@ const CharityList = () => {
             <div key={charity.id} className="col-md-6 col-lg-4 mb-4">
               <div className="card h-100 border-0 shadow-sm rounded-4">
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title fw-semibold">{charity.name}</h5>
+                  <h5 className="card-title fw-semibold text-dark">
+                    {charity.name}
+                  </h5>
                   <p className="card-text text-muted">
                     {charity.description?.length > 100
                       ? charity.description.slice(0, 100) + "..."

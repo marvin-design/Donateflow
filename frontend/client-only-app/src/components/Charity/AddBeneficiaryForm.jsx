@@ -1,88 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const AddBeneficiaryForm = ({ onAdd }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    location: ''
+    name: "",
+    location: "",
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const token = localStorage.getItem('token');
-  const charityId = parseInt(localStorage.getItem("user_id")); 
 
-  if (!token || !charityId) {
-    setMessage("Not authorized or charity not found");
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const charityId = parseInt(localStorage.getItem("user_id"));
 
-  try {
-    const res = await fetch(`http://localhost:5000/api/charity/${charityId}/beneficiaries`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(formData)
-    });
-    //the fetch here and the token were the issue so do not alter them
-
-    let data = null;
-    const contentType = res.headers.get("content-type");
-
-    if (contentType && contentType.includes("application/json")) {
-      data = await res.json();
+    if (!token || !charityId) {
+      setMessage("Not authorized or charity not found");
+      return;
     }
 
-    if (!res.ok) {
-      throw new Error((data && data.error) || 'Failed to add beneficiary');
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/charity/${charityId}/beneficiaries`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      let data = null;
+      const contentType = res.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
+        data = await res.json();
+      }
+
+      if (!res.ok) {
+        throw new Error((data && data.error) || "Failed to add beneficiary");
+      }
+
+      setMessage("✅ Beneficiary added successfully!");
+      if (data) onAdd(data);
+      setFormData({ name: "", location: "" });
+    } catch (err) {
+      console.error("Submission error:", err);
+      setMessage(err.message || "An error occurred");
     }
-
-    setMessage('Beneficiary added successfully!');
-    if (data) onAdd(data); 
-    setFormData({ name: '', location: '' });
-
-  } catch (err) {
-    console.error("Submission error:", err);
-    setMessage(err.message || 'An error occurred');
-  }
-};
+  };
 
   return (
-    <div className="form-container">
-      <h3>Add New Beneficiary</h3>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+    <div className="mb-4">
+      <div className="card shadow-sm p-4 mb-3">
+        <h4 className="mb-3 text-orange">Add New Beneficiary</h4>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Name</label>
+            <input
+              type="text"
+              className="form-control"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Beneficiary name"
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Location</label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Location</label>
+            <input
+              type="text"
+              className="form-control"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              required
+              placeholder="Beneficiary location"
+            />
+          </div>
 
-        <button type="submit" className="btn-primary">Add Beneficiary</button>
-      </form>
+          <button
+            type="submit"
+            className="btn custom-orange-btn w-100 fw-semibold"
+          >
+            Add Beneficiary
+          </button>
+        </form>
+        {message && <p className="mt-3 text-muted">{message}</p>}
+      </div>
 
-      {message && <p>{message}</p>}
+      <style>{`
+        .text-orange {
+          color: #f97316;
+        }
+
+        .custom-orange-btn {
+          background-color: transparent;
+          color: #f97316;
+          border: 2px solid #f97316;
+          transition: all 0.3s ease;
+        }
+
+        .custom-orange-btn:hover {
+          background-color: #f97316;
+          color: white;
+        }
+      `}</style>
     </div>
   );
 };

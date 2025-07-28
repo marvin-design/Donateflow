@@ -59,10 +59,7 @@ const CreateStoryForm = () => {
       className="d-flex justify-content-center align-items-center"
       style={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(-45deg, #f97316, #fb923c, #fdba74, #f97316)",
-        backgroundSize: "400% 400%",
-        animation: "gradientMove 10s ease infinite",
+        backgroundColor: "#ffffff",
         padding: "20px",
       }}
     >
@@ -133,7 +130,12 @@ const CreateStoryForm = () => {
                 <img
                   src={preview}
                   alt="Preview"
-                  style={{ width: "100%", borderRadius: "8px", maxHeight: "250px", objectFit: "cover" }}
+                  style={{
+                    width: "100%",
+                    borderRadius: "8px",
+                    maxHeight: "250px",
+                    objectFit: "cover",
+                  }}
                 />
               </div>
             )}
@@ -141,8 +143,14 @@ const CreateStoryForm = () => {
 
           <button
             type="submit"
-            className="btn w-100 fw-semibold"
-            style={{ backgroundColor: "#f97316", color: "white" }}
+            className="btn w-100 fw-semibold text-white"
+            style={{ backgroundColor: "#f97316" }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.backgroundColor = "#ea580c")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "#f97316")
+            }
           >
             🚀 Post Story
           </button>
