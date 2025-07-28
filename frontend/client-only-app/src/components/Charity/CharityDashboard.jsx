@@ -12,7 +12,7 @@ const CharityDashboard = () => {
   const navigate = useNavigate();
   const charityId = useRef();
 
-  useEffect(() => {
+    useEffect(() => {
     const fetchDashboardData = async () => {
       const token = localStorage.getItem("token");
       charityId.current = localStorage.getItem("user_id");
@@ -34,14 +34,16 @@ const CharityDashboard = () => {
 
         const data = res.data;
 
-        setCharityData({
+       setCharityData({
           ...data.charity,
+          total_received: data.total_donations,
+          current_funds: data.current_funds,
+          total_donors: data.total_donors,
           total_beneficiaries: data.total_beneficiaries,
-          total_inventory: data.total_inventory,
-          last_beneficiary: data.recent_activity.last_beneficiary_added,
-          last_inventory: data.recent_activity.last_inventory_added,
+          total_stories: data.total_stories
         });
-        setLoading(false);
+
+                setLoading(false);
       } catch (err) {
         console.error("Failed to load dashboard:", err);
         navigate("/login/charity");
@@ -123,11 +125,11 @@ const CharityDashboard = () => {
       
         <div className="dashboard-card">
           <p>Total Recieved</p>
-          <p></p>
+          <p>{charityData.total_received || 0}</p>
         </div>
         <div className="dashboard-card">
           <p>Total Donors</p>
-          <p></p>
+          <p>{charityData.total_donors || 0}</p>
         </div>
         <div className="dashboard-card">
           <p>Beneficiaries</p>
@@ -135,12 +137,12 @@ const CharityDashboard = () => {
         </div>
         <div className="dashboard-card">
           <p>Stories Published</p>
-          <p></p>
+          <p>{charityData.total_stories || 0}</p>
         </div>
 
         <div className="dashboard-card">
           <p>Current Funds </p>
-          <p></p>
+          <p>{charityData.current_funds}</p>
         </div>
   
 

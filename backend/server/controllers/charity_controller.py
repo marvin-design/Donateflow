@@ -71,15 +71,38 @@ def apply_charity():
 def get_dashboard(charity_id):
     charity = Charity.query.get_or_404(charity_id)
 
+    # Total donations received
+    total_donations = db.session.query(db.func.sum(Donation.amount))\
+        .filter_by(charity_id=charity_id).scalar() or 0
+
+    # Total money spent on inventory items
+    total_inventory_spent = db.session.query(db.func.sum(InventoryItem.amount))\
+        .filter_by(charity_id=charity_id).scalar() or 0
+
+    # Current funds = total donations - inventory spending
+    current_funds = total_donations - total_inventory_spent
+
+    # Total unique donors
+    total_donors = db.session.query(Donation.donor_id)\
+        .filter_by(charity_id=charity_id)\
+        .distinct().count()
+
+    # Total beneficiaries
+    total_beneficiaries = Beneficiary.query.filter_by(charity_id=charity_id).count()
+
+    # Total published stories
+    total_stories = Story.query.filter_by(charity_id=charity_id).count()
+
     return jsonify({
         "charity": charity.to_dict(),
-        "total_beneficiaries": len(charity.beneficiaries),
-        "total_inventory": sum(item.amount for item in charity.inventory_items),
-        "recent_activity": {
-            "last_beneficiary_added": charity.beneficiaries[-1].to_dict() if charity.beneficiaries else None,
-            "last_inventory_added": charity.inventory_items[-1].to_dict() if charity.inventory_items else None
-        }
+        "total_donations": total_donations,
+        "total_inventory_spent": total_inventory_spent,
+        "current_funds": current_funds,
+        "total_donors": total_donors,
+        "total_beneficiaries": total_beneficiaries,
+        "total_stories": total_stories
     })
+
 
 @charity_bp.route('/<int:charity_id>/beneficiaries', methods=['POST'])
 def add_beneficiary(charity_id):
