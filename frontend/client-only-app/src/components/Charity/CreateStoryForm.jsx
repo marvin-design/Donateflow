@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "../../utils/axios";
+import { useNavigate } from "react-router-dom";
 
 const CreateStoryForm = () => {
   const token = localStorage.getItem("token");
   const charityId = localStorage.getItem("user_id");
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     title: "",
@@ -68,7 +70,13 @@ const CreateStoryForm = () => {
         className="card shadow p-4"
         style={{ width: "100%", maxWidth: "600px", borderRadius: "12px" }}
       >
-        <h2 className="text-center mb-4 text-warning">📢 Share a Story</h2>
+        <h2 className="text-center mb-4 text-warning">📢 Share a Story </h2>
+         <button
+              className="btn-secondary"
+              onClick={() => navigate(`/charity/dashboard/${charityId}`)}
+            >
+              Back 
+            </button>
 
         {message && (
           <div
@@ -146,6 +154,16 @@ const CreateStoryForm = () => {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
+        }
+          .btn-secondary {
+          background-color: #4b5563;
+          color: white;
+          width:100px;
+          height: 30px;
+        }
+
+        .btn-secondary:hover {
+          background-color: #374151;
         }
       `}</style>
     </div>

@@ -180,7 +180,7 @@ const CharityDashboard = () => {
             },
             {
               label: "Manage Inventory",
-              link: "/charity/inventory",
+              link: `/charity/${charityData.id}/inventory`,
             },
             {
               label: "Share a Story",
