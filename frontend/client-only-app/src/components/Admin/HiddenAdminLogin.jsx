@@ -10,22 +10,17 @@ export default function HiddenAdminLogin() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-    console.log("Key Pressed:", e.key, "Ctrl:", e.ctrlKey); // Debug
-
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
-      e.preventDefault();
-      console.log("🎯 Triggering Admin Modal!");
-      setShowAdminLogin(true);
-    }
-
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+        e.preventDefault();
+        setShowAdminLogin(true);
+      }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,28 +39,97 @@ export default function HiddenAdminLogin() {
     }
   };
 
-    if (!showAdminLogin) return null;
+  if (!showAdminLogin) return null;
 
   return (
-    <div style={{
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      background: "white",
-      padding: "20px",
-      zIndex: 1000,
-      border: "2px solid black"
-    }}>
-      <h3>Admin Login</h3>
+    <div
+      style={{
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        background: "#ffffff",
+        padding: "30px",
+        zIndex: 1000,
+        borderRadius: "12px",
+        width: "100%",
+        maxWidth: "400px",
+        boxShadow: "0 0 20px rgba(0,0,0,0.15)",
+        border: "1px solid #ddd",
+      }}
+    >
+      <h4 className="text-center mb-4 fw-semibold text-dark">Admin Login</h4>
       <form onSubmit={handleSubmit}>
-        <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} />
-        <input name="secret_key" placeholder="Secret Key" value={form.secret_key} onChange={handleChange} />
-        <button type="submit">Login</button>
-        <button type="button" onClick={() => setShowAdminLogin(false)}>Cancel</button>
+        <div className="mb-3">
+          <input
+            name="email"
+            className="form-control"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            name="password"
+            type="password"
+            className="form-control"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            name="secret_key"
+            className="form-control"
+            placeholder="Secret Key"
+            value={form.secret_key}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="d-flex justify-content-between">
+          <button
+            type="submit"
+            className="btn btn-sm rounded-pill px-4 fw-medium shadow-sm"
+            style={{
+              borderColor: "#f97316",
+              color: "#f97316",
+              backgroundColor: "transparent",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#f97316";
+              e.currentTarget.style.color = "#ffffff";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#f97316";
+            }}
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowAdminLogin(false)}
+            className="btn btn-sm rounded-pill px-4 fw-medium shadow-sm"
+            style={{
+              borderColor: "#f97316",
+              color: "#f97316",
+              backgroundColor: "transparent",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#f97316";
+              e.currentTarget.style.color = "#ffffff";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#f97316";
+            }}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );
-
 }
