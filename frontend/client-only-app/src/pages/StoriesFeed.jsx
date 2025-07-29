@@ -60,9 +60,9 @@ const StoryFeed = () => {
         }
 
         .story-feed-wrapper {
-          padding: 40px 20px;
-          max-width: 1200px;
-          margin: 0 auto;
+          padding: 48px 0px 24px;
+          width: 100%;
+          margin: 48px 0px 0px;
         }
 
         .story-feed {
@@ -82,7 +82,7 @@ const StoryFeed = () => {
 
         .story-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+         grid-template-columns: repeat(4, 1fr);
           gap: 24px;
         }
 

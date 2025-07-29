@@ -1,55 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
   const [formData, setFormData] = useState({
-    item_name: '',
+    item_name: "",
     amount: 1,
-    beneficiary_id: beneficiaries[0]?.id || ''
+    beneficiary_id: beneficiaries[0]?.id || "",
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
-     const charityId = parseInt(localStorage.getItem("user_id")); 
+    const token = localStorage.getItem("token");
+    const charityId = parseInt(localStorage.getItem("user_id"));
 
     if (!token || !charityId) {
-      setMessage('You must be logged in as a charity.');
+      setMessage("You must be logged in as a charity.");
       return;
     }
 
     try {
       const payload = {
         ...formData,
-        sent_date: new Date().toISOString().split('T')[0] 
+        sent_date: new Date().toISOString().split("T")[0],
       };
 
-      const res = await fetch(`http://localhost:5000/api/charity/${charityId}/inventory_items`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/charity/${charityId}/inventory_items`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || 'Failed to add item');
+      if (!res.ok) throw new Error(data.error || "Failed to add item");
 
-      onAdd(data); //add to parent
-      setMessage('Inventory item added successfully!');
+      onAdd(data); // add to parent
+      setMessage("Inventory item added successfully!");
       setFormData({
-        item_name: '',
+        item_name: "",
         amount: 1,
-        beneficiary_id: beneficiaries[0]?.id || ''
+        beneficiary_id: beneficiaries[0]?.id || "",
       });
-
     } catch (err) {
       console.error(err);
       setMessage(err.message);
@@ -57,41 +59,45 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
   };
 
   return (
-    <div className="form-container">
-      <h3>Add Inventory Item</h3>
+    <div className="p-4 bg-white rounded shadow-sm">
+      <h4 className="mb-3 text-dark">Add Inventory Item</h4>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Item Name</label>
+        <div className="mb-3">
+          <label className="form-label fw-medium">Item Name</label>
           <input
             type="text"
             name="item_name"
             value={formData.item_name}
             onChange={handleChange}
+            className="form-control"
+            placeholder="e.g., Food package"
             required
           />
         </div>
 
-        <div className="form-group">
-          <label>Amount</label>
+        <div className="mb-3">
+          <label className="form-label fw-medium">Amount</label>
           <input
             type="number"
             name="amount"
             min="1"
             value={formData.amount}
             onChange={handleChange}
+            className="form-control"
             required
           />
         </div>
 
-        <div className="form-group">
-          <label>Beneficiary</label>
+        <div className="mb-3">
+          <label className="form-label fw-medium">Beneficiary</label>
           <select
             name="beneficiary_id"
             value={formData.beneficiary_id}
             onChange={handleChange}
+            className="form-select"
             required
           >
-            {beneficiaries.map(beneficiary => (
+            {beneficiaries.map((beneficiary) => (
               <option key={beneficiary.id} value={beneficiary.id}>
                 {beneficiary.name}
               </option>
@@ -99,10 +105,28 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
           </select>
         </div>
 
-        <button type="submit" className="btn-primary">Add Item</button>
+        <button
+          type="submit"
+          className="btn border text-orange"
+          style={{
+            borderColor: "#f97316",
+            color: "#f97316",
+            backgroundColor: "transparent",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = "#f97316";
+            e.currentTarget.style.color = "#fff";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#f97316";
+          }}
+        >
+          Add Item
+        </button>
       </form>
 
-      {message && <p>{message}</p>}
+      {message && <p className="mt-3 text-muted">{message}</p>}
     </div>
   );
 };
