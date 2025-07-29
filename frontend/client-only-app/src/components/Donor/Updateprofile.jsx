@@ -16,8 +16,8 @@ const UpdateDonorProfile = ({ donorId }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const donorId = localStorage.getItem("user_id");
+    const token = localStorage.getItem('token');
+    const donorId = localStorage.getItem('user_id')
     const fetchData = async () => {
       try {
         setLoading((prev) => ({ ...prev, donations: true }));
@@ -75,7 +75,8 @@ const UpdateDonorProfile = ({ donorId }) => {
     setSuccess("");
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
+      const donorId = localStorage.getItem('user_id')
       await axios.patch(`/api/donors/${donorId}/profile`, profileForm, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -93,13 +94,12 @@ const UpdateDonorProfile = ({ donorId }) => {
     setSuccess("");
 
     try {
-      const token = localStorage.getItem("token");
-      const updates = Object.entries(recurringSelections).map(
-        ([id, isRecurring]) => ({
-          donation_id: id,
-          is_recurring: isRecurring,
-        })
-      );
+      const token = localStorage.getItem('token');
+      const donorId = localStorage.getItem('user_id')
+      const updates = Object.entries(recurringSelections).map(([id, isRecurring]) => ({
+        donation_id: id,
+        is_recurring: isRecurring
+      }));
 
       await Promise.all(
         updates.map((update) =>
