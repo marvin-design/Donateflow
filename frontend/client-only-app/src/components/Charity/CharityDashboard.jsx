@@ -23,9 +23,12 @@ const CharityDashboard = () => {
       }
 
       try {
-        const res = await axios.get(`/api/charity/dashboard/${charityId.current}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `/api/charity/dashboard/${charityId.current}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const data = res.data;
 
@@ -35,7 +38,7 @@ const CharityDashboard = () => {
           current_funds: data.current_funds,
           total_donors: data.total_donors,
           total_beneficiaries: data.total_beneficiaries,
-          total_stories: data.total_stories
+          total_stories: data.total_stories,
         });
 
         setLoading(false);
@@ -52,9 +55,12 @@ const CharityDashboard = () => {
     const fetchRecent = async (type, setter) => {
       const token = localStorage.getItem("token");
       try {
-        const res = await axios.get(`/api/charity/charities/${charityId.current}/${type}?limit=3`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `/api/charity/charities/${charityId.current}/${type}?limit=3`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setter(res.data);
       } catch (err) {
         console.error(`Failed to fetch ${type}:`, err);
@@ -84,7 +90,7 @@ const CharityDashboard = () => {
           { label: "Total Donors", value: charityData.total_donors },
           { label: "Beneficiaries", value: charityData.total_beneficiaries },
           { label: "Stories Published", value: charityData.total_stories },
-          { label: "Current Funds", value: charityData.current_funds }
+          { label: "Current Funds", value: charityData.current_funds },
         ].map((stat, idx) => (
           <div className="col-md-4" key={idx}>
             <div className="border rounded p-4 bg-white shadow-sm text-center h-100">
@@ -101,10 +107,16 @@ const CharityDashboard = () => {
           <h4 className="mb-3">Quick Actions</h4>
           <div className="row g-3">
             {[
-              { label: "Manage Beneficiaries", link: `/charity/${charityData.id}/beneficiaries` },
-              { label: "Manage Inventory", link: "/charity/inventory" },
+              {
+                label: "Manage Beneficiaries",
+                link: `/charity/${charityData.id}/beneficiaries`,
+              },
+              {
+                label: "Manage Inventory",
+                link: `/charity/${charityData.id}/inventory`,
+              },
               { label: "Share a Story", link: "/charity/stories" },
-              { label: "Update Profile", link: "/charity/profile" }
+              { label: "Update Profile", link: "/charity/profile" },
             ].map((action, i) => (
               <div className="col-sm-6 col-lg-3" key={i}>
                 <Link
@@ -113,7 +125,7 @@ const CharityDashboard = () => {
                   style={{
                     borderColor: "#f97316",
                     color: "#f97316",
-                    backgroundColor: "transparent"
+                    backgroundColor: "transparent",
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.backgroundColor = "#f97316";
@@ -148,7 +160,12 @@ const CharityDashboard = () => {
             ) : (
               <p className="text-muted">No donations yet.</p>
             )}
-            <Link to={`/charity/${charityId.current}/donations`} className="d-block mt-2 text-decoration-none text-primary">View More</Link>
+            <Link
+              to={`/charity/${charityId.current}/donations`}
+              className="d-block mt-2 text-decoration-none text-primary"
+            >
+              View More
+            </Link>
           </div>
         </div>
 
@@ -165,7 +182,12 @@ const CharityDashboard = () => {
             ) : (
               <p className="text-muted">No beneficiaries yet.</p>
             )}
-            <Link to={`/charity/${charityId.current}/beneficiaries`} className="d-block mt-2 text-decoration-none text-primary">View More</Link>
+            <Link
+              to={`/charity/${charityId.current}/beneficiaries`}
+              className="d-block mt-2 text-decoration-none text-primary"
+            >
+              View More
+            </Link>
           </div>
         </div>
 
@@ -176,7 +198,9 @@ const CharityDashboard = () => {
               recentInventory.map((i) => (
                 <div key={i.id} className="mb-2">
                   <div className="fw-bold">{i.item_name}</div>
-                  <div className="text-muted small">To: {i.beneficiary_name}</div>
+                  <div className="text-muted small">
+                    To: {i.beneficiary_name}
+                  </div>
                   <div className="text-muted small">Amount: {i.amount}</div>
                   <div className="text-muted small">Sent: {i.sent_date}</div>
                 </div>
@@ -184,7 +208,12 @@ const CharityDashboard = () => {
             ) : (
               <p className="text-muted">No inventory yet.</p>
             )}
-            <Link to={`/charity/${charityId.current}/inventory`} className="d-block mt-2 text-decoration-none text-primary">View More</Link>
+            <Link
+              to={`/charity/${charityId.current}/inventory`}
+              className="d-block mt-2 text-decoration-none text-primary"
+            >
+              View More
+            </Link>
           </div>
         </div>
       </div>
