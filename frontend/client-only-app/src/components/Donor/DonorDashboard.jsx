@@ -114,7 +114,7 @@ const DonorDashboard = () => {
                       <strong>KES {donation.amount}</strong>
                       <br />
                       <small className="text-muted">
-                        {new Date(donation.donation_date).toLocaleDateString()}
+                        {donation.donation_date}
                       </small>
                     </div>
                     <span className="badge bg-success">✓</span>
