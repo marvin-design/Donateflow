@@ -55,8 +55,8 @@ const StoryFeed = () => {
           margin: 0;
           padding: 0;
           font-family: 'Inter', sans-serif;
-          background: linear-gradient(135deg, #f97316, #f59e0b);
-          background-attachment: fixed;
+          
+          
         }
 
         .story-feed-wrapper {
