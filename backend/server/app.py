@@ -21,7 +21,10 @@ def create_app(config_class=Config):
     CORS(app,
          resources={
              r"/api/*": {
-                 "origins": "http://localhost:5173",
+                 "origins": [
+                 "http://localhost:5173",  # Local development
+                 "https://donateflow.qit-main-maryin.designs-projects.vercel.app",  # Vercel
+                ],
                  "methods": ["GET", "POST", "DELETE","PATCH"],
                  "allow_headers": ["Content-Type", "Authorization"]
              }
