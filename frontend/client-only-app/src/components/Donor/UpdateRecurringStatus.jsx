@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from '../../utils/axios';
+import { AuthContext } from '../../context/AuthContext';  
 
 const UpdateRecurringStatus = () => {
   const [form, setForm] = useState({
@@ -8,6 +9,9 @@ const UpdateRecurringStatus = () => {
     frequency: ''
   });
 
+  const { token } = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem('access_token');
+
   const handleChange = e => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -15,9 +19,9 @@ const UpdateRecurringStatus = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const token = localStorage.getItem('access_token');
+    //const token = localStorage.getItem('access_token');
     await axios.patch('/api/donors/isrecurring', form, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${activeToken}` }
     });
     alert('Recurring status updated');
   };

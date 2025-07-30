@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 function CharityManagement() {
   const [charities, setCharities] = useState([]);
-  const token = localStorage.getItem("adminToken");
+  const { token } = useContext(AuthContext);
+  //const token = localStorage.getItem("adminToken");
+  const adminToken = localStorage.getItem("adminToken");
 
   useEffect(() => {
     axios
       .get("/api/admin/charities", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token|| adminToken}` },
       })
       .then((response) => {
         const approved = response.data.charities || [];

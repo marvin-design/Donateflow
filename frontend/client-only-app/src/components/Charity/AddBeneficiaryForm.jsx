@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const AddBeneficiaryForm = ({ onAdd }) => {
   const [formData, setFormData] = useState({
@@ -6,6 +7,9 @@ const AddBeneficiaryForm = ({ onAdd }) => {
     location: "",
   });
   const [message, setMessage] = useState("");
+  const { token, user } = useContext(AuthContext);
+  const localToken = localStorage.getItem("token");
+  const localUserId = parseInt(localStorage.getItem("user_id"));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,10 +18,12 @@ const AddBeneficiaryForm = ({ onAdd }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    const charityId = parseInt(localStorage.getItem("user_id"));
+    const activeToken = token || localToken;
+    const charityId = user?.id || localUserId;
+    //const token = localStorage.getItem("token");
+    //const charityId = parseInt(localStorage.getItem("user_id"));
 
-    if (!token || !charityId) {
+    if (!activeToken || !charityId) {
       setMessage("Not authorized or charity not found");
       return;
     }
@@ -29,7 +35,7 @@ const AddBeneficiaryForm = ({ onAdd }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${activeToken}`,
           },
           body: JSON.stringify(formData),
         }

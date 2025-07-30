@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddBeneficiaryForm from "./AddBeneficiaryForm";
 import axios from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 const BeneficiariesList = () => {
   const [showForm, setShowForm] = useState(false);
@@ -9,11 +10,15 @@ const BeneficiariesList = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  const charityId = localStorage.getItem("user_id");
+  const {token, user} = useContext(AuthContext)
+  const localToken = localStorage.getItem("token");
+  const localUserId = localStorage.getItem("user_id");
+
+  const activeToken = token || localToken;
+  const charityId = user?.id || localUserId;
 
   useEffect(() => {
-    if (!token) {
+    if (!activeToken) {
       navigate("/login/charity");
       return;
     }
@@ -22,7 +27,7 @@ const BeneficiariesList = () => {
       try {
         const res = await axios.get(`/api/charity/${charityId}/beneficiaries`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${activeToken}`,
           },
         });
 
@@ -39,7 +44,7 @@ const BeneficiariesList = () => {
     };
 
     fetchBeneficiaries();
-  }, [token, charityId, navigate]);
+  }, [activeToken, charityId, navigate]);
 
   const handleAddBeneficiary = (newBeneficiary) => {
     setBeneficiaries((prev) => [...prev, newBeneficiary]);

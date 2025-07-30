@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { act, useState, useContext } from "react";
 import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const CreateStoryForm = () => {
-  const token = localStorage.getItem("token");
-  const charityId = localStorage.getItem("user_id");
+  const { token, user } = useContext(AuthContext);
+  const activeToken = localStorage.getItem("token")|| token;
+  const charityId = localStorage.getItem("user_id") || user?.id;
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -38,7 +40,7 @@ const CreateStoryForm = () => {
 
       const res = await axios.post(`/api/charity/${charityId}/stories`, data, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${activeToken}`,
           "Content-Type": "multipart/form-data",
         },
       });

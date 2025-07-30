@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AddInventoryItemForm from "./AddInventoryItemForm";
 import axios from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 const InventoryList = () => {
   const [inventory, setInventory] = useState([]);
@@ -10,18 +11,23 @@ const InventoryList = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  const charityId = localStorage.getItem("user_id");
+  const { token, user } = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem("token");
+  const charityId = user?.id || localStorage.getItem("user_id");
+
+  //const localToken = localStorage.getItem("token");
+  //const token = localStorage.getItem("token");
+  //const charityId = localStorage.getItem("user_id");
 
   useEffect(() => {
-    if (!token || !charityId) {
+    if (!activeToken || !charityId) {
       navigate("/login/charity");
       return;
     }
 
     const fetchData = async () => {
       try {
-        const headers = { Authorization: `Bearer ${token}` };
+        const headers = { Authorization: `Bearer ${activeToken}` };
         const [itemsRes, beneficiariesRes] = await Promise.all([
           axios.get(`/api/charity/${charityId}/inventory_items`, { headers }),
           axios.get(`/api/charity/${charityId}/beneficiaries`, { headers }),
@@ -37,7 +43,7 @@ const InventoryList = () => {
     };
 
     fetchData();
-  }, [charityId, token, navigate]);
+  }, [charityId, activeToken, navigate]);
 
   const handleAddItem = (newItem) => {
     setInventory((prev) => [...prev, newItem]);

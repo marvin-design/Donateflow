@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "../../utils/axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const DonorDashboard = () => {
   const [donations, setDonations] = useState([]);
@@ -10,13 +11,16 @@ const DonorDashboard = () => {
   const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
 
+  const { token } = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem("access_token");
+
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        const token = localStorage.getItem("token");
+        //const token = localStorage.getItem("token");
         const response = await axios.get(`/api/donors/dashboard/${donorId}`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${activeToken}`,
           },
         });
         setDonations(response.data.donations);
@@ -31,7 +35,7 @@ const DonorDashboard = () => {
     };
 
     fetchDonations();
-  }, [donorId]);
+  }, [donorId, activeToken]);
 
   const totalAmount = donations.reduce(
     (sum, donation) => sum + parseFloat(donation.amount),

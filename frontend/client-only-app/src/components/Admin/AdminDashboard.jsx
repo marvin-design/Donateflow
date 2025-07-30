@@ -1,24 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "../../utils/axios";
 import CharityApplicationsList from "./CharityApplicationsList";
 import CharityManagement from "./CharityManagement";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 function AdminDashboard() {
   const [stats, setStats] = useState(null);
-  const token = localStorage.getItem("adminToken");
+  const {token, logout} = useContext(AuthContext);
+  //const token = localStorage.getItem("adminToken");
   const navigate = useNavigate();
+  const adminToken = localStorage.getItem("adminToken");
 
   useEffect(() => {
     axios
       .get("/api/admin/dashboard", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token|| adminToken}` },
       })
       .then((res) => setStats(res.data))
       .catch((err) => console.error(err));
   }, []);
 
   const handleLogout = () => {
+    logout();
     localStorage.clear();
     navigate("/");
   };

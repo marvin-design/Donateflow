@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from '../../utils/axios';
+import { AuthContext } from '../../context/AuthContext';
 
 const DonationHistory = ({ donorId }) => {
   const [donations, setDonations] = useState([]);
@@ -7,12 +8,16 @@ const DonationHistory = ({ donorId }) => {
   const [error, setError] = useState('');
   const [showAll, setShowAll] = useState(false);
 
+  const {token} = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem('access_token');
+
+
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        const token = localStorage.getItem('access_token');
+        //const token = localStorage.getItem('access_token');
         const response = await axios.get(`/api/donors/${donorId}/donations`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${activeToken}` }
         });
         
         
@@ -27,7 +32,7 @@ const DonationHistory = ({ donorId }) => {
     };
 
     fetchDonations();
-  }, [donorId]);
+  }, [donorId, activeToken]);
 
   const displayedDonations = showAll ? [...donations].reverse() : donations.slice(0, 3).reverse();
 

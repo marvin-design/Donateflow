@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const CharityProfileForm = ({ onUpdate }) => {
+  const { token, user, setUser } = useContext(AuthContext);
   const storedCharity = JSON.parse(localStorage.getItem("logged_in_charity"));
+
   const [formData, setFormData] = useState({
     name: storedCharity?.name || "",
     email: storedCharity?.email || "",
@@ -18,10 +21,12 @@ const CharityProfileForm = ({ onUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    const charityId = parseInt(localStorage.getItem("user_id"));
+    const activeToken = token || localStorage.getItem("token");
+    const charityId = user?.id || parseInt(localStorage.getItem("user_id"));
+    //const token = localStorage.getItem("token");
+    //const charityId = parseInt(localStorage.getItem("user_id"));
 
-    if (!token || !charityId) {
+    if (!activeToken || !charityId) {
       setMessage("Unauthorized: Please log in again.");
       return;
     }
@@ -33,7 +38,7 @@ const CharityProfileForm = ({ onUpdate }) => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${activeToken}`,
           },
           body: JSON.stringify(formData),
         }

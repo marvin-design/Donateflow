@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { act, useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function CharityDonations() {
   const [donations, setDonations] = useState([]);
@@ -8,12 +9,17 @@ export default function CharityDonations() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  const charityId = localStorage.getItem("user_id");
+  const { token, user } = useContext(AuthContext);
+
+  const localToken = localStorage.getItem("token");
+  const localUserId = localStorage.getItem("user_id");
+
+  const activeToken = token || localToken;
+  const charityId = user?.id || localUserId;
 
   useEffect(() => {
     const fetchDonations = async () => {
-      if (!token || !charityId) {
+      if (!activeToken || !charityId) {
         navigate("/login/charity");
         return;
       }
@@ -23,7 +29,7 @@ export default function CharityDonations() {
           `/api/charity/charities/${charityId}/donations`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${activeToken}`,
             },
           }
         );
@@ -37,7 +43,7 @@ export default function CharityDonations() {
     };
 
     fetchDonations();
-  }, [charityId, navigate, token]);
+  }, [charityId, navigate, activeToken]);
 
   if (loading) return <p className="loading-text">Loading donations...</p>;
   if (error) return <p className="error-text">{error}</p>;

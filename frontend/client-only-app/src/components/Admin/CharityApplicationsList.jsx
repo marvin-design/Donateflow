@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "../../utils/axios";
 import ApplicationReviewModal from "./ApplicationReviewModal";
+import { AuthContext } from "../../context/AuthContext";
 
 function CharityApplicationsList() {
   const [applications, setApplications] = useState([]);
   const [selectedApp, setSelectedApp] = useState(null);
-  const token = localStorage.getItem("adminToken");
-
+  const { token } = useContext(AuthContext);
+  //const token = localStorage.getItem("adminToken");
+  const adminToken = localStorage.getItem("adminToken");
   useEffect(() => {
     axios
       .get("/api/admin/charity_applications?status=pending", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token || adminToken}` },
       })
       .then((res) => setApplications(res.data.applications))
       .catch((err) => console.error(err));
