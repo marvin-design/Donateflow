@@ -80,7 +80,7 @@ export default function CharityDonations() {
 
         .donation-bg {
           min-height: 100vh;
-          background: linear-gradient(270deg, #f97316, #f59e0b, #f97316);
+          background: (270deg, #faf6f3ff, #f59e0b, #f97316);
           background-size: 600% 600%;
           animation: moveBg 15s ease infinite;
           display: flex;

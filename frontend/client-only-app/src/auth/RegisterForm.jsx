@@ -79,7 +79,7 @@ const Register = ({ role }) => {
       className="min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
       style={{
         background:
-          "rgba(243, 227, 220, 0.95)", // Static background
+          "rgba(255, 255, 255, 0.95)", // Static background
       }}
     >
       {/* Animated Background Elements */}

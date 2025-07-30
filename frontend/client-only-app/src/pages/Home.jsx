@@ -60,14 +60,12 @@ const Home = () => {
           <p style={styles.cardText}>
             Apply to receive support and expand your impact.
           </p>
-          <Link to="/apply" style={styles.primaryBtnGreen}>
+          <Link to="/apply" style={styles.primaryBtnOrange}>
             Apply
           </Link>
-          
-          <Link to="/login/charity" style={styles.secondaryLinkGreen}>
+          <Link to="/login/charity" style={styles.secondaryLinkOrange}>
             Already have an account? Sign in
           </Link>
-        
         </div>
       </div>
 
@@ -183,9 +181,9 @@ const styles = {
     display: "inline-block",
     marginBottom: "10px",
   },
-  primaryBtnGreen: {
-    backgroundColor: "#28a745",
-    color: "#fff",
+  primaryBtnOrange: {
+    backgroundColor: "#f97316", // Orange background
+    color: "#fff", // White text
     padding: "10px 16px",
     borderRadius: "5px",
     textDecoration: "none",
@@ -197,6 +195,22 @@ const styles = {
     color: "#f97316",
     textDecoration: "underline",
     fontSize: "0.9rem",
+    marginBottom: "10px",
+  },
+  secondaryLinkOrange: {
+    display: "block",
+    color: "#f97316", // Orange text
+    textDecoration: "underline",
+    fontSize: "0.9rem",
+    marginBottom: "10px",
+  },
+  primaryBtnGreen: {
+    backgroundColor: "#28a745",
+    color: "#fff",
+    padding: "10px 16px",
+    borderRadius: "5px",
+    textDecoration: "none",
+    display: "inline-block",
     marginBottom: "10px",
   },
   secondaryLinkGreen: {

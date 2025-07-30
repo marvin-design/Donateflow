@@ -61,7 +61,7 @@ const CharityApplicationForm = () => {
       className="min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(135deg, #f97316 0%, #ea730c 50%, #dc2626 100%)",
+          "linear-gradient(135deg, #f8f8f8ff 0%, #ffffffff 50%, #ffffffff 100%)",
       }}
     >
       <div
