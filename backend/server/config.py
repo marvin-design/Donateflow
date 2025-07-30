@@ -12,7 +12,10 @@ class Config:
     BASE_URL = os.getenv('BASE_URL', 'http://localhost:5173') 
 
     # CORS settings
-    CORS_ORIGINS = ['http://localhost:5173']
+    CORS_ORIGINS = [
+        "http://localhost:5173",
+        "https://donateflow.qit-main-maryin.designs-projects.vercel.app"
+    ]
     SERVER_PORT = 8000
     DEBUG = True
 
