@@ -13,7 +13,6 @@ import CharityList from './components/Donor/CharityList';
 import DonationHistory from './components/Donor/DonationHistory';
 import SearchCharity from './components/Donor/SearchCharity';
 import UpdateRecurringStatus from './components/Donor/UpdateRecurringStatus';
-// import DonorProfileForm from './components/Donor/DonorProfileForm';
 import Updateprofile from './components/Donor/Updateprofile';
 import InventoryList from './components/Charity/InventoryList';
 import CharityProfileForm from './components/Charity/CharityProfileForm';
@@ -23,18 +22,17 @@ import BeneficiariesList from './components/Charity/BeneficiariesList';
 import ThankYou from './pages/Thankyou';
 import RecurringDonations from './components/Donor/RecurringDonations';
 import AdminDashboard from './components/Admin/AdminDashboard';
-// import ApplicationReviewModal from './components/Admin/ApplicationReviewModal';
-// import CharityApplicationsList from './components/Admin/CharityApplicationsList';
-// import CharityManagement from './components/Admin/CharityManagement';
 import Navbar from './pages/Navbar';
 import CreateStoryForm from './components/Charity/CreateStoryForm';
 import StoryFeed from './pages/StoriesFeed';
 import CharityDonations from './components/Charity/CharityDonations';
 import HiddenAdminLogin from './components/Admin/HiddenAdminLogin';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
     <ErrorBoundary>
+    <AuthProvider>
       <Router>
         <Navbar/>
         <HiddenAdminLogin />
@@ -64,16 +62,14 @@ function App() {
           <Route path="/donations/:donationId/update-recurring" element={<UpdateRecurringStatus />} />
           <Route path="/donors/recurring-donations" element={<RecurringDonations />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          {/* <Route path="/admin/review/:id" element={<ApplicationReviewModal />} />
-          <Route path="/admin/applications" element={<CharityApplicationsList />} />
-          <Route path="/admin/charities" element={<CharityManagement />} /> */}
+       
           <Route path='/charity/stories/feed' element={<StoryFeed/>}></Route>
           <Route path="/charity/:charityId/donations" element={<CharityDonations />} />
 
        
         </Routes>
       </Router>
-      
+     </AuthProvider>
     </ErrorBoundary>
   );
 }

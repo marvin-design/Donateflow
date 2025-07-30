@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext"; 
 
-const UpdateDonorProfile = ({ donorId }) => {
+const UpdateDonorProfile = () => {
   const [profileForm, setProfileForm] = useState({ name: "", email: "" });
   const [donations, setDonations] = useState([]);
   const [recurringSelections, setRecurringSelections] = useState({});
@@ -15,17 +16,26 @@ const UpdateDonorProfile = ({ donorId }) => {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
+  
+  const { token, user } = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem("token");
+  const donorId = user?.id || localStorage.getItem("user_id");
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const donorId = localStorage.getItem("user_id");
     const fetchData = async () => {
+      if (!activeToken || !donorId) {
+        navigate("/login/donor");
+        return;
+      }
+
       try {
         setLoading((prev) => ({ ...prev, donations: true }));
 
+        // Get donor profile
         const profileResponse = await axios.get(
           `/api/donors/${donorId}/profile`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${activeToken}` },
           }
         );
         setProfileForm({
@@ -36,7 +46,7 @@ const UpdateDonorProfile = ({ donorId }) => {
         const donationsResponse = await axios.get(
           "/api/donors/donations/recurring",
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${activeToken}` },
           }
         );
 
@@ -55,9 +65,9 @@ const UpdateDonorProfile = ({ donorId }) => {
     };
 
     fetchData();
-  }, [donorId]);
+  }, [donorId, activeToken, navigate]);
 
-  const handleBack = () => navigate("/donors/dashboard/3");
+  const handleBack = () => navigate(`/donors/dashboard/${donorId}`);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
@@ -75,9 +85,8 @@ const UpdateDonorProfile = ({ donorId }) => {
     setSuccess("");
 
     try {
-      const token = localStorage.getItem("token");
       await axios.patch(`/api/donors/${donorId}/profile`, profileForm, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${activeToken}` },
       });
       setSuccess("Profile updated successfully!");
     } catch (err) {
@@ -93,7 +102,6 @@ const UpdateDonorProfile = ({ donorId }) => {
     setSuccess("");
 
     try {
-      const token = localStorage.getItem("token");
       const updates = Object.entries(recurringSelections).map(
         ([id, isRecurring]) => ({
           donation_id: id,
@@ -104,7 +112,7 @@ const UpdateDonorProfile = ({ donorId }) => {
       await Promise.all(
         updates.map((update) =>
           axios.patch("/api/donors/donations/recurring", update, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${activeToken}` },
           })
         )
       );

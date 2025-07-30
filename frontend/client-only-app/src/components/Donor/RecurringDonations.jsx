@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const RecurringDonations = () => {
   const [recurring, setRecurring] = useState([]);
@@ -8,12 +9,15 @@ const RecurringDonations = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const { token } = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem("access_token");
+
   useEffect(() => {
     const fetchRecurringDonations = async () => {
       try {
-        const token = localStorage.getItem("access_token");
+        //const token = localStorage.getItem("access_token");
         const response = await axios.get("/api/donors/donations/recurring", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${activeToken}` },
         });
         setRecurring(response.data);
       } catch (err) {
@@ -27,7 +31,7 @@ const RecurringDonations = () => {
     };
 
     fetchRecurringDonations();
-  }, []);
+  }, [activeToken]);
 
   const handleBack = () => {
     navigate("/donors/dashboard/3");

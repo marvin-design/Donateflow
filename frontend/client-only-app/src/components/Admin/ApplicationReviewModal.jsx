@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 function ApplicationReviewModal({ application, onClose, onSuccess }) {
   const [message, setMessage] = useState("");
-  const token = localStorage.getItem("adminToken");
+  const { token } = useContext(AuthContext);
+  //const token = localStorage.getItem("adminToken");
+  const adminToken = localStorage.getItem("adminToken");
 
   const handleAction = (action) => {
     axios
@@ -11,7 +14,7 @@ function ApplicationReviewModal({ application, onClose, onSuccess }) {
         `/api/admin/charity_applications/${application.id}/review`,
         { action },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token || adminToken}` },
         }
       )
       .then((res) => {

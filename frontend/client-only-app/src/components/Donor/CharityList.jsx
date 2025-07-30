@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 const CharityList = () => {
   const [charities, setCharities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { token, user } = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem("access_token");
+  const currentUser= user || JSON.parse(localStorage.getItem("logged_in_user"));
 
   useEffect(() => {
     const fetchCharities = async () => {
       try {
-        const token = localStorage.getItem("access_token");
+        //const token = localStorage.getItem("access_token");
         const response = await axios.get("/api/donors/charities", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${activeToken}` },
         });
         setCharities(response.data.charities || response.data);
       } catch (err) {
@@ -25,10 +29,11 @@ const CharityList = () => {
     };
 
     fetchCharities();
-  }, []);
+  }, [activeToken]);
 
   const handleBack = () => {
-    navigate("/donors/dashboard/3"); // Replace with dynamic ID if needed
+    const donorId = currentUser?.id || localStorage.getItem("user_id");
+    navigate(`/donors/dashboard/${donorId}`);
   };
 
   if (loading)
@@ -41,6 +46,7 @@ const CharityList = () => {
     return (
       <div className="text-center py-5 text-muted">No charities found</div>
     );
+
 
   return (
     <div className="min-vh-100 py-5 px-3" style={{ background: "#ffffff" }}>

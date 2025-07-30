@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext} from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 const CharityDashboard = () => {
   const [charityData, setCharityData] = useState(null);
@@ -12,12 +13,17 @@ const CharityDashboard = () => {
   const navigate = useNavigate();
   const charityId = useRef();
 
+  const { token, user } = useContext(AuthContext);
+
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const token = localStorage.getItem("token");
-      charityId.current = localStorage.getItem("user_id");
+      
+      //const token = localStorage.getItem("token");
+      //charityId.current = localStorage.getItem("user_id");
+      const activeToken = token || localStorage.getItem("token");
+      charityId.current = localStorage.getItem("user_id") || user?.id;
 
-      if (!token || !charityId.current) {
+      if (!activeToken || !charityId.current) {
         navigate("/login/charity");
         return;
       }
@@ -26,7 +32,7 @@ const CharityDashboard = () => {
         const res = await axios.get(
           `/api/charity/dashboard/${charityId.current}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${activeToken}` },
           }
         );
 
@@ -58,7 +64,7 @@ const CharityDashboard = () => {
         const res = await axios.get(
           `/api/charity/charities/${charityId.current}/${type}?limit=3`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${activeToken}` },
           }
         );
         setter(res.data);

@@ -226,6 +226,7 @@ def search_charity_by_name():
 
     return jsonify({"error": "Charity not found"}), 404
 
+
 @donor_bp.route('/<int:donor_id>/profile', methods=['GET'])
 @jwt_required()
 def get_donor_profile(donor_id):

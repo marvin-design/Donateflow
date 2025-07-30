@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const SearchCharity = () => {
   const [name, setName] = useState("");
@@ -8,6 +9,10 @@ const SearchCharity = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const { token } = useContext(AuthContext);
+  const activeToken = token || localStorage.getItem("access_token");
+  const donorId = localStorage.getItem("user_id") || user?.id; 
 
   const handleSearch = async () => {
     if (!name.trim()) {
@@ -19,10 +24,10 @@ const SearchCharity = () => {
     setError(null);
 
     try {
-      const token = localStorage.getItem("access_token");
+      //const token = localStorage.getItem("access_token");
       const res = await axios.get("/api/charity/search", {
         params: { q: name },
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${activeToken}` },
       });
 
       if (res.data && res.data.length > 0) {
@@ -41,7 +46,7 @@ const SearchCharity = () => {
   };
 
   const handleBack = () => {
-    navigate("/donors/dashboard/3"); // Adjust if dynamic
+    navigate(`/donors/dashboard/${donorId}`); 
   };
 
   return (

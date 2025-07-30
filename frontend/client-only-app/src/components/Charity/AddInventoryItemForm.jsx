@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -7,6 +8,9 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
     beneficiary_id: beneficiaries[0]?.id || "",
   });
   const [message, setMessage] = useState("");
+  const {token, user} = useContext(AuthContext)
+  const localToken = localStorage.getItem("token")
+  const localUserId = parseInt(localStorage.getItem("user_id"))
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,10 +19,13 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    const charityId = parseInt(localStorage.getItem("user_id"));
+    const activeToken = token || localToken;
+    const charityId = user?.id || localUserId;
 
-    if (!token || !charityId) {
+    //const token = localStorage.getItem("token");
+    //const charityId = parseInt(localStorage.getItem("user_id"));
+
+    if (!activeToken || !charityId) {
       setMessage("You must be logged in as a charity.");
       return;
     }
@@ -35,7 +42,7 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${activeToken}`,
           },
           body: JSON.stringify(payload),
         }
