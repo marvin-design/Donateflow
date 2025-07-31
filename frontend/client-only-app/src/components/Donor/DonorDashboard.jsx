@@ -9,6 +9,7 @@ const DonorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [donorName, setDonorName] = useState(localStorage.getItem("name") || "");
   const navigate = useNavigate();
 
   const { token } = useContext(AuthContext);
@@ -17,13 +18,18 @@ const DonorDashboard = () => {
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        //const token = localStorage.getItem("token");
         const response = await axios.get(`/api/donors/dashboard/${donorId}`, {
           headers: {
             Authorization: `Bearer ${activeToken}`,
           },
         });
         setDonations(response.data.donations);
+
+        // ✅ Correction: update localStorage with latest donor name
+        if (response.data.donor?.name) {
+          setDonorName(response.data.donor.name);
+          localStorage.setItem("name", response.data.donor.name);
+        }
       } catch (err) {
         setError(
           err.response?.data?.error || "Failed to fetch donation history"
@@ -58,7 +64,7 @@ const DonorDashboard = () => {
     <div className="container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="fw-bold">Welcome back</h2>
+          <h2 className="fw-bold">Welcome back{donorName ? `, ${donorName}` : ""}</h2>
           <p className="text-muted">
             Thank you for choosing to make a difference
           </p>

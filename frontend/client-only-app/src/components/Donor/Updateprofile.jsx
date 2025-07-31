@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext"; 
+import { AuthContext } from "../../context/AuthContext";
 
 const UpdateDonorProfile = () => {
   const [profileForm, setProfileForm] = useState({ name: "", email: "" });
@@ -16,7 +16,6 @@ const UpdateDonorProfile = () => {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-  
   const { token, user } = useContext(AuthContext);
   const activeToken = token || localStorage.getItem("token");
   const donorId = user?.id || localStorage.getItem("user_id");
@@ -31,13 +30,13 @@ const UpdateDonorProfile = () => {
       try {
         setLoading((prev) => ({ ...prev, donations: true }));
 
-        // Get donor profile
         const profileResponse = await axios.get(
           `/api/donors/${donorId}/profile`,
           {
             headers: { Authorization: `Bearer ${activeToken}` },
           }
         );
+
         setProfileForm({
           name: profileResponse.data.name || "",
           email: profileResponse.data.email || "",
@@ -74,10 +73,6 @@ const UpdateDonorProfile = () => {
     setProfileForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleRecurringToggle = (id) => {
-    setRecurringSelections((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, profile: true }));
@@ -88,12 +83,18 @@ const UpdateDonorProfile = () => {
       await axios.patch(`/api/donors/${donorId}/profile`, profileForm, {
         headers: { Authorization: `Bearer ${activeToken}` },
       });
+
       setSuccess("Profile updated successfully!");
+      localStorage.setItem("name", profileForm.name); // ✅ Update localStorage
     } catch (err) {
       setError(err.response?.data?.error || "Failed to update profile");
     } finally {
       setLoading((prev) => ({ ...prev, profile: false }));
     }
+  };
+
+  const handleRecurringToggle = (id) => {
+    setRecurringSelections((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleRecurringUpdate = async () => {
@@ -164,7 +165,6 @@ const UpdateDonorProfile = () => {
           {error && <div className="alert alert-danger">{error}</div>}
           {success && <div className="alert alert-success">{success}</div>}
 
-          {/* Profile Form */}
           <form onSubmit={handleProfileSubmit} className="mb-5">
             <div className="mb-3">
               <label className="form-label fw-semibold">Full Name</label>
@@ -195,7 +195,6 @@ const UpdateDonorProfile = () => {
               className="btn w-100 text-white fw-semibold"
               style={{
                 backgroundColor: "#f97316",
-                transition: "all 0.3s",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = "#ea580c")
@@ -209,7 +208,6 @@ const UpdateDonorProfile = () => {
             </button>
           </form>
 
-          {/* Recurring Donations */}
           <div className="mb-3">
             <h4 className="fw-semibold mb-3" style={{ color: "#f97316" }}>
               Manage Recurring Donations
@@ -254,7 +252,6 @@ const UpdateDonorProfile = () => {
                   className="btn w-100 text-white fw-semibold"
                   style={{
                     backgroundColor: "#f97316",
-                    transition: "all 0.3s",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.backgroundColor = "#ea580c")
