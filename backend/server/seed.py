@@ -1,4 +1,4 @@
-from extensions import db
+from backend.server.extensions import db
 from app import create_app
 from models.charity import Charity
 from models.donor import Donor

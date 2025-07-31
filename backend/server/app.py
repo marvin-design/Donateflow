@@ -21,10 +21,7 @@ def create_app(config_class=Config):
     CORS(app,
          resources={
              r"/api/*": {
-                 "origins": [
-                 "http://localhost:5173",  # Local development
-                 "https://donateflow.qit-main-maryin.designs-projects.vercel.app",  # Vercel
-                ],
+                 "origins": "https://donateflow-yzg6.vercel.app/",
                  "methods": ["GET", "POST", "DELETE","PATCH"],
                  "allow_headers": ["Content-Type", "Authorization"]
              }
@@ -38,7 +35,9 @@ def create_app(config_class=Config):
     jwt.init_app(app)
     bcrypt.init_app(app)
     mail.init_app(app)
-    
+    CORS(app)
+   
+
     # Initialize and start scheduler
     scheduler.init_app(app)
     app.apscheduler = scheduler

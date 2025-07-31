@@ -9,13 +9,10 @@ class Config:
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
     JWT_HEADER_TYPE = 'Bearer'
     SECRET_ADMIN_KEY = os.getenv('SECRET_ADMIN_KEY')
-    BASE_URL = os.getenv('BASE_URL', 'http://localhost:5173') 
+   # BASE_URL = os.getenv('BASE_URL', 'http://localhost:5173') 
 
     # CORS settings
-    CORS_ORIGINS = [
-        "http://localhost:5173",
-        "https://donateflow.qit-main-maryin.designs-projects.vercel.app"
-    ]
+    CORS_ORIGINS = ['http://localhost:5173']
     SERVER_PORT = 8000
     DEBUG = True
 
