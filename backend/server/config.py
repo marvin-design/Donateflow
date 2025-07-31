@@ -12,7 +12,7 @@ class Config:
    # BASE_URL = os.getenv('BASE_URL', 'http://localhost:5173') 
 
     # CORS settings
-    CORS_ORIGINS = ['https://donateflow-gamma.vercel.app/']
+    CORS_ORIGINS = ['https://donateflow-ten.vercel.app']
     SERVER_PORT = 8000
     DEBUG = True
 
