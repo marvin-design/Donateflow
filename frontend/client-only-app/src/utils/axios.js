@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000", // Flask backend
+  baseURL: "https://donateflow-1.onrender.com", // Flask backend
 });
 
 instance.interceptors.request.use((config) => {
