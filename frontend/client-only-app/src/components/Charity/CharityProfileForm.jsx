@@ -33,7 +33,7 @@ const CharityProfileForm = ({ onUpdate }) => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/charity/${charityId}/profile`,
+        `https://donateflow-1.onrender.com/api/charity/${charityId}/profile`,
         {
           method: "PATCH",
           headers: {

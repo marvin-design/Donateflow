@@ -30,7 +30,7 @@ const AddBeneficiaryForm = ({ onAdd }) => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/charity/${charityId}/beneficiaries`,
+        `https://donateflow-1.onrender.com/api/charity/${charityId}/beneficiaries`,
         {
           method: "POST",
           headers: {

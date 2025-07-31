@@ -37,7 +37,7 @@ const AddInventoryItemForm = ({ beneficiaries, onAdd }) => {
       };
 
       const res = await fetch(
-        `http://localhost:5000/api/charity/${charityId}/inventory_items`,
+        `https://donateflow-1.onrender.com/api/charity/${charityId}/inventory_items`,
         {
           method: "POST",
           headers: {
