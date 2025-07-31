@@ -21,7 +21,7 @@ def create_app(config_class=Config):
     CORS(app,
          resources={
              r"/api/*": {
-                 "origins": "https://donateflow-yzg6.vercel.app/",
+                 "origins": "https://donateflow-gamma.vercel.app/",
                  "methods": ["GET", "POST", "DELETE","PATCH"],
                  "allow_headers": ["Content-Type", "Authorization"]
              }
