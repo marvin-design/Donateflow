@@ -26,6 +26,25 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Stats Section */}
+      <div style={styles.statsSection}>
+        <div style={styles.statsContainer}>
+          <div style={styles.statBox}>
+            <div style={styles.statValue}>2450</div>
+            <div style={styles.statLabel}>Girls Helped</div>
+          </div>
+          <div style={styles.statBox}>
+            <div style={styles.statValue}>45</div>
+            <div style={styles.statLabel}>Schools Reached</div>
+          </div>
+          <div style={styles.statBox}>
+            <div style={styles.statValue}>$125,000</div>
+            <div style={styles.statLabel}>Total Donated</div>
+          </div>
+        </div>
+      </div>
+
+
       {/* How It Works Section */}
       <div style={styles.howItWorksSection}>
         <div style={styles.howItWorksContainer}>
@@ -43,24 +62,6 @@ const Home = () => {
             approved, sign in to receive donations, manage your projects, and 
             share success stories with donors to grow your outreach.
           </p>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div style={styles.statsSection}>
-        <div style={styles.statsContainer}>
-          <div style={styles.statBox}>
-            <div style={styles.statValue}>2450</div>
-            <div style={styles.statLabel}>Girls Helped</div>
-          </div>
-          <div style={styles.statBox}>
-            <div style={styles.statValue}>45</div>
-            <div style={styles.statLabel}>Schools Reached</div>
-          </div>
-          <div style={styles.statBox}>
-            <div style={styles.statValue}>$125,000</div>
-            <div style={styles.statLabel}>Total Donated</div>
-          </div>
         </div>
       </div>
 
