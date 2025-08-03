@@ -95,7 +95,7 @@ const Home = () => {
       </div>
 
       {/* Feed & Footer */}
-      <div style={{ width: "100%", maxWidth: "1200px", marginTop: "40px", margin:"auto"}}>
+      <div style={{ width: "100%", maxWidth: "1200px", marginTop: "20px", margin:"auto"}}>
         <StoryFeed />
       </div>
 
