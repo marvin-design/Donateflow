@@ -24,7 +24,7 @@ const CustomNavbar = () => {
   };
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar expand="lg">
       <Container>
         <Navbar.Brand as={Link} to="/">
           DonateFlow
@@ -74,6 +74,9 @@ const styles = {
     border: "none", 
     cursor: "pointer", 
     transition: "background-color 0.3s ease, color 0.3s ease", 
+  },
+  navbar: {
+    background: "linear-gradient(135deg, #f97316 0%, #ea730c 100%)",
   },
 };
 
