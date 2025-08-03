@@ -24,7 +24,7 @@ const CustomNavbar = () => {
   };
 
   return (
-    <Navbar expand="lg">
+    <Navbar expand="lg" style={styles.navbar}>
       <Container>
         <Navbar.Brand as={Link} to="/">
           DonateFlow
