@@ -12,6 +12,27 @@ const Home = () => {
           Supporting girls in sub-Saharan Africa with sanitary pads, clean
           water, and educational resources so they never miss school again.
         </p>
+
+        {/* Extra Description */}
+        <p style={styles.heroDescription}>
+          Tuinue Wasichana connects donors with trusted charities to provide essential 
+          resources for young girls in underserved communities. Together, we can 
+          break the cycle of poverty and empower girls to stay in school and 
+          achieve their dreams.
+        </p>
+
+        {/* Summary for Donor & Charity */}
+        <p style={styles.heroDescription}>
+          <strong>Donors:</strong> Create an account, sign in, and choose the causes 
+          or charities you want to support. You’ll be able to track your donations 
+          and see the real impact you’re making.
+        </p>
+        <p style={styles.heroDescription}>
+          <strong>Charities:</strong> Apply for support, log in, and receive donations 
+          to fund your projects. Share your impact stories directly with donors 
+          and grow your outreach.
+        </p>
+
         <div style={styles.heroButtons}>
           <Link to="/register/donor" style={styles.heroDonateBtn}>
             Start Donating
@@ -79,6 +100,7 @@ const Home = () => {
   );
 };
 
+
 const styles = {
   heroSection: {
     background: "linear-gradient(135deg, #f97316 0%, #ea730c 100%)",
@@ -91,6 +113,15 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "16px",
     lineHeight: "1.2",
+  },
+  heroDescription: {
+    fontSize: "18px",
+    marginBottom: "20px",
+    maxWidth: "900px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    opacity: "0.95",
+    lineHeight: "1.6",
   },
   heroSubtext: {
     fontSize: "20px",
