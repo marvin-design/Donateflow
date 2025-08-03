@@ -8,29 +8,12 @@ const Home = () => {
       {/* Hero Section */}
       <div style={styles.heroSection}>
         <h1 style={styles.heroHeader}>Empowering Girls Through Education</h1>
+        {/* About text inside Hero Section */}
         <p style={styles.heroSubtext}>
-          Supporting girls in sub-Saharan Africa with sanitary pads, clean
-          water, and educational resources so they never miss school again.
-        </p>
-
-        {/* Extra Description */}
-        <p style={styles.heroDescription}>
-          Tuinue Wasichana connects donors with trusted charities to provide essential 
-          resources for young girls in underserved communities. Together, we can 
-          break the cycle of poverty and empower girls to stay in school and 
-          achieve their dreams.
-        </p>
-
-        {/* Summary for Donor & Charity */}
-        <p style={styles.heroDescription}>
-          <strong>Donors:</strong> Create an account, sign in, and choose the causes 
-          or charities you want to support. You’ll be able to track your donations 
-          and see the real impact you’re making.
-        </p>
-        <p style={styles.heroDescription}>
-          <strong>Charities:</strong> Apply for support, log in, and receive donations 
-          to fund your projects. Share your impact stories directly with donors 
-          and grow your outreach.
+          Donateflow is a platform that connects donors with trusted 
+          charities to provide essential resources for young girls in 
+          underserved communities. Together, we work to break the cycle of 
+          poverty and empower girls to stay in school and achieve their dreams.
         </p>
 
         <div style={styles.heroButtons}>
@@ -40,6 +23,26 @@ const Home = () => {
           <Link to="/about" style={styles.heroLearnBtn}>
             Learn More
           </Link>
+        </div>
+      </div>
+
+      {/* How It Works Section */}
+      <div style={styles.howItWorksSection}>
+        <div style={styles.howItWorksContainer}>
+          <h2 style={styles.aboutTitle}>How It Works</h2>
+          <p style={styles.aboutText}>
+            <strong>For Donors:</strong> Create an account by clicking 
+            <Link to="/register/donor" style={styles.inlineLink}> here</Link>, 
+            then sign in to choose the causes or charities you want to support. 
+            Track your donations and see the real-world impact of your 
+            contributions.
+          </p>
+          <p style={styles.aboutText}>
+            <strong>For Charities:</strong> Submit an application by clicking 
+            <Link to="/apply" style={styles.inlineLink}> here</Link>. Once 
+            approved, sign in to receive donations, manage your projects, and 
+            share success stories with donors to grow your outreach.
+          </p>
         </div>
       </div>
 
@@ -122,6 +125,15 @@ const styles = {
     marginRight: "auto",
     opacity: "0.95",
     lineHeight: "1.6",
+  },
+  howItWorksSection: {
+    backgroundColor: "#f9fafb",
+    padding: "60px 24px",
+    textAlign: "center",
+  },
+  howItWorksContainer: {
+    maxWidth: "900px",
+    margin: "0 auto",
   },
   heroSubtext: {
     fontSize: "20px",
