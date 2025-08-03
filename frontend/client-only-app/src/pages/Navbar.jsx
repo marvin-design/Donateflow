@@ -26,18 +26,18 @@ const CustomNavbar = () => {
   return (
     <Navbar expand="lg" style={styles.navbar}>
       <Container>
-        <Navbar.Brand as={Link} to="/">
+        <Navbar.Brand as={Link} to="/" style={styles.navText}>
           DonateFlow
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ backgroundColor: "white" }} />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link as={Link} to="/about">
+            <Nav.Link as={Link} to="/about" style={styles.navText}>
               About
             </Nav.Link>
 
             {userRole === "charity" && (
-              <NavDropdown title="Charity Profile" id="charity-dropdown">
+              <NavDropdown title="Charity Profile" id="charity-dropdown" menuVariant="dark" style={styles.navText}>
                 <NavDropdown.Item
                   onClick={handleLogout}
                   style={styles.logoutButton}
@@ -48,7 +48,7 @@ const CustomNavbar = () => {
               </NavDropdown>
             )}
             {userRole === "donor" && (
-              <NavDropdown title="Donor Profile" id="donor-dropdown">
+              <NavDropdown title="Donor Profile" id="donor-dropdown" menuVariant="dark" style={styles.navText}>
                 <NavDropdown.Item
                   onClick={handleLogout}
                   style={styles.logoutButton}
@@ -67,19 +67,22 @@ const CustomNavbar = () => {
 
 const styles = {
   logoutButton: {
-    backgroundColor: "transparent", 
-    color: "#000", 
-    padding: "10px 15px", 
-    borderRadius: "5px", 
-    border: "none", 
-    cursor: "pointer", 
-    transition: "background-color 0.3s ease, color 0.3s ease", 
+    backgroundColor: "transparent",
+    color: "#000",
+    padding: "10px 15px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease, color 0.3s ease",
   },
   navbar: {
     background: "linear-gradient(135deg, #f97316 0%, #ea730c 100%)",
   },
+  navText: {
+    color: "white",
+    fontWeight: "500",
+  },
 };
-
 
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(
