@@ -37,7 +37,7 @@ const CustomNavbar = () => {
             </Nav.Link>
 
             {userRole === "charity" && (
-              <NavDropdown title="Charity Profile" id="charity-dropdown" menuVariant="dark" style={styles.navText}>
+              <NavDropdown title="Charity Profile" id="charity-dropdown" style={styles.navText}>
                 <NavDropdown.Item
                   onClick={handleLogout}
                   style={styles.logoutButton}
@@ -48,7 +48,7 @@ const CustomNavbar = () => {
               </NavDropdown>
             )}
             {userRole === "donor" && (
-              <NavDropdown title="Donor Profile" id="donor-dropdown" menuVariant="dark" style={styles.navText}>
+              <NavDropdown title="Donor Profile" id="donor-dropdown" style={styles.navText}>
                 <NavDropdown.Item
                   onClick={handleLogout}
                   style={styles.logoutButton}
