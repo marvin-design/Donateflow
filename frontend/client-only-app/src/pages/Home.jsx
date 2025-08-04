@@ -95,7 +95,7 @@ const Home = () => {
       </div>
 
       {/* Feed & Footer */}
-      <div style={{ width: "100%", maxWidth: "1200px", marginTop: "20px", margin:"auto"}}>
+      <div style={{ width: "100%", maxWidth: "1200px", marginTop: "20px auto 40px", margin:"auto"}}>
         <StoryFeed />
       </div>
 
@@ -128,14 +128,21 @@ const styles = {
     lineHeight: "1.6",
   },
   howItWorksSection: {
-    backgroundColor: "#f9fafb",
-    padding: "60px 24px",
-    textAlign: "center",
+  backgroundColor: "#fff",
+  padding: "60px 24px 40px 24px",
+  textAlign: "center",
+  borderTop: "1px solid #eee",
   },
+
   howItWorksContainer: {
-    maxWidth: "900px",
-    margin: "0 auto",
+  maxWidth: "900px",
+  margin: "0 auto",
+  backgroundColor: "#f9fafb",
+  padding: "40px 30px",
+  borderRadius: "8px",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
   },
+
   heroSubtext: {
     fontSize: "20px",
     marginBottom: "32px",

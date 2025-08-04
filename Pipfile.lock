@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a3c3d0faaf3f5b8c65a63f6bf445b786f1839c00157be0c1d69f9518937c08db"
+            "sha256": "29a687b7a37ce06a1c77067eb3f45dc1da91df936f69f24e40bb5a6ccf4cb554"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -256,14 +256,6 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==3.0.3"
-        },
-        "flask-apscheduler": {
-            "hashes": [
-                "sha256:d60948d1f2be9eb4772f68c3308ba3f973755219d13947266f89292ad6df63fc"
-            ],
-            "index": "pypi",
-            "markers": "python_version >= '3.8'",
-            "version": "==1.12.3"
         },
         "flask-bcrypt": {
             "hashes": [
