@@ -138,7 +138,7 @@ const styles = {
     margin: "20px auto 30px",
     overflow: "hidden",         // hides overflow during scroll
     whiteSpace: "nowrap",
-    backgroundColor: "linear-gradient(135deg,rgb(255, 149, 73) 0%,rgb(253, 175, 106) 100%)",      // ensures horizontal layout
+    backgroundColor: "linear-gradient(135deg,rgb(255, 149, 73) 0%,rgb(255, 183, 121) 100%)",      // ensures horizontal layout
 },
 
   heroHeader: {
