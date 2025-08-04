@@ -346,8 +346,8 @@ stepText: {
 },
 aboutTitle: {
   fontSize: "28px",
-  fontWeight: "600",
-  color: "#f97316",
+  fontWeight: "bold",
+  color: "#000",
   marginBottom: "20px",
 }
 };
