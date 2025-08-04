@@ -46,24 +46,35 @@ const Home = () => {
 
 
       {/* How It Works Section */}
-      <div style={styles.howItWorksSection}>
-        <div style={styles.howItWorksContainer}>
-          <h2 style={styles.aboutTitle}>How It Works</h2>
-          <p style={styles.aboutText}>
-            <strong>For Donors:</strong> Create an account by clicking 
-            <Link to="/register/donor" style={styles.inlineLink}> here</Link>, 
-            then sign in to choose the causes or charities you want to support. 
-            Track your donations and see the real-world impact of your 
-            contributions.
-          </p>
-          <p style={styles.aboutText}>
-            <strong>For Charities:</strong> Submit an application by clicking 
-            <Link to="/apply" style={styles.inlineLink}> here</Link>. Once 
-            approved, sign in to receive donations, manage your projects, and 
-            share success stories with donors to grow your outreach.
-          </p>
-        </div>
+  <div style={styles.howItWorksSection}>
+    <h2 style={styles.aboutTitle}>How It Works</h2>
+    <div style={styles.stepsContainer}>
+      {/* Donor Step */}
+      <div style={styles.stepCard}>
+        <div style={styles.stepNumber}>1</div>
+        <h3 style={styles.stepTitle}>For Donors</h3>
+        <p style={styles.stepText}>
+          Create an account by clicking 
+          <Link to="/register/donor" style={styles.inlineLink}> here</Link>. 
+          Once logged in, choose the causes or charities you want to support. 
+          Track your donations and see the real impact you’re making.
+        </p>
       </div>
+
+      {/* Charity Step */}
+    <div style={styles.stepCard}>
+      <div style={styles.stepNumber}>2</div>
+      <h3 style={styles.stepTitle}>For Charities</h3>
+      <p style={styles.stepText}>
+        Submit an application by clicking 
+        <Link to="/apply" style={styles.inlineLink}> here</Link>. 
+        After approval, log in to receive donations, manage your projects, 
+        and share success stories with donors.
+      </p>
+    </div>
+  </div>
+</div>
+
 
       {/* Donor & Charity Cards */}
       <div style={styles.cardWrapper}>
@@ -286,6 +297,53 @@ const styles = {
     fontSize: "0.95rem",
     marginTop: "5px",
   },
+  stepsContainer: {
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "center",
+  gap: "30px",
+  marginTop: "30px",
+},
+
+stepCard: {
+  backgroundColor: "#ffffff",
+  border: "1px solid #e5e7eb",
+  borderRadius: "10px",
+  padding: "25px 20px",
+  width: "300px",
+  textAlign: "left",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+  transition: "transform 0.2s ease-in-out",
+},
+stepCardHover: {
+  transform: "scale(1.02)",
+},
+
+stepNumber: {
+  width: "32px",
+  height: "32px",
+  borderRadius: "50%",
+  backgroundColor: "#f97316",
+  color: "#fff",
+  textAlign: "center",
+  lineHeight: "32px",
+  fontWeight: "bold",
+  fontSize: "16px",
+  marginBottom: "10px",
+},
+
+stepTitle: {
+  fontSize: "18px",
+  fontWeight: "600",
+  marginBottom: "10px",
+  color: "#ea730c",
+},
+
+stepText: {
+  fontSize: "16px",
+  color: "#555",
+  lineHeight: "1.5",
+},
 };
 
 export default Home;
