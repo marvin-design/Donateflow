@@ -233,8 +233,8 @@ const styles = {
     marginBottom: "10px",
   },
   primaryBtnOrange: {
-    backgroundColor: "#f97316", // Orange background
-    color: "#fff", // White text
+    backgroundColor: "#f97316",
+    color: "#fff", 
     padding: "10px 16px",
     borderRadius: "5px",
     textDecoration: "none",
@@ -256,7 +256,7 @@ const styles = {
     marginBottom: "10px",
   },
   inlineLink: {
-    display: "block",
+    display: "inline",
     color: "#f97316",
     textDecoration: "underline",
     marginLeft: "4px",
