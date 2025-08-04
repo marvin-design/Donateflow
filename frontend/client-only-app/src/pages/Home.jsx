@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import StoryFeed from "./StoriesFeed";
 import Footer from "./Footer";
+import { motion } from "framer-motion";
 
 const Home = () => {
   return (
@@ -105,10 +106,18 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Feed & Footer */}
-      <div style={{ width: "100%", maxWidth: "1200px", margin: "20px auto 30px"}}>
-        <StoryFeed />
-      </div>
+      <motion.div
+    style={styles.storyFeedWrapper}
+    animate={{ x: ["100%", "-100%"] }}
+    transition={{
+      repeat: Infinity,
+      duration: 30,
+      ease: "linear"
+    }}
+  >
+    <StoryFeed />
+  </motion.div>
+
 
       <Footer />
     </>
@@ -123,6 +132,14 @@ const styles = {
     padding: "60px 24px",
     textAlign: "center",
   },
+  storyFeedWrapper: {
+  width: "100%",
+  maxWidth: "1200px",
+  margin: "20px auto 30px",
+  overflow: "hidden",         // hides overflow during scroll
+  whiteSpace: "nowrap",       // ensures horizontal layout
+},
+
   heroHeader: {
     fontSize: "48px",
     fontWeight: "bold",
