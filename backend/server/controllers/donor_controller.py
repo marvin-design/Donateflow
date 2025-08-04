@@ -41,7 +41,6 @@ def donor_dashboard(donor_id):
 
 
 @donor_bp.route('/charities', methods=['GET'])
-@jwt_required()
 def get_charities():
     try:
         charities = Charity.query.all()
