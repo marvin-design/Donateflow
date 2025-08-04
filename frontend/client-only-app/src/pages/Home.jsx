@@ -250,10 +250,18 @@ const styles = {
   },
   secondaryLinkOrange: {
     display: "block",
-    color: "#f97316", // Orange text
+    color: "#f97316", 
     textDecoration: "underline",
     fontSize: "0.9rem",
     marginBottom: "10px",
+  },
+  inlineLink: {
+    display: "block",
+    color: "#f97316",
+    textDecoration: "underline",
+    marginLeft: "4px",
+    fontSize: "0.9rem",
+    marginRight: "4px",
   },
   primaryBtnGreen: {
     backgroundColor: "#28a745",
