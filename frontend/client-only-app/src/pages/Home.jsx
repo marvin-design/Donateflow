@@ -133,11 +133,12 @@ const styles = {
     textAlign: "center",
   },
   storyFeedWrapper: {
-  width: "100%",
-  maxWidth: "1200px",
-  margin: "20px auto 30px",
-  overflow: "hidden",         // hides overflow during scroll
-  whiteSpace: "nowrap",       // ensures horizontal layout
+    width: "100%",
+    maxWidth: "1200px",
+    margin: "20px auto 30px",
+    overflow: "hidden",         // hides overflow during scroll
+    whiteSpace: "nowrap",
+    backgroundColor: "#f97316",      // ensures horizontal layout
 },
 
   heroHeader: {
