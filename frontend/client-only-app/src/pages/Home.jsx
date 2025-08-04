@@ -18,7 +18,7 @@ const Home = () => {
         </p>
 
         <div style={styles.heroButtons}>
-          <Link to="/register/donor" style={styles.heroDonateBtn}>
+          <Link to="/donors/charities" style={styles.heroDonateBtn}>
             Start Donating
           </Link>
           <Link to="/about" style={styles.heroLearnBtn}>
