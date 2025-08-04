@@ -95,7 +95,7 @@ const Home = () => {
       </div>
 
       {/* Feed & Footer */}
-      <div style={{ width: "100%", maxWidth: "1200px", marginTop: "20px auto 40px", margin:"auto"}}>
+      <div style={{ width: "100%", maxWidth: "1200px", marginTop: "20px auto 30px"}}>
         <StoryFeed />
       </div>
 
@@ -109,7 +109,7 @@ const styles = {
   heroSection: {
     background: "linear-gradient(135deg, #f97316 0%, #ea730c 100%)",
     color: "white",
-    padding: "80px 24px",
+    padding: "60px 24px",
     textAlign: "center",
   },
   heroHeader: {
@@ -128,19 +128,19 @@ const styles = {
     lineHeight: "1.6",
   },
   howItWorksSection: {
-  backgroundColor: "#fff",
-  padding: "60px 24px 40px 24px",
-  textAlign: "center",
-  borderTop: "1px solid #eee",
+    backgroundColor: "#fff",
+    padding: "40px 24px 30px 24px",
+    textAlign: "center",
+    borderTop: "1px solid #eee",
   },
 
   howItWorksContainer: {
-  maxWidth: "900px",
-  margin: "0 auto",
-  backgroundColor: "#f9fafb",
-  padding: "40px 30px",
-  borderRadius: "8px",
-  boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+    maxWidth: "900px",
+    margin: "0 auto",
+    backgroundColor: "#f9fafb",
+    padding: "40px 30px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
   },
 
   heroSubtext: {
@@ -175,7 +175,7 @@ const styles = {
   },
   statsSection: {
     backgroundColor: "#f9fafb",
-    padding: "60px 0",
+    padding: "40px 0",
   },
   statsContainer: {
     maxWidth: "1200px",
@@ -202,7 +202,7 @@ const styles = {
     gap: "40px",
     flexWrap: "wrap",
     justifyContent: "center",
-    padding: "80px 24px",
+    padding: "50px 24px 20px",
     backgroundColor: "#fff",
   },
   card: {
