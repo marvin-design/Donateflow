@@ -344,6 +344,12 @@ stepText: {
   color: "#555",
   lineHeight: "1.5",
 },
+aboutTitle: {
+  fontSize: "28px",
+  fontWeight: "600",
+  color: "#f97316",
+  marginBottom: "20px",
+}
 };
 
 export default Home;
